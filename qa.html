@@ -1,0 +1,400 @@
+<html>
+<body>
+<div>
+<h1>Report</h1>
+<p>166 statements analysed.</p><div>
+<h2>Statistics by type</h2>
+<table>
+<tr class="header">
+<th>type</th>
+<th>number</th>
+<th>old number</th>
+<th>difference</th>
+<th>%documented</th>
+<th>%badname</th>
+</tr>
+<tr class="even">
+<td>module</td>
+<td>29</td>
+<td>29</td>
+<td>=</td>
+<td>96.55</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>class</td>
+<td>5</td>
+<td>5</td>
+<td>=</td>
+<td>100.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>method</td>
+<td>13</td>
+<td>13</td>
+<td>=</td>
+<td>100.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>function</td>
+<td>3</td>
+<td>3</td>
+<td>=</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+</table>
+</div>
+<div>
+<h2>External dependencies</h2>
+<pre>django 
+  \-apps (stubs.apps,weather.apps)
+  \-conf (weather.management.commands.retrieve_metear_data)
+  | \-urls (timevortex.urls)
+  \-contrib 
+  | \-admin (timevortex.urls)
+  \-core 
+    \-management (manage)
+    | \-base (timevortex.utils.commands,timevortex.management.commands.timevortex)
+    \-wsgi (timevortex.wsgi)
+timevortex 
+  \-utils 
+    \-commands (weather.management.commands.retrieve_metear_data)
+    \-globals (weather.management.commands.retrieve_metear_data)</pre></div>
+<div>
+<h2>Raw metrics</h2>
+<table>
+<tr class="header">
+<th>type</th>
+<th>number</th>
+<th>%</th>
+<th>previous</th>
+<th>difference</th>
+</tr>
+<tr class="even">
+<td>code</td>
+<td>259</td>
+<td>45.04</td>
+<td>252</td>
+<td>+7.00</td>
+</tr>
+<tr class="odd">
+<td>docstring</td>
+<td>116</td>
+<td>20.17</td>
+<td>116</td>
+<td>=</td>
+</tr>
+<tr class="even">
+<td>comment</td>
+<td>80</td>
+<td>13.91</td>
+<td>80</td>
+<td>=</td>
+</tr>
+<tr class="odd">
+<td>empty</td>
+<td>120</td>
+<td>20.87</td>
+<td>120</td>
+<td>=</td>
+</tr>
+</table>
+</div>
+<div>
+<h2>Duplication</h2>
+<table>
+<tr class="header">
+<th>&#160;</th>
+<th>now</th>
+<th>previous</th>
+<th>difference</th>
+</tr>
+<tr class="even">
+<th>nb duplicated lines</th>
+<td>0</td>
+<td>0</td>
+<td>=</td>
+</tr>
+<tr class="odd">
+<th>percent duplicated lines</th>
+<td>0.000</td>
+<td>0.000</td>
+<td>=</td>
+</tr>
+</table>
+</div>
+<div>
+<h2>Messages by category</h2>
+<table>
+<tr class="header">
+<th>type</th>
+<th>number</th>
+<th>previous</th>
+<th>difference</th>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>6</td>
+<td>7</td>
+<td>-1.00</td>
+</tr>
+<tr class="odd">
+<td>refactor</td>
+<td>0</td>
+<td>0</td>
+<td>=</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>11</td>
+<td>11</td>
+<td>=</td>
+</tr>
+<tr class="odd">
+<td>error</td>
+<td>2</td>
+<td>2</td>
+<td>=</td>
+</tr>
+</table>
+</div>
+<div>
+<h2>% errors / warnings by module</h2>
+<table>
+<tr class="header">
+<th>module</th>
+<th>error</th>
+<th>warning</th>
+<th>refactor</th>
+<th>convention</th>
+</tr>
+<tr class="even">
+<td>metear</td>
+<td>100.00</td>
+<td>100.00</td>
+<td>0.00</td>
+<td>66.67</td>
+</tr>
+<tr class="odd">
+<td>timevortex.wsgi</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>16.67</td>
+</tr>
+<tr class="even">
+<td>timevortex.urls</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>16.67</td>
+</tr>
+</table>
+</div>
+<div>
+<h2>Messages</h2>
+<table>
+<tr class="header">
+<th>message id</th>
+<th>occurrences</th>
+</tr>
+<tr class="even">
+<td>unused-wildcard-import</td>
+<td>9</td>
+</tr>
+<tr class="odd">
+<td>missing-docstring</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>invalid-name</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>function-redefined</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>wildcard-import</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>unused-argument</td>
+<td>1</td>
+</tr>
+</table>
+</div>
+<div>
+<h2>Global evaluation</h2>
+Your code has been rated at 8.37/10 (previous run: 8.28/10, +0.09)</div>
+<div>
+<h2>Messages</h2>
+<table>
+<tr class="header">
+<th>category</th>
+<th>module</th>
+<th>obj</th>
+<th>line</th>
+<th>column</th>
+<th>msg</th>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>timevortex.urls</td>
+<td>&#160;</td>
+<td>20</td>
+<td>0</td>
+<td>Invalid constant name "urlpatterns"</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>timevortex.wsgi</td>
+<td>&#160;</td>
+<td>16</td>
+<td>0</td>
+<td>Invalid constant name "application"</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Missing module docstring</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Wildcard import behave</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>metear</td>
+<td>step_impl</td>
+<td>4</td>
+<td>0</td>
+<td>Missing function docstring</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>metear</td>
+<td>step_impl</td>
+<td>4</td>
+<td>14</td>
+<td>Unused argument 'context'</td>
+</tr>
+<tr class="even">
+<td>error</td>
+<td>metear</td>
+<td>step_impl</td>
+<td>8</td>
+<td>0</td>
+<td>function already defined line 4</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>metear</td>
+<td>step_impl</td>
+<td>8</td>
+<td>0</td>
+<td>Missing function docstring</td>
+</tr>
+<tr class="even">
+<td>error</td>
+<td>metear</td>
+<td>step_impl</td>
+<td>12</td>
+<td>0</td>
+<td>function already defined line 4</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>metear</td>
+<td>step_impl</td>
+<td>12</td>
+<td>0</td>
+<td>Missing function docstring</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Unused import Given from wildcard import</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Unused import register_type from wildcard import</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Unused import step_matcher from wildcard import</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Unused import use_step_matcher from wildcard import</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Unused import Step from wildcard import</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Unused import When from wildcard import</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Unused import Then from wildcard import</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Unused import given from wildcard import</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Unused import step from wildcard import</td>
+</tr>
+</table>
+</div>
+</div>
+</body>
+</html>
