@@ -6,8 +6,11 @@ import json
 from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
+# from timevortex.utils.globals import LOGGER
 from stubs.models import StubsAPIOpening
 from stubs.utils.globals import KEY_STUBS_OPEN_METEAR_API
+from features.steps.test_utils import TEST_METEAR_SITE_ID_2, DICT_METEAR_FAKE_DATA, DICT_METEAR_FAKE_NEWS_DATA
+from features.steps.test_utils import TEST_METEAR_SITE_ID, KEY_METEAR_FAKE_DATA_ELEMENTS, KEY_METEAR_FAKE_DATA_DATE
 
 
 @require_POST
@@ -34,21 +37,55 @@ def change_route_configuration(request):
     return HttpResponse(json.dumps(data), content_type='application/json')
 
 
-@require_GET
-def retrieve_metear_data(request, airport, year, month, day):
-    # curl -i -XGET 'http://127.0.0.1:8000/stubs/history/airport/LFMN/2015/12/23/DailyHistory.html' && printf "\n"
+def is_metear_api_open():
     try:
         api_route = StubsAPIOpening.objects.get(id=1)
     except StubsAPIOpening.DoesNotExist:
-        return HttpResponseBadRequest()
+        return False
     if api_route.open_metear_api is False:
+        return False
+    return True
+
+
+def generate_metear_csv(fixtures, day):
+    csv = "\nHeureCET,TempératureC,Point de roséeC,Humidité,Pression au niveau de la merhPa,VisibilitéKm,Wind Direction,Vitesse du ventKm/h,"\
+        "Vitesse des rafalesKm/h,Précipitationmm,Evénements,Conditions,WindDirDegrees,DateUTC<br />\n"
+    for element in fixtures:
+        data_day = element[KEY_METEAR_FAKE_DATA_DATE].split(" ")[0].split("-")[2]
+        if day == data_day:
+            csv += ",".join(element[KEY_METEAR_FAKE_DATA_ELEMENTS])
+            csv += ",%s<br />\n" % element[KEY_METEAR_FAKE_DATA_DATE]
+    csv += "\n"
+    return csv
+
+
+@require_GET
+def retrieve_metear_new_data(request, airport, year, month, day):
+    # curl -i -XGET 'http://127.0.0.1:8000/stubs/history/airport/LFMN/2015/12/23/DailyHistory.html' && printf "\n"
+    if not is_metear_api_open():
+        return HttpResponseBadRequest()
+    csv = generate_metear_csv(DICT_METEAR_FAKE_NEWS_DATA, day)
+    return HttpResponse(csv)
+
+
+@require_GET
+def retrieve_metear_data(request, airport, year, month, day):
+    # curl -i -XGET 'http://127.0.0.1:8000/stubs/history/airport/LFMN/2015/12/23/DailyHistory.html' && printf "\n"
+    if not is_metear_api_open():
+        return HttpResponseBadRequest()
+    csv = generate_metear_csv(DICT_METEAR_FAKE_DATA, day)
+    return HttpResponse(csv)
+
+
+@require_GET
+def retrieve_bad_content_metear_data(request, airport, year, month, day):
+    # curl -i -XGET 'http://127.0.0.1:8000/stubs/history/airport/LFMN/2015/12/23/badcontent.html' && printf "\n"
+    if not is_metear_api_open():
         return HttpResponseBadRequest()
     html = "<html><head></head><body>%s</body></html>"
-    csv = "\nHeureCET,TempératureC,Point de roséeC,Humidité,Pression au niveau de la merhPa,VisibilitéKm,Wind Direction,Vitesse du ventKm/h,"\
-        "Vitesse des rafalesKm/h,Précipitationmm,Evénements,Conditions,WindDirDegrees,DateUTC\n"\
-        "12:00 AM,12,6,59,1032,15,NNO,11.1,,,,Nuageux,2015-12-23 23:00:00\n"\
-        "12:00 AM,13.0,7.0,67,1031,10.0,NNO,11.1,-,N/A,,Nuageux,2015-12-23 23:00:00\n"\
-        "12:30 AM,12.0,6.0,67,1031,10.0,NO,14.8,-,N/A,,Nuageux,2015-12-23 23:30:00\n"\
-        "1:00 AM,12,6,57,1032,15,NNO,16.7,,,,Nuageux,330,2015-12-24 00:00:00\n\n"
+    if airport in TEST_METEAR_SITE_ID:
+        csv = "snqfzfzfz,fs,dmlkmùqkfml,mkef,mkzenfzmlk,mlr,mzl,ml,zfml,fmlez,ml"
+    elif airport in TEST_METEAR_SITE_ID_2:
+        csv = "<br />\n<br />\n<br />snq,,,,,,,,,,fzfzfz,fs,dmlkmùqkfml,mkef,mkzmlk,mlr,mzl,ml,zfml,fmlez,ml<br />\n"
     all_html = html % csv
     return HttpResponse(all_html)

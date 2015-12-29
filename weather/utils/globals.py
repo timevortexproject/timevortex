@@ -5,6 +5,7 @@
 """Globals for weather app"""
 
 from django.conf import settings
+from datetime import date, timedelta
 
 KEY_METEAR_NO_SITE_ID = "metear_no_site_id"
 KEY_METEAR_BAD_URL = "metear_bad_url"
@@ -19,3 +20,8 @@ ERROR_METEAR = {
 SETTINGS_METEAR_URL = "METEAR_URL"
 SETTINGS_DEFAULT_METEAR_URL = "http://www.wunderground.com/history/airport/%s/%s/DailyHistory.html?format=1"
 SETTINGS_STUBS_METEAR_URL = "%s%s" % (settings.SITE_URL, "/stubs/history/airport/%s/%s/DailyHistory.html?format=1")
+SETTINGS_STUBS_NEW_METEAR_URL = "%s%s" % (
+    settings.SITE_URL, "/stubs/history/airport/%s/%s/NewDailyHistory.html?format=1")
+SETTINGS_METEAR_START_DATE = "SETTINGS_METEAR_START_DATE"
+SETTINGS_DEFAULT_METEAR_START_DATE = "2010-01-01"
+SETTINGS_STUBS_METEAR_START_DATE = (date.today() - timedelta(days=3)).strftime("%Y/%m/%d")

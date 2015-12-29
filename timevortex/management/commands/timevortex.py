@@ -36,7 +36,7 @@ ARGUMENTS = {
         KEY_HELP_TEXT: "Install dependencies for development mode"
     },
     OPTION_BEHAVE: {
-        KEY_COMMAND: ["coverage run --source='.' manage.py behave --tags @testing && coverage report -m"],
+        KEY_COMMAND: ["coverage run --source='.' manage.py behave --tags=wip && coverage report -m"],
         KEY_HELP_TEXT: "Launch behave test and coverage"
     },
 }

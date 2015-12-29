@@ -5,7 +5,7 @@
 
 # Install
 
-* pip install django requests
+* pip install django requests python-dateutil pytz django-admin-tools
 * pip install flake8 pylint django_nose behave_django pylint-django coverage
 * [BLOCKED] pip install clonedigger
 
@@ -15,30 +15,15 @@
 * python manage.py startapp weather
 * python manage.py startapp stubs
 * python manage.py makemigrations weather
-* python manage.py sqlmigrate weather 0001
 * python manage.py migrate
+* python manage.py collectstatic
 
 # Todo
 
 ## Weather application
 
-* Create stubs to test this command
-    * At least 2 differents airports
-    * Historical data
-    * New data
-    * Doublon
-    * Wrong data for each variable
-* Create automatic testing for this command
-    * Test different airport data retrieving
-    * Test historical data retrieving
-    * Test new data retrieving
-    * Test no doublon data (statistics or not taken into account methods)
-    * Test data send through RBMQ
-    * Test storage of new value into files using timeserieslogger
-    * Test wrong url
-    * Test wrong content
-    * Test down web service
-    * Test wrong script parameter
+* Separate METEAR log in a specific file
+* Add daily rotation for log
 
 ## TimeVortex
 
@@ -49,3 +34,8 @@
     * Install django-extension
     * Install django-toolbar
     * Install django-admin-tools
+    * Install chrnograph to manage cron task
+    * Migrate on postgresql DB
+    * Modify settings.py to be production ready
+    * Create a local.py that define development settings
+    * Clean coverage report
