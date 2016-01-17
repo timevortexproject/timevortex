@@ -19,6 +19,7 @@ def sending_json_message(context, error_type):
     out = StringIO()
     command = AbstractCommand()
     command.out = out
+    command.set_logger(LOGGER)
     if DICT_TSL_ERROR_DATA[error_type] is not None:
         command.timeseries = DICT_TSL_ERROR_DATA[error_type]
         context.specific_error = json.dumps(command.timeseries)

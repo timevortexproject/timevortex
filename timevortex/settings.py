@@ -34,10 +34,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'admin_tools',
-    'admin_tools.theming',
-    'admin_tools.menu',
-    'admin_tools.dashboard',
+    # 'fluent_dashboard',
+    # 'admin_tools',
+    # 'admin_tools.theming',
+    # 'admin_tools.menu',
+    # 'admin_tools.dashboard',
+    # 'admin_tools_stats',
+    # 'django_nvd3',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
@@ -45,11 +48,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'djangobower',
     'django_nose',
     'behave_django',
     'stubs',
     'timevortex',
     'weather',
+    'hardware',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -82,7 +87,7 @@ TEMPLATES = [
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
-                'admin_tools.template_loaders.Loader',
+                # 'admin_tools.template_loaders.Loader',
             ]
         },
     },
@@ -153,10 +158,18 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'django.contrib.staticfiles.finders.FileSystemFinder',
+    # 'djangobower.finders.BowerFinder',
 )
 
+# BOWER_INSTALLED_APPS = (
+#     'jquery#2.0.3',
+#     'jquery-ui#~1.10.3',
+#     'd3#3.3.6',
+#     'nvd3#1.1.12-beta',
+# )
+
 #####
-# Logging
+# LOGGING
 #
 
 LOGGING = {
@@ -178,6 +191,12 @@ LOGGING = {
             'filename': '/tmp/timevortex.log',
             'formatter': 'verbose'
         },
+        'file_weather': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/tmp/timevortex_weather.log',
+            'formatter': 'verbose'
+        },
     },
     'loggers': {
         'timevortex': {
@@ -185,8 +204,23 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'weather': {
+            'handlers': ['file_weather'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }
+
+#####
+# ADMIN CONFIGURATION
+#
+
+# ADMIN_TOOLS_INDEX_DASHBOARD = 'timevortex.dashboard.CustomIndexDashboard'
+# ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'timevortex.dashboard.CustomAppIndexDashboard'
+# ADMIN_TOOLS_INDEX_DASHBOARD = 'fluent_dashboard.dashboard.FluentIndexDashboard'
+# ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'fluent_dashboard.dashboard.FluentAppIndexDashboard'
+# ADMIN_TOOLS_MENU = 'fluent_dashboard.menu.FluentMenu'
 
 #####
 # TIMEVORTEX CONFIGURATION

@@ -5,6 +5,7 @@
 """METEAR command"""
 
 import sys
+import logging
 from time import tzname
 from datetime import timedelta
 import dateutil.parser
@@ -13,13 +14,14 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from timevortex.utils.commands import HTMLCrawlerCommand, AbstractCommand
-from timevortex.utils.globals import LOGGER, KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE
+from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE
 from timevortex.utils.globals import KEY_DATE, KEY_DST_TIMEZONE, KEY_NON_DST_TIMEZONE
 from weather.utils.globals import ERROR_METEAR, KEY_METEAR_NO_SITE_ID, SETTINGS_METEAR_URL, SETTINGS_DEFAULT_METEAR_URL
 from weather.utils.globals import KEY_METEAR_BAD_URL, KEY_METEAR_PROBLEM_WS, KEY_METEAR_BAD_CONTENT
 from weather.utils.globals import SETTINGS_METEAR_START_DATE, SETTINGS_DEFAULT_METEAR_START_DATE
 from timevortex.models import Site, Variable
 
+LOGGER = logging.getLogger("weather")
 SLUG_METEAR_TEMPERATURE_CELSIUS = "metear_temperature_celsius"
 ARRAY_VARIABLE_ID = [
     SLUG_METEAR_TEMPERATURE_CELSIUS,
@@ -44,6 +46,7 @@ class MyMETEARCrawler(HTMLCrawlerCommand):
 
     help = 'Retrieve metear data from weather underground website'
 
+    reverse = False
     multi_rows = True
     multi_variables_per_row = True
     error_bad_url = ERROR_METEAR[KEY_METEAR_BAD_URL]
@@ -55,7 +58,7 @@ class MyMETEARCrawler(HTMLCrawlerCommand):
         from_date = "%s/%s/%s" % (TODAY.year, TODAY.month, TODAY.day)
         if "site_id" not in options:
             self.out.write("%s\n" % ERROR_METEAR[KEY_METEAR_NO_SITE_ID])
-            LOGGER.error(ERROR_METEAR[KEY_METEAR_NO_SITE_ID])
+            self.logger.error(ERROR_METEAR[KEY_METEAR_NO_SITE_ID])
             return
         if "from_date" in options:
             from_date = options["from_date"].strftime("%Y/%m/%d")
@@ -65,14 +68,27 @@ class MyMETEARCrawler(HTMLCrawlerCommand):
 
     def clean_data(self):
         self.html = self.html.replace("<br/>", "").replace("<br />", "").split("\n")[2:]
+        if self.reverse:
+            self.html = self.remove_html_duplication()
+            self.html = self.html[::-1]
+
+    def remove_html_duplication(self):
+        elements = []
+        for item in self.html:
+            key = item.split(",")[0]
+            if key not in elements:
+                elements.append(key)
+            else:
+                self.html.remove(item)
+        return self.html
 
     def prepare_row(self):
         self.transformed_row = None
         transformed_row = {}
         self.row = self.row.split(",")[1:]
         if len(self.row) > len(self.variables):
-            # LOGGER.debug("Row")
-            # LOGGER.debug(self.row)
+            # self.logger.debug("Row")
+            # self.logger.debug(self.row)
             try:
                 transformed_row[KEY_DATE] = dateutil.parser.parse(self.row[-1]).replace(tzinfo=pytz.UTC)
                 for i in range(len(self.variables)):
@@ -123,7 +139,8 @@ class Command(AbstractCommand):
     name = "METEAR crawler"
 
     def handle(self, *args, **options):
-        LOGGER.info("Command %s started", self.name)
+        self.set_logger(LOGGER)
+        self.logger.info("Command %s started", self.name)
 
         try:
             metear_sites = Site.objects.filter(site_type=Site.METEAR_TYPE)
@@ -131,21 +148,36 @@ class Command(AbstractCommand):
             metear_sites = []
         if len(metear_sites) > 0:
             crawler = MyMETEARCrawler()
+            crawler.set_logger(LOGGER)
             crawler.out = self.out
             settings_start_date = getattr(settings, SETTINGS_METEAR_START_DATE, SETTINGS_DEFAULT_METEAR_START_DATE)
-            start_date = dateutil.parser.parse(settings_start_date).replace(tzinfo=pytz.UTC)
+            bound_start_date = dateutil.parser.parse(settings_start_date).replace(tzinfo=pytz.UTC)
+            bound_end_date = TODAY
             for site in metear_sites:
                 try:
                     variable = Variable.objects.get(site=site, slug=SLUG_METEAR_TEMPERATURE_CELSIUS)
-                    if variable.end_date > start_date:
-                        start_date = variable.end_date
+                    variable_start_date = variable.start_date
+                    variable_end_date = variable.end_date
                 except Variable.DoesNotExist:
-                    pass
-                while start_date.date() <= TODAY.date():
+                    variable_start_date = bound_end_date
+                    variable_end_date = bound_end_date
+                # I have a set of value between start_date and end_date
+                # If start_date is empty it get value of SETTINGS_METEAR_START_DATE in settings
+                # If end_date is empty it get value of TODAY.date()
+                # First I have to retrieve data between end_date and TODAY.date()
+                # Then I will retrieve value between SETTINGS_METEAR_START_DATE and start_date
+                while variable_end_date.date() <= bound_end_date.date():
+                    crawler.reverse = False
                     crawler.handle(
                         site_id=site.slug,
-                        from_date=start_date)
-                    start_date += timedelta(days=1)
+                        from_date=variable_end_date)
+                    variable_end_date += timedelta(days=1)
+                while variable_start_date.date() >= bound_start_date.date():
+                    crawler.reverse = True
+                    crawler.handle(
+                        site_id=site.slug,
+                        from_date=variable_start_date)
+                    variable_start_date += timedelta(days=-1)
         else:
             self.send_error(ERROR_METEAR[KEY_METEAR_NO_SITE_ID])
-        LOGGER.info("Command %s stopped", self.name)
+        self.logger.info("Command %s stopped", self.name)

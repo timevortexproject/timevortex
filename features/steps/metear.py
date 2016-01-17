@@ -20,6 +20,7 @@ from features.steps.test_utils import TEST_METEAR_LABEL, SETTINGS_BAD_METEAR_URL
 from features.steps.test_utils import KEY_METEAR_FAKE_DATA_DATE, transform_metear_array_into_dict, TEST_METEAR_SITE_ID
 from features.steps.test_utils import counter_from_log, error_in_list, verify_json_message, KEY_METEAR_FAKE_DATA_OK
 from features.steps.test_utils import KEY_METEAR_FAKE_DATA_STATUS, assertEqual, reset_testing_environment
+from features.steps.test_utils import TIMEVORTEX_WEATHER_LOG_FILE, KEY_WEATHER_LOG_FILE
 from timevortex.models import Site, Variable
 from timevortex.utils.globals import LOGGER
 from weather.utils.globals import SETTINGS_METEAR_URL, SETTINGS_STUBS_NEW_METEAR_URL
@@ -88,14 +89,18 @@ def run_metear_script(context):
         pass
 
 
-@then("I should see an error message '{error_type}' in the log")
-def verify_error_message_on_log(context, error_type):
+@then("I should see an error message '{error_type}' in the '{log_file}' log")
+def verify_error_message_on_log(context, error_type, log_file):
     error = error_in_list(error_type)
     try:
         error = error % context.specific_error
     except AttributeError:
         pass
-    extract_from_log(error, TIMEVORTEX_LOG_FILE, -2)
+    log_file_path = TIMEVORTEX_LOG_FILE
+    if log_file == KEY_WEATHER_LOG_FILE:
+        log_file_path = TIMEVORTEX_WEATHER_LOG_FILE
+    
+    extract_from_log(error, log_file_path, -2)
 
 
 @then("I should see an error message '{error_type}' on the screen")
@@ -114,8 +119,8 @@ def verify_data_update_db(context, data_type, site_id):
         site = Site.objects.filter(slug=TEST_METEAR_SITE_ID_2, site_type=Site.METEAR_TYPE)
     fixtures = DICT_METEAR_FAKE_DATA
     if data_type in "new":
-        counter_from_log("GET", 1, TIMEVORTEX_LOG_FILE, -2)
-        counter_from_log("GET", 0, TIMEVORTEX_LOG_FILE, -3)
+        counter_from_log("GET", 1, TIMEVORTEX_WEATHER_LOG_FILE, -3)
+        counter_from_log("GET", 0, TIMEVORTEX_WEATHER_LOG_FILE, -4)
         fixtures = DICT_METEAR_FAKE_NEWS_DATA
     variables = Variable.objects.filter(site=site)
     expected_variables_len = len(fixtures[start_array_index][KEY_METEAR_FAKE_DATA_ELEMENTS]) - 1
@@ -131,8 +136,10 @@ def verify_data_update_db(context, data_type, site_id):
             variable.start_date, expected_start_date)
         assert variable.end_date.isoformat(" ") in expected_end_date, "variable.end_date: %s should equal to %s" % (
             variable.end_date, expected_end_date)
-        assert variable.start_value == expected_start_value[variable.slug]
-        assert variable.end_value == expected_end_value[variable.slug]
+        assert variable.start_value == expected_start_value[variable.slug], "var.start_val: %s should equal to %s" % (
+            variable.start_value, expected_start_value[variable.slug])
+        assert variable.end_value == expected_end_value[variable.slug], "var.end_val: %s should equal to %s" % (
+            variable.end_value, expected_end_value[variable.slug])
 
 
 @then("I should see an error message '{error_type}' on '{tsv_file_type}' TSV file")

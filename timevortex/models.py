@@ -53,6 +53,9 @@ class Variable(models.Model):
         if date > self.end_date:
             self.end_date = date
             self.end_value = value
+        elif date < self.start_date:
+            self.start_date = date
+            self.start_value = value
         else:
             raise ValidationError(EXCEPTION_VARIABLES_PAST_DATE)
         if self.start_date is None:

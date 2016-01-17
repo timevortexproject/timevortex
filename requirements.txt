@@ -1,0 +1,5 @@
+django
+requests
+python-dateutil
+pytz
+django-admin-tools

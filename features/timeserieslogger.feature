@@ -6,12 +6,12 @@ Feature: Time series data logging
     @wip
     Scenario: 1.Send message without TS
         When I send JSON message 'ts_without_json_message'
-        Then I should see an error message 'ts_without_json_message' in the log
+        Then I should see an error message 'ts_without_json_message' in the 'default' log
 
     @wip
     Scenario Outline: 2.Bad JSON message
         When I send JSON message '<error_type>'
-        Then I should see an error message '<error_type>' in the log
+        Then I should see an error message '<error_type>' in the 'default' log
         And I should see an error message '<error_type>' on 'system' TSV file        
 
     Examples: 2.Bad JSON message

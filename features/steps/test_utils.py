@@ -35,6 +35,8 @@ TEST_METEAR_LABEL_2 = "Données METEAR de Pau, France"
 SETTINGS_BAD_METEAR_URL = "http://ksgo/dsls/%s/hs/%s.shgdf"
 SETTINGS_BAD_CONTENT_METEAR_URL = "%s%s" % (settings.SITE_URL, "/stubs/history/airport/%s/%s/badcontent.html?format=1")
 TIMEVORTEX_LOG_FILE = "/tmp/timevortex.log"
+TIMEVORTEX_WEATHER_LOG_FILE = "/tmp/timevortex_weather.log"
+KEY_WEATHER_LOG_FILE = "weather"
 DICT_JSON_REQUEST_HEADER = {'Content-type': 'application/json', 'Accept': '*/*'}
 KEY_METEAR_FAKE_DATA_ELEMENTS = "elements"
 KEY_METEAR_FAKE_DATA_STATUS = "status"
@@ -46,15 +48,20 @@ ERROR_UNDEFINED_ERROR_TYPE = "Undefined error_type %s"
 
 DICT_METEAR_FAKE_DATA = [
     {
-        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY - timedelta(hours=8)).isoformat(" "),
+        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY - timedelta(days=2, hours=8)).isoformat(" "),
         KEY_METEAR_FAKE_DATA_STATUS: KEY_METEAR_FAKE_DATA_OK,
         KEY_METEAR_FAKE_DATA_ELEMENTS: [
             "12:00 AM", "12", "6", "59", "1032", "15", "NNO", "11.1", "", "", "", "Assez nuageux", "330"]
     }, {
-        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY - timedelta(hours=8)).isoformat(" "),
+        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY - timedelta(days=2, hours=8)).isoformat(" "),
         KEY_METEAR_FAKE_DATA_STATUS: KEY_METEAR_FAKE_DATA_KO,
         KEY_METEAR_FAKE_DATA_ELEMENTS: [
             "12:00 AM", "13.0", "7.0", "67", "1031", "10.0", "NO", "12.1", "-", "N/A", "", "Peu nuageux", "340"]
+    }, {
+        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY - timedelta(days=2, hours=7)).isoformat(" "),
+        KEY_METEAR_FAKE_DATA_STATUS: KEY_METEAR_FAKE_DATA_OK,
+        KEY_METEAR_FAKE_DATA_ELEMENTS: [
+            "13:00 AM", "12.5", "7.5", "67.5", "1031.5", "10.5", "N", "11.5", "-", "N/A", "", "Peu peu nuageux", "335"]
     }, {
         KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY + timedelta(hours=15)).isoformat(" "),
         KEY_METEAR_FAKE_DATA_STATUS: KEY_METEAR_FAKE_DATA_OK,
@@ -223,8 +230,12 @@ ERROR_LIST = error_list()
 def error_in_list(error_type, duplicate=False):
     if error_type in ERROR_LIST:
         if duplicate:
-            return "%s%s%s%s" % (
-                ERROR_LIST[error_type], ERROR_LIST[error_type], ERROR_LIST[error_type], ERROR_LIST[error_type])
+            return "%s%s%s%s%s" % (
+                ERROR_LIST[error_type],
+                ERROR_LIST[error_type],
+                ERROR_LIST[error_type],
+                ERROR_LIST[error_type],
+                ERROR_LIST[error_type])
         else:
             return ERROR_LIST[error_type]
 

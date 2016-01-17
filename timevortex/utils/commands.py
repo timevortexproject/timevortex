@@ -10,7 +10,7 @@ import requests
 from time import tzname
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from timevortex.utils.globals import LOGGER, ERROR_TIMESERIES_NOT_DEFINED
+from timevortex.utils.globals import ERROR_TIMESERIES_NOT_DEFINED
 from timevortex.utils.signals import SIGNAL_TIMESERIES
 from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE, KEY_DATE, KEY_DST_TIMEZONE
 from timevortex.utils.globals import KEY_NON_DST_TIMEZONE, KEY_ERROR
@@ -19,6 +19,10 @@ from timevortex.utils.globals import KEY_NON_DST_TIMEZONE, KEY_ERROR
 class AbstractCommand(BaseCommand):
     """Abstact class that provide helpful method for django command
     """
+
+    def set_logger(self, logger):
+        self.logger = logger
+
     def send_timeseries(self):
         """Send pub/sub timeseries timeseries
         """
@@ -28,7 +32,7 @@ class AbstractCommand(BaseCommand):
             timeseries = json.dumps(self.timeseries)
             SIGNAL_TIMESERIES.send(sender=self.__class__, timeseries=timeseries)
         except AttributeError:
-            LOGGER.error(ERROR_TIMESERIES_NOT_DEFINED)
+            self.logger.error(ERROR_TIMESERIES_NOT_DEFINED)
 
     def send_error(self, error):
         try:
@@ -44,7 +48,7 @@ class AbstractCommand(BaseCommand):
         except AttributeError:
             pass
         self.out.write("%s\n" % error)
-        LOGGER.error(error)
+        self.logger.error(error)
 
 
 class HTMLCrawlerCommand(AbstractCommand):
@@ -86,7 +90,7 @@ class HTMLCrawlerCommand(AbstractCommand):
         """
         try:
             response = requests.get(self.url)
-            LOGGER.info("GET %s" % self.url)
+            self.logger.info("GET %s" % self.url)
             response.raise_for_status()
             self.html = response.content.decode("utf-8")
         except requests.exceptions.ConnectionError:
