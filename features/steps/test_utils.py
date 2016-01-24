@@ -4,15 +4,23 @@
 
 """Functionnal test toolkit"""
 
+import os
 import json
 import shutil
+import signal
 import requests
+from time import sleep
+from io import StringIO
 from time import tzname
 from os.path import exists
 from django.conf import settings
+from behave import given, when, then
 from datetime import datetime, timedelta
 from timevortex.utils.globals import LOGGER
 from stubs.utils.globals import URL_STUBS_CHANGE_ROUTE_CONFIG
+from energy.utils.globals import KEY_CURRENTCOST, ERROR_CURRENTCOST
+from weather.management.commands.retrieve_metear_data import Command as MetearCommand
+from energy.management.commands.retrieve_currentcost_data import Command as CurrentCostCommand
 from weather.utils.globals import ERROR_METEAR, SETTINGS_STUBS_METEAR_URL, SETTINGS_METEAR_URL
 from weather.utils.globals import SETTINGS_METEAR_START_DATE, SETTINGS_STUBS_METEAR_START_DATE
 from timevortex.utils.timeserieslogger import KEY_TSL_NO_NON_DST_TIMEZONE
@@ -24,26 +32,31 @@ from timevortex.utils.filestorage import SETTINGS_FILE_STORAGE_FOLDER, SETTINGS_
 # import subprocess
 # from subprocess import CalledProcessError
 
-TEST_SITE_ID = "TEST_site"
-TEST_VARIABLE_ID_WATTS = "TEST_watts"
-TEST_VARIABLE_ID_KWH = "TEST_kwh"
-TEST_VARIABLE_ID_TMPR = "TEST_tmpr"
+# Common
+TIMEVORTEX_LOG_FILE = "/tmp/timevortex.log"
+DICT_JSON_REQUEST_HEADER = {'Content-type': 'application/json', 'Accept': '*/*'}
+# Weather
 TEST_METEAR_SITE_ID = "LFMN"
 TEST_METEAR_SITE_ID_2 = "LFBP"
 TEST_METEAR_LABEL = "Données METEAR de Nice, France"
 TEST_METEAR_LABEL_2 = "Données METEAR de Pau, France"
 SETTINGS_BAD_METEAR_URL = "http://ksgo/dsls/%s/hs/%s.shgdf"
 SETTINGS_BAD_CONTENT_METEAR_URL = "%s%s" % (settings.SITE_URL, "/stubs/history/airport/%s/%s/badcontent.html?format=1")
-TIMEVORTEX_LOG_FILE = "/tmp/timevortex.log"
 TIMEVORTEX_WEATHER_LOG_FILE = "/tmp/timevortex_weather.log"
 KEY_WEATHER_LOG_FILE = "weather"
-DICT_JSON_REQUEST_HEADER = {'Content-type': 'application/json', 'Accept': '*/*'}
+KEY_METEAR = "metear"
 KEY_METEAR_FAKE_DATA_ELEMENTS = "elements"
 KEY_METEAR_FAKE_DATA_STATUS = "status"
 KEY_METEAR_FAKE_DATA_DATE = "date"
 KEY_METEAR_FAKE_DATA_OK = "ok"
 KEY_METEAR_FAKE_DATA_KO = "ko"
 DATE_METEAR_FAKE_DATA_TODAY = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+# Energy
+TIMEVORTEX_CURRENTCOST_LOG_FILE = "/tmp/timevortex_energy.log"
+TEST_SITE_ID = "TEST_site"
+TEST_VARIABLE_ID_WATTS = "TEST_watts"
+TEST_VARIABLE_ID_KWH = "TEST_kwh"
+TEST_VARIABLE_ID_TMPR = "TEST_tmpr"
 ERROR_UNDEFINED_ERROR_TYPE = "Undefined error_type %s"
 
 DICT_METEAR_FAKE_DATA = [
@@ -215,16 +228,15 @@ def assertEqual(element1, element2):
         assert element1 == element2, "%s should equal to %s" % (element1, element2)
 
 
-def error_list():
+def error_list(array_dict):
     error_list = {}
-    for key in ERROR_METEAR:
-        error_list[key] = ERROR_METEAR[key]
-    for key in ERROR_TSL:
-        error_list[key] = ERROR_TSL[key]
+    for error_dict in array_dict:
+        for key in error_dict:
+            error_list[key] = error_dict[key]
     return error_list
 
 
-ERROR_LIST = error_list()
+ERROR_LIST = error_list([ERROR_METEAR, ERROR_TSL, ERROR_CURRENTCOST])
 
 
 def error_in_list(error_type, duplicate=False):
@@ -325,11 +337,57 @@ def check_response_script(commands_response, error):
     """
         Launch script with parameter.
     """
+    LOGGER.info(commands_response)
     for cmdr in commands_response:
         cmdr = cmdr.replace("\n", "")
         assert cmdr is not None, "%s should not equal to %s" % (cmdr, None)
         assert cmdr is not "", "%s should not equal to %s" % (cmdr, "")
         assertEqual(cmdr, error)
+
+
+@when("I run the '{script_name}' script")
+def run_script(context, script_name):
+    if script_name in KEY_METEAR:
+        command = MetearCommand()
+    if script_name in KEY_CURRENTCOST:
+        command = CurrentCostCommand()
+    out = StringIO()
+    command.out = out
+    command.handle()
+    context.commands_response = [out.getvalue().strip()]
+    try:
+        os.killpg(context.stubs.pid, signal.SIGTERM)
+        sleep(1)
+    except AttributeError:
+        pass
+
+
+@then("I should see an error message '{error_type}' in the '{log_file}' log")
+def verify_error_message_on_log(context, error_type, log_file):
+    error = error_in_list(error_type)
+    try:
+        error = error % context.specific_error
+    except AttributeError:
+        pass
+    log_file_path = TIMEVORTEX_LOG_FILE
+    if log_file == KEY_WEATHER_LOG_FILE:
+        log_file_path = TIMEVORTEX_WEATHER_LOG_FILE
+    elif log_file == KEY_CURRENTCOST:
+        log_file_path = TIMEVORTEX_CURRENTCOST_LOG_FILE
+
+    extract_from_log(error, log_file_path, -2)
+
+
+@then("I should see an error message '{error_type}' on the screen")
+def verify_error_message_on_screen(context, error_type):
+    error = error_in_list(error_type, duplicate=True)
+    check_response_script(context.commands_response, error)
+
+
+@given("I created according settings for '{script_name}' to test '{error_type}'")
+def according_variable_creation(context, script_name, error_type):
+    if script_name in KEY_CURRENTCOST:
+        pass  # if error_type in TEST:
 
 
 # def launch_script(commands):

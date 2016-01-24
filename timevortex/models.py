@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 EXCEPTION_VARIABLES_PAST_DATE = "Date are in the past"
 APP_NAME = "timevortex"
 
+
 class Site(models.Model):
     """Site model.
     """

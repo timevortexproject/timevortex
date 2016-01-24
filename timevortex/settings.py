@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'timevortex',
     'weather',
     'hardware',
+    'energy',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -197,6 +198,12 @@ LOGGING = {
             'filename': '/tmp/timevortex_weather.log',
             'formatter': 'verbose'
         },
+        'file_energy': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/tmp/timevortex_energy.log',
+            'formatter': 'verbose'
+        },
     },
     'loggers': {
         'timevortex': {
@@ -206,6 +213,11 @@ LOGGING = {
         },
         'weather': {
             'handlers': ['file_weather'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'energy': {
+            'handlers': ['file_energy'],
             'level': 'DEBUG',
             'propagate': True,
         },

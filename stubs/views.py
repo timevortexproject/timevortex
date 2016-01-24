@@ -48,8 +48,9 @@ def is_metear_api_open():
 
 
 def generate_metear_csv(fixtures, day):
-    csv = "\nHeureCET,TempératureC,Point de roséeC,Humidité,Pression au niveau de la merhPa,VisibilitéKm,Wind Direction,Vitesse du ventKm/h,"\
-        "Vitesse des rafalesKm/h,Précipitationmm,Evénements,Conditions,WindDirDegrees,DateUTC<br />\n"
+    csv = "\nHeureCET,TempératureC,Point de roséeC,Humidité,Pression au niveau de la merhPa,VisibilitéKm,"\
+        "Wind Direction,Vitesse du ventKm/h,Vitesse des rafalesKm/h,Précipitationmm,Evénements,Conditions,"\
+        "WindDirDegrees,DateUTC<br />\n"
     for element in fixtures:
         data_day = element[KEY_METEAR_FAKE_DATA_DATE].split(" ")[0].split("-")[2]
         if day == data_day:

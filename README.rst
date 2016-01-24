@@ -17,6 +17,8 @@
 
 * django-admin startproject timevortex
 * python manage.py startapp weather
+* python manage.py startapp hardware
+* python manage.py startapp energy
 * python manage.py startapp stubs
 * python manage.py makemigrations weather
 * python manage.py migrate

@@ -3,12 +3,12 @@ Feature: Time series data logging
     I want to store all time series providing by my sensor,
     in order to uniformize input of more complex module.
 
-    @wip
+    @wipa
     Scenario: 1.Send message without TS
         When I send JSON message 'ts_without_json_message'
         Then I should see an error message 'ts_without_json_message' in the 'default' log
 
-    @wip
+    @wipa
     Scenario Outline: 2.Bad JSON message
         When I send JSON message '<error_type>'
         Then I should see an error message '<error_type>' in the 'default' log
@@ -23,7 +23,7 @@ Feature: Time series data logging
    | ts_without_dst_timezone     |
    | ts_without_non_dst_timezone |  
 
-    @wip
+    @wipa
     Scenario Outline: 3.Correct message
         When I send JSON message '<message>'
         Then I should see '<message>' data update in TSV file for 'TEST_site'

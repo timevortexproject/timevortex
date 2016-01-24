@@ -15,9 +15,9 @@ class Command(AbstractCommand):
     name = "Hardware crawler"
 
     def handle(self, *args, **options):
-        LOGGER.info("Command %s started", self.name)
+        # LOGGER.info("Command %s started", self.name)
         print(psutil.cpu_times())
         print(psutil.cpu_count())
         print(psutil.cpu_count(logical=False))
         print(psutil.cpu_percent(interval=1, percpu=True))
-        LOGGER.info("Command %s stopped", self.name)
+        # LOGGER.info("Command %s stopped", self.name)

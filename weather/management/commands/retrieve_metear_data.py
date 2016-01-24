@@ -134,7 +134,7 @@ class MyMETEARCrawler(HTMLCrawlerCommand):
 class Command(AbstractCommand):
     """Command class
     """
-    help = "Retireve METEAR data from weatherunderground website"
+    help = "Retrieve METEAR data from weatherunderground website"
     out = sys.stdout
     name = "METEAR crawler"
 
@@ -156,16 +156,14 @@ class Command(AbstractCommand):
             for site in metear_sites:
                 try:
                     variable = Variable.objects.get(site=site, slug=SLUG_METEAR_TEMPERATURE_CELSIUS)
+                except Variable.DoesNotExist:
+                    variable = None
+                if variable is not None:
                     variable_start_date = variable.start_date
                     variable_end_date = variable.end_date
-                except Variable.DoesNotExist:
+                else:
                     variable_start_date = bound_end_date
                     variable_end_date = bound_end_date
-                # I have a set of value between start_date and end_date
-                # If start_date is empty it get value of SETTINGS_METEAR_START_DATE in settings
-                # If end_date is empty it get value of TODAY.date()
-                # First I have to retrieve data between end_date and TODAY.date()
-                # Then I will retrieve value between SETTINGS_METEAR_START_DATE and start_date
                 while variable_end_date.date() <= bound_end_date.date():
                     crawler.reverse = False
                     crawler.handle(

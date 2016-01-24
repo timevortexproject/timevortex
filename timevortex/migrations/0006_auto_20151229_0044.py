@@ -15,6 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='site',
             name='site_type',
-            field=models.CharField(blank=True, choices=[('0', 'Pas de type particulier'), ('1', 'METEAR')], max_length=2, null=True),
+            field=models.CharField(
+                blank=True, choices=[('0', 'Pas de type particulier'), ('1', 'METEAR')], max_length=2, null=True),
         ),
     ]

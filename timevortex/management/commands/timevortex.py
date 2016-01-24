@@ -17,6 +17,7 @@ OPTION_LINT = "lint"
 OPTION_QA = "qa"
 OPTION_VALIDATE = "validate"
 OPTION_BEHAVE = "behave"
+OPTION_BEHAVE_ALL = "behave_all"
 # Arguments
 ARGUMENTS = {
     OPTION_LINT: {
@@ -36,8 +37,12 @@ ARGUMENTS = {
         KEY_HELP_TEXT: "Install dependencies for development mode"
     },
     OPTION_BEHAVE: {
-        KEY_COMMAND: ["coverage run --source='.' manage.py behave --tags=wip && coverage report -m"],
+        KEY_COMMAND: ["coverage run --source='.' manage.py behave --tags=wip --no-skipped && coverage report -m"],
         KEY_HELP_TEXT: "Launch behave test and coverage"
+    },
+    OPTION_BEHAVE_ALL: {
+        KEY_COMMAND: ["coverage run --source='.' manage.py behave && coverage report -m"],
+        KEY_HELP_TEXT: "Launch all behave test and coverage"
     },
 }
 
@@ -62,8 +67,10 @@ class Command(BaseCommand):
             call(ARGUMENTS[OPTION_LINT][KEY_COMMAND])
         if options[OPTION_VALIDATE]:
             call(ARGUMENTS[OPTION_VALIDATE][KEY_COMMAND], shell=True)
-        if options[OPTION_BEHAVE] or options[OPTION_VALIDATE]:
+        if options[OPTION_BEHAVE]:
             call(ARGUMENTS[OPTION_BEHAVE][KEY_COMMAND], shell=True)
+        if options[OPTION_BEHAVE_ALL] or options[OPTION_VALIDATE]:
+            call(ARGUMENTS[OPTION_BEHAVE_ALL][KEY_COMMAND], shell=True)
         if options[OPTION_QA] or options[OPTION_VALIDATE]:
             call(ARGUMENTS[OPTION_QA][KEY_COMMAND], shell=True)
         if options[OPTION_PREPARE]:

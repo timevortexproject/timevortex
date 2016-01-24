@@ -7,20 +7,19 @@
 import os
 import json
 import shlex
-import signal
 import subprocess
 from time import sleep
 from io import StringIO
 from django.conf import settings
-from behave import given, when, then
-from features.steps.test_utils import check_response_script, extract_from_log, stubs_change_api_configuration
-from features.steps.test_utils import TIMEVORTEX_LOG_FILE, TEST_METEAR_SITE_ID_2, DICT_METEAR_FAKE_NEWS_DATA
+from behave import given, then
+from features.steps.test_utils import stubs_change_api_configuration
+from features.steps.test_utils import TEST_METEAR_SITE_ID_2, DICT_METEAR_FAKE_NEWS_DATA
 from features.steps.test_utils import TEST_METEAR_LABEL_2, DICT_METEAR_FAKE_DATA, KEY_METEAR_FAKE_DATA_ELEMENTS
 from features.steps.test_utils import TEST_METEAR_LABEL, SETTINGS_BAD_METEAR_URL, SETTINGS_BAD_CONTENT_METEAR_URL
 from features.steps.test_utils import KEY_METEAR_FAKE_DATA_DATE, transform_metear_array_into_dict, TEST_METEAR_SITE_ID
 from features.steps.test_utils import counter_from_log, error_in_list, verify_json_message, KEY_METEAR_FAKE_DATA_OK
 from features.steps.test_utils import KEY_METEAR_FAKE_DATA_STATUS, assertEqual, reset_testing_environment
-from features.steps.test_utils import TIMEVORTEX_WEATHER_LOG_FILE, KEY_WEATHER_LOG_FILE
+from features.steps.test_utils import TIMEVORTEX_WEATHER_LOG_FILE
 from timevortex.models import Site, Variable
 from timevortex.utils.globals import LOGGER
 from weather.utils.globals import SETTINGS_METEAR_URL, SETTINGS_STUBS_NEW_METEAR_URL
@@ -73,40 +72,6 @@ def run_metear_script_populate(context):
     command = Command()
     command.out = out
     command.handle()
-
-
-@when("I run the metear script")
-def run_metear_script(context):
-    out = StringIO()
-    command = Command()
-    command.out = out
-    command.handle()
-    context.commands_response = [out.getvalue().strip()]
-    try:
-        os.killpg(context.stubs.pid, signal.SIGTERM)
-        sleep(1)
-    except AttributeError:
-        pass
-
-
-@then("I should see an error message '{error_type}' in the '{log_file}' log")
-def verify_error_message_on_log(context, error_type, log_file):
-    error = error_in_list(error_type)
-    try:
-        error = error % context.specific_error
-    except AttributeError:
-        pass
-    log_file_path = TIMEVORTEX_LOG_FILE
-    if log_file == KEY_WEATHER_LOG_FILE:
-        log_file_path = TIMEVORTEX_WEATHER_LOG_FILE
-    
-    extract_from_log(error, log_file_path, -2)
-
-
-@then("I should see an error message '{error_type}' on the screen")
-def verify_error_message_on_screen(context, error_type):
-    error = error_in_list(error_type, duplicate=True)
-    check_response_script(context.commands_response, error)
 
 
 @then("I should see '{data_type}' data update in DB for '{site_id}'")
