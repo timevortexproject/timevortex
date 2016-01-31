@@ -7,9 +7,10 @@
 # Install
 
 ## Prod
-    * pip install django requests python-dateutil pytz django-admin-tools psutil
+    * pip install django requests python-dateutil pytz django-admin-tools psutil pyserial==2.5
 
 ## Dev
+    * sudo apt-get install socat
     * pip install flake8 pylint django_nose behave_django pylint-django coverage
     * [BLOCKED] pip install clonedigger django-fluent-dashboard django-admin-tools-stats
 
@@ -59,6 +60,8 @@
 * TimeVortex
     * Create an email that send daily report
     * Create a backup tools
+        * cd /opt/timevortex/data/ && rsync -az liogen_home liogen@192.168.0.44:/home/liogen/workspace/timevortex/timevortex.data/backup
+        * cd /var/log && rsync -az timevortex liogen@192.168.0.44:/home/liogen/workspace/timevortex/timevortex.data/backup
     * Add daily rotation for log
     * Create commit, release, changelog, ... tools
     * Clean laptop folder

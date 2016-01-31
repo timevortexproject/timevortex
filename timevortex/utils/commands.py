@@ -50,6 +50,14 @@ class AbstractCommand(BaseCommand):
         self.out.write("%s\n" % error)
         self.logger.error(error)
 
+    def run(self, *args, **options):
+        pass
+
+    def handle(self, *args, **options):
+        self.logger.info("Command %s started", self.name)
+        self.run(*args, **options)
+        self.logger.info("Command %s stopped", self.name)
+
 
 class HTMLCrawlerCommand(AbstractCommand):
     """Class that let us define a generic workflow to retrieve

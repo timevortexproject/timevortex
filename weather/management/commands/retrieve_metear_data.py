@@ -19,7 +19,7 @@ from timevortex.utils.globals import KEY_DATE, KEY_DST_TIMEZONE, KEY_NON_DST_TIM
 from weather.utils.globals import ERROR_METEAR, KEY_METEAR_NO_SITE_ID, SETTINGS_METEAR_URL, SETTINGS_DEFAULT_METEAR_URL
 from weather.utils.globals import KEY_METEAR_BAD_URL, KEY_METEAR_PROBLEM_WS, KEY_METEAR_BAD_CONTENT
 from weather.utils.globals import SETTINGS_METEAR_START_DATE, SETTINGS_DEFAULT_METEAR_START_DATE
-from timevortex.models import Site, Variable
+from timevortex.models import Site, Variable, retrieve_sites_by_type
 
 LOGGER = logging.getLogger("weather")
 SLUG_METEAR_TEMPERATURE_CELSIUS = "metear_temperature_celsius"
@@ -137,15 +137,10 @@ class Command(AbstractCommand):
     help = "Retrieve METEAR data from weatherunderground website"
     out = sys.stdout
     name = "METEAR crawler"
+    logger = LOGGER
 
-    def handle(self, *args, **options):
-        self.set_logger(LOGGER)
-        self.logger.info("Command %s started", self.name)
-
-        try:
-            metear_sites = Site.objects.filter(site_type=Site.METEAR_TYPE)
-        except Site.DoesNotExist:
-            metear_sites = []
+    def run(self, *args, **options):
+        metear_sites = retrieve_sites_by_type(site_type=Site.METEAR_TYPE)
         if len(metear_sites) > 0:
             crawler = MyMETEARCrawler()
             crawler.set_logger(LOGGER)
@@ -154,6 +149,8 @@ class Command(AbstractCommand):
             bound_start_date = dateutil.parser.parse(settings_start_date).replace(tzinfo=pytz.UTC)
             bound_end_date = TODAY
             for site in metear_sites:
+                variable_start_date = bound_end_date
+                variable_end_date = bound_end_date
                 try:
                     variable = Variable.objects.get(site=site, slug=SLUG_METEAR_TEMPERATURE_CELSIUS)
                 except Variable.DoesNotExist:
@@ -161,21 +158,13 @@ class Command(AbstractCommand):
                 if variable is not None:
                     variable_start_date = variable.start_date
                     variable_end_date = variable.end_date
-                else:
-                    variable_start_date = bound_end_date
-                    variable_end_date = bound_end_date
                 while variable_end_date.date() <= bound_end_date.date():
                     crawler.reverse = False
-                    crawler.handle(
-                        site_id=site.slug,
-                        from_date=variable_end_date)
+                    crawler.handle(site_id=site.slug, from_date=variable_end_date)
                     variable_end_date += timedelta(days=1)
                 while variable_start_date.date() >= bound_start_date.date():
                     crawler.reverse = True
-                    crawler.handle(
-                        site_id=site.slug,
-                        from_date=variable_start_date)
+                    crawler.handle(site_id=site.slug, from_date=variable_start_date)
                     variable_start_date += timedelta(days=-1)
         else:
             self.send_error(ERROR_METEAR[KEY_METEAR_NO_SITE_ID])
-        self.logger.info("Command %s stopped", self.name)

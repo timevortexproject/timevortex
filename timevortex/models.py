@@ -15,9 +15,11 @@ class Site(models.Model):
     """
     NO_TYPE = '0'
     METEAR_TYPE = '1'
+    HOME_TYPE = '2'
     SITE_TYPE_CHOICES = (
         (NO_TYPE, 'Pas de type particulier'),
         (METEAR_TYPE, 'METEAR'),
+        (HOME_TYPE, 'HOME_TYPE'),
     )
 
     label = models.CharField(max_length=200)
@@ -39,7 +41,6 @@ class Site(models.Model):
 class Variable(models.Model):
     """Variables model.
     """
-
     site = models.ForeignKey(Site)
     label = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
@@ -68,3 +69,17 @@ class Variable(models.Model):
 
     def __str__(self):
         return self.label
+
+
+def retrieve_sites_by_type(site_type=Site.NO_TYPE):
+    try:
+        return Site.objects.filter(site_type=site_type)
+    except Site.DoesNotExist:
+        return []
+
+
+def retrieve_site_by_slug(slug):
+    try:
+        return Site.objects.filter(slug=slug)
+    except Site.DoesNotExist:
+        return None
