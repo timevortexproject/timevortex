@@ -71,15 +71,22 @@ class Variable(models.Model):
         return self.label
 
 
-def retrieve_sites_by_type(site_type=Site.NO_TYPE):
+def get_sites_by_type(site_type=Site.NO_TYPE):
     try:
         return Site.objects.filter(site_type=site_type)
     except Site.DoesNotExist:
         return []
 
 
-def retrieve_site_by_slug(slug):
+def get_site_by_slug(slug):
     try:
         return Site.objects.filter(slug=slug)
+    except Site.DoesNotExist:
+        return None
+
+
+def get_site_by_slug_and_type(slug, site_type):
+    try:
+        return Site.objects.filter(slug=slug, site_type=site_type)
     except Site.DoesNotExist:
         return None

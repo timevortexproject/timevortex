@@ -19,7 +19,7 @@ from timevortex.utils.globals import KEY_DATE, KEY_DST_TIMEZONE, KEY_NON_DST_TIM
 from weather.utils.globals import ERROR_METEAR, KEY_METEAR_NO_SITE_ID, SETTINGS_METEAR_URL, SETTINGS_DEFAULT_METEAR_URL
 from weather.utils.globals import KEY_METEAR_BAD_URL, KEY_METEAR_PROBLEM_WS, KEY_METEAR_BAD_CONTENT
 from weather.utils.globals import SETTINGS_METEAR_START_DATE, SETTINGS_DEFAULT_METEAR_START_DATE
-from timevortex.models import Site, Variable, retrieve_sites_by_type
+from timevortex.models import Site, Variable, get_sites_by_type
 
 LOGGER = logging.getLogger("weather")
 SLUG_METEAR_TEMPERATURE_CELSIUS = "metear_temperature_celsius"
@@ -140,7 +140,7 @@ class Command(AbstractCommand):
     logger = LOGGER
 
     def run(self, *args, **options):
-        metear_sites = retrieve_sites_by_type(site_type=Site.METEAR_TYPE)
+        metear_sites = get_sites_by_type(site_type=Site.METEAR_TYPE)
         if len(metear_sites) > 0:
             crawler = MyMETEARCrawler()
             crawler.set_logger(LOGGER)

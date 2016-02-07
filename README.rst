@@ -37,6 +37,8 @@
 
 * Documentation
     * Update documentation for this project
+    * Generate documentation from code
+    * Generate document from .rst file
 
 * Code quality
     * Clean coverage report
@@ -65,6 +67,7 @@
     * Add daily rotation for log
     * Create commit, release, changelog, ... tools
     * Clean laptop folder
+    * Avoid to access DB data from Sites.objects... or Variables.objects...
 
 * CurrentCost
     * Integrate currentcost module

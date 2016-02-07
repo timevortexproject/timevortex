@@ -8,13 +8,83 @@ import sys
 import serial
 import logging
 from time import sleep
+from xml.etree import ElementTree
 from energy.utils.globals import KEY_ENERGY, ERROR_CURRENTCOST, ERROR_CC_NO_MESSAGE, ERROR_CC_BAD_PORT
-from energy.utils.globals import TTY_CONNECTION_SUCCESS
+from energy.utils.globals import TTY_CONNECTION_SUCCESS, ERROR_CC_DISCONNECTED, ERROR_CC_INCORRECT_MESSAGE
+from energy.utils.globals import CURRENTCOST_UNICODE_ERROR, ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR
+from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS
 from timevortex.utils.commands import AbstractCommand
 # from timevortex.models import retrieve_site_by_slug
 
 LOGGER = logging.getLogger(KEY_ENERGY)
 BAUDS = 57600
+
+class ExceptionWithValue(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+
+class CCNoMessage(Exception):
+    pass
+
+
+class CCNoTmpr(ExceptionWithValue):
+    pass
+
+
+class CCNoWatts(ExceptionWithValue):
+    pass
+
+
+class CCIncorrectData(ExceptionWithValue):
+    pass
+
+
+def convert_cc_xml_to_dict(cc_xml):
+    """Analyse data from currentcost and return according TOPIC and MESSAGE.
+
+    :param data: XML string that contain data.
+    :type variable_id: str.
+
+    :returns:  str -- Topic of the message (error or success) and
+        Message containing error description or data sent by CC.
+
+    """
+    if len(cc_xml) == 0:
+        raise CCNoMessage
+ 
+    try:
+        cc_xml = cc_xml.decode("utf-8").replace("\n", "").replace("\r", "")
+        cc_xml_parsed = ElementTree.fromstring(cc_xml)
+    except UnicodeDecodeError:
+        raise CCIncorrectData(CURRENTCOST_UNICODE_ERROR)
+    except ElementTree.ParseError:
+        raise CCIncorrectData(cc_xml)
+
+    ch1_w = None
+    ch2_w = None
+    ch3_w = None
+    temperature = cc_xml_parsed.findtext("tmpr")
+    hist = cc_xml_parsed.findtext("hist")
+    if hist is None:
+        if temperature is None:
+            raise CCNoTmpr(cc_xml)
+        else:
+            temperature = float(temperature)
+            if ch1_w is None and ch2_w is None and ch3_w is None:
+                raise CCNoWatts(cc_xml)
+            if cc_xml_parsed.find("ch1") is not None:
+                ch1_w = float(cc_xml_parsed.find("ch1").findtext("watts"))
+            if cc_xml_parsed.find("ch2") is not None:
+                ch2_w = float(cc_xml_parsed.find("ch2").findtext("watts"))
+            if cc_xml_parsed.find("ch3") is not None:
+                ch3_w = float(cc_xml_parsed.find("ch3").findtext("watts"))
+    else:
+        hist = True
+
+    return ch1_w, ch2_w, ch3_w, temperature, hist
 
 
 class Command(AbstractCommand):
@@ -58,12 +128,8 @@ class Command(AbstractCommand):
                 # If we are connected to TTY port
                 if ser_connection is not None:
                     # We wait for a new message on this socket
-                    data = ser_connection.readline()
-                    # If we reach timeout
-                    if len(data) == 0:
-                        error = ERROR_CURRENTCOST[ERROR_CC_NO_MESSAGE] % (variable_id, self.site_id)
-                        self.send_error(error)
-                        continue
+                    cc_xml = ser_connection.readline()
+                    ch1_w, ch2_w, ch3_w, temperature, hist = convert_cc_xml_to_dict(cc_xml)
                     # data_date = datetime.utcnow().isoformat('T')
                     # data_dst_timezone = tzname[1]
                     # data_non_dst_timezone = tzname[0]
@@ -89,7 +155,20 @@ class Command(AbstractCommand):
                     #     messager.send(
                     #         TIMESERIES,
                     #         json.dumps(serie))
-            # If during this process, someone deactivate USB connection
+            except CCNoMessage:
+                error = ERROR_CURRENTCOST[ERROR_CC_NO_MESSAGE] % (variable_id, self.site_id)
+                self.send_error(error)
+            except CCIncorrectData as err:
+                error = ERROR_CURRENTCOST[ERROR_CC_INCORRECT_MESSAGE] % (variable_id, self.site_id, err.value)
+                self.send_error(error)
+            except CCNoTmpr as err:
+                error = ERROR_CURRENTCOST[ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR] % (
+                    variable_id, self.site_id, err.value)
+                self.send_error(error)
+            except CCNoWatts as err:
+                error = ERROR_CURRENTCOST[ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS] % (
+                    variable_id, self.site_id, err.value)
+                self.send_error(error)
             except (OSError, serial.serialutil.SerialException):
                 # If we are connected                    
                 if ser_connection is not None:
@@ -97,7 +176,7 @@ class Command(AbstractCommand):
                     ser_connection.close()
                     ser_connection = None
                     # And we log this error
-                    error = ERROR_CURRENTCOST[ERROR_CC_NO_MESSAGE] % (variable_id, self.site_id)
+                    error = ERROR_CURRENTCOST[ERROR_CC_DISCONNECTED] % (variable_id, self.site_id, tty_port)
                     self.send_error(error)
                 # Else
                 else:

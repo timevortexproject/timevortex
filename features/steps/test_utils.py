@@ -9,6 +9,7 @@ import json
 import shlex
 import shutil
 import signal
+import serial
 import requests
 import subprocess
 from time import sleep
@@ -17,12 +18,14 @@ from time import tzname
 from os.path import exists
 from threading import Thread
 from django.conf import settings
-from behave import when, then
+from behave import given, when, then
 from datetime import datetime, timedelta
+from timevortex.models import Site
 from timevortex.utils.globals import LOGGER
-from stubs.utils.globals import URL_STUBS_CHANGE_ROUTE_CONFIG
-from energy.utils.globals import KEY_CURRENTCOST, ERROR_CURRENTCOST, ERROR_CC_BAD_PORT, ERROR_CC_NO_MESSAGE
-from energy.utils.globals import ERROR_CC_DISCONNECTED
+from stubs.utils.globals import URL_STUBS_CHANGE_ROUTE_CONFIG, KEY_STUBS_OPEN_METEAR_API
+from energy.utils.globals import KEY_CURRENTCOST, ERROR_CC_BAD_PORT, ERROR_CC_DISCONNECTED, ERROR_CC_NO_MESSAGE
+from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE, ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR, ERROR_CURRENTCOST
+from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS
 from weather.management.commands.retrieve_metear_data import Command as MetearCommand
 from energy.management.commands.retrieve_currentcost_data import Command as CurrentCostCommand
 from weather.utils.globals import ERROR_METEAR, SETTINGS_STUBS_METEAR_URL, SETTINGS_METEAR_URL
@@ -31,14 +34,19 @@ from timevortex.utils.timeserieslogger import KEY_TSL_NO_NON_DST_TIMEZONE
 from timevortex.utils.timeserieslogger import KEY_TSL_NO_VALUE, KEY_TSL_NO_DATE, KEY_TSL_NO_DST_TIMEZONE
 from timevortex.utils.timeserieslogger import ERROR_TSL, KEY_TSL_BAD_JSON, KEY_TSL_NO_SITE_ID, KEY_TSL_NO_VARIABLE_ID
 from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE, KEY_DATE, KEY_DST_TIMEZONE
-from timevortex.utils.globals import KEY_NON_DST_TIMEZONE, KEY_ERROR
+from timevortex.utils.globals import KEY_NON_DST_TIMEZONE, KEY_ERROR, SYSTEM_SITE_ID
 from timevortex.utils.filestorage import SETTINGS_FILE_STORAGE_FOLDER, SETTINGS_DEFAULT_FILE_STORAGE_FOLDER
+from timevortex.utils.filestorage import FILE_STORAGE_SPACE
 # import subprocess
 # from subprocess import CalledProcessError
 # Common
 SOCAT = "socat"
 TIMEVORTEX_LOG_FILE = "/tmp/timevortex.log"
 DICT_JSON_REQUEST_HEADER = {'Content-type': 'application/json', 'Accept': '*/*'}
+STUBS_COMMAND = "python manage.py runserver 0.0.0.0:8000"
+KEY_LABEL = "label"
+KEY_SITE_TYPE = "site_type"
+WITH_STUBS = "with_stubs"
 # Weather
 TEST_METEAR_SITE_ID = "LFMN"
 TEST_METEAR_SITE_ID_2 = "LFBP"
@@ -58,6 +66,7 @@ DATE_METEAR_FAKE_DATA_TODAY = datetime.now().replace(hour=0, minute=0, second=0,
 # Energy
 TIMEVORTEX_CURRENTCOST_LOG_FILE = "/tmp/timevortex_energy.log"
 TEST_CC_SITE_ID = "test_site"
+TEST_CC_LABEL = "My home"
 TEST_CC_VARIABLE_ID = "test_variable"
 TEST_CC_VARIABLE_ID_WATTS = "TEST_watts"
 TEST_CC_VARIABLE_ID_KWH = "TEST_kwh"
@@ -66,6 +75,30 @@ TEST_CC_CORRECT_TTY_PORT = "/tmp/tty_currentcost"
 TEST_CC_CORRECT_TTY_PORT_WRITER = "/tmp/tty_currentcost_writer"
 TEST_CC_BAD_TTY_PORT = "/tmp/tty_bad"
 ERROR_UNDEFINED_ERROR_TYPE = "Undefined error_type %s"
+CURRENTCOST_MESSAGE = "<msg><src>CC128-v1.29</src><dsb>00786</dsb>\
+<time>00:31:36</time><tmpr>19.3</tmpr><sensor>0</sensor><id>00077</id>\
+<type>1</type><ch1><watts>00405</watts></ch1></msg>"
+CURRENTCOST_MESSAGE_2 = "<msg><src>CC128-v1.29</src><dsb>00786</dsb>\
+<time>00:31:36</time><tmpr>20.3</tmpr><sensor>0</sensor><id>00077</id>\
+<type>1</type><ch1><watts>00406</watts></ch1><ch2><watts>14405</watts>\
+</ch2><ch3><watts>10405</watts></ch3></msg>"
+CURRENTCOST_MESSAGE_3 = "<msg><src>CC128-v1.29</src><dsb>00786</dsb>\
+<time>00:31:36</time><tmpr>21.3</tmpr><sensor>0</sensor><id>00077</id>\
+<type>1</type><ch1><watts>00000</watts></ch1></msg>"
+WRONG_CURRENTCOST_MESSAGE = "<msg><src>ensor>0</sensor><id>00077</id>\
+<type>1</type><ch1><watts>00405</watts></ch1></msg>"
+INCORRECT_TMPR_CURRENTCOST_MESSAGE = "<msg><src>CC128-v1.29</src><dsb>00786</dsb>\
+<time>00:31:36</time><sensor>0</sensor><id>00077</id>\
+<type>1</type><ch1></ch1></msg>"
+INCORRECT_WATTS_CURRENTCOST_MESSAGE = "<msg><src>CC128-v1.29</src><dsb>\
+00786</dsb><tmpr>19.3</tmpr><time>00:31:36</time><sensor>0</sensor>\
+<id>00077</id><type>1</type></msg>"
+
+DICT_SITE = {
+    TEST_METEAR_SITE_ID: {KEY_LABEL: TEST_METEAR_LABEL, KEY_SITE_TYPE: Site.METEAR_TYPE, WITH_STUBS: True},
+    TEST_METEAR_SITE_ID_2: {KEY_LABEL: TEST_METEAR_LABEL_2, KEY_SITE_TYPE: Site.METEAR_TYPE, WITH_STUBS: True},
+    TEST_CC_SITE_ID: {KEY_LABEL: TEST_CC_LABEL, KEY_SITE_TYPE: Site.HOME_TYPE, WITH_STUBS: False},
+}
 
 DICT_METEAR_FAKE_DATA = [
     {
@@ -237,7 +270,7 @@ class SocatMessager(Thread):
 
         if self.message is not None:
             ser = serial.Serial(self.port)
-            ser.write("%s\n" % self.message)
+            ser.write(bytes("%s\n" % self.message, "utf-8"))
             sleep(1)
             ser.close()
         else:
@@ -389,15 +422,28 @@ def run_script(context, script_name, setting_type):
         command.out = out
         if setting_type in ERROR_CC_BAD_PORT:
             tty_port = TEST_CC_BAD_TTY_PORT
-            context.specific_error = (TEST_CC_VARIABLE_ID, TEST_CC_SITE_ID, tty_port, usb_retry)
+            context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, tty_port, usb_retry)
         elif setting_type in ERROR_CC_NO_MESSAGE:
             timeout = 1
-            context.specific_error = (TEST_CC_VARIABLE_ID, TEST_CC_SITE_ID)
+            context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id)
         elif setting_type in ERROR_CC_DISCONNECTED:
             context.thread = SocatMessager(context, tty_port)
             context.thread.start()
+            context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, tty_port)
+        elif setting_type in ERROR_CC_INCORRECT_MESSAGE:
+            context.thread = SocatMessager(context, tty_port, WRONG_CURRENTCOST_MESSAGE)
+            context.thread.start()
+            context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, WRONG_CURRENTCOST_MESSAGE)
+        elif setting_type in ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR:
+            context.thread = SocatMessager(context, tty_port, INCORRECT_TMPR_CURRENTCOST_MESSAGE)
+            context.thread.start()
+            context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, INCORRECT_TMPR_CURRENTCOST_MESSAGE)
+        elif setting_type in ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS:
+            context.thread = SocatMessager(context, tty_port, INCORRECT_WATTS_CURRENTCOST_MESSAGE)
+            context.thread.start()
+            context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, INCORRECT_WATTS_CURRENTCOST_MESSAGE)
         command.handle(
-            site_id=TEST_CC_SITE_ID,
+            site_id=context.site_id,
             variable_id=TEST_CC_VARIABLE_ID,
             tty_port=tty_port,
             timeout=timeout,
@@ -422,6 +468,7 @@ def run_script(context, script_name, setting_type):
 
     sleep(1)
 
+
 @then("I should see an error message '{error_type}' in the '{log_file}' log")
 def verify_error_message_on_log(context, error_type, log_file):
     error = error_in_list(error_type)
@@ -444,8 +491,35 @@ def verify_error_message_on_screen(context, error_type):
     try:
         error = error % context.specific_error
     except AttributeError:
-        pass 
+        pass
     check_response_script(context.commands_response, error)
+
+
+@then("I should see an error message '{error_type}' on '{tsv_file_type}' TSV file")
+def verify_error_message_on_system_tsv_file(context, error_type, tsv_file_type):
+    error = error_in_list(error_type)
+    try:
+        error = error % context.specific_error
+    except AttributeError:
+        pass
+    if SYSTEM_SITE_ID in tsv_file_type:
+        last_error = FILE_STORAGE_SPACE.get_last_error(tsv_file_type)
+    else:
+        last_error = FILE_STORAGE_SPACE.get_last_error(context.site_id)
+    assertEqual(error, last_error[KEY_VALUE])
+
+
+@given("I created a testing Site '{site_id}'")
+def create_testing_site(context, site_id):
+    LOGGER.debug("Start creation site")
+    reset_testing_environment()
+    Site.objects.create(slug=site_id, label=DICT_SITE[site_id][KEY_LABEL], site_type=DICT_SITE[site_id][KEY_SITE_TYPE])
+    context.site_id = site_id
+    if DICT_SITE[site_id][WITH_STUBS] is True:
+        commands = STUBS_COMMAND
+        context.stubs = subprocess.Popen(shlex.split(commands), stdout=subprocess.PIPE, preexec_fn=os.setsid)
+        sleep(1)
+        stubs_change_api_configuration({KEY_STUBS_OPEN_METEAR_API: True})
 
 
 # @given("I created according settings for '{script_name}' to test '{error_type}'")

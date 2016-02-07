@@ -3,29 +3,33 @@ Feature: Current Cost data collection
     I want to see my current cost information about my consumption,
     in order to reduce my energy consumption
 
-    @wip
+    @wipa
     Scenario Outline: 1.Problem with current cost connexion
+        Given I created a testing Site 'test_site'
         When I run the 'currentcost' script with '<setting_type>' settings
         Then I should see an error message '<setting_type>' in the 'currentcost' log
         And I should see an error message '<setting_type>' on the screen
+        And I should see an error message '<setting_type>' on 'error' TSV file
 
     Examples: 1.Problem with current cost connexion
-   | setting_type                  | 
-   | currentcost_bad_port          |
-   | currentcost_no_message        |
-   | currentcost_disconnected      |
-   | currentcost_incorrect_message |
+   | setting_type                                | 
+   | currentcost_bad_port                        |
+   | currentcost_no_message                      |
+   | currentcost_disconnected                    |
+   | currentcost_incorrect_message               |
+   | currentcost_incorrect_message_missing_tmpr  |
+   | currentcost_incorrect_message_missing_watts |
 
-    @wipa
-    Scenario Outline: 2.Nominal case instant consumption       
+
+    @wip
+    Scenario Outline: 2.Nominal case instant consumption
+        Given I created a testing Site 'test_site'  
         When I run the 'currentcost' script with '<setting_type>' settings
         Then I should see '<setting_type>' data update in DB for 'test_site'
         And I should see '<setting_type>' data update in TSV file for 'test_site'
 
     Examples: 2.Nominal case instant consumption
-   | setting_type                       | 
-   | incorrect_tmpr_timeseries_0        |
-   | incorrect_watts_timeseries_7       |
+   | setting_type                       |
    | instant_consumption_1_timeseries_0 |
    | instant_consumption_2_timeseries_7 |
    | instant_consumption_1_timeseries_3 |
