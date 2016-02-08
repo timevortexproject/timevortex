@@ -20,7 +20,7 @@ from threading import Thread
 from django.conf import settings
 from behave import given, when, then
 from datetime import datetime, timedelta
-from timevortex.models import Site
+from timevortex.models import Site, Variable
 from timevortex.utils.globals import LOGGER
 from stubs.utils.globals import URL_STUBS_CHANGE_ROUTE_CONFIG, KEY_STUBS_OPEN_METEAR_API
 from energy.utils.globals import KEY_CURRENTCOST, ERROR_CC_BAD_PORT, ERROR_CC_DISCONNECTED, ERROR_CC_NO_MESSAGE
@@ -63,43 +63,6 @@ KEY_METEAR_FAKE_DATA_DATE = "date"
 KEY_METEAR_FAKE_DATA_OK = "ok"
 KEY_METEAR_FAKE_DATA_KO = "ko"
 DATE_METEAR_FAKE_DATA_TODAY = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-# Energy
-TIMEVORTEX_CURRENTCOST_LOG_FILE = "/tmp/timevortex_energy.log"
-TEST_CC_SITE_ID = "test_site"
-TEST_CC_LABEL = "My home"
-TEST_CC_VARIABLE_ID = "test_variable"
-TEST_CC_VARIABLE_ID_WATTS = "TEST_watts"
-TEST_CC_VARIABLE_ID_KWH = "TEST_kwh"
-TEST_CC_VARIABLE_ID_TMPR = "TEST_tmpr"
-TEST_CC_CORRECT_TTY_PORT = "/tmp/tty_currentcost"
-TEST_CC_CORRECT_TTY_PORT_WRITER = "/tmp/tty_currentcost_writer"
-TEST_CC_BAD_TTY_PORT = "/tmp/tty_bad"
-ERROR_UNDEFINED_ERROR_TYPE = "Undefined error_type %s"
-CURRENTCOST_MESSAGE = "<msg><src>CC128-v1.29</src><dsb>00786</dsb>\
-<time>00:31:36</time><tmpr>19.3</tmpr><sensor>0</sensor><id>00077</id>\
-<type>1</type><ch1><watts>00405</watts></ch1></msg>"
-CURRENTCOST_MESSAGE_2 = "<msg><src>CC128-v1.29</src><dsb>00786</dsb>\
-<time>00:31:36</time><tmpr>20.3</tmpr><sensor>0</sensor><id>00077</id>\
-<type>1</type><ch1><watts>00406</watts></ch1><ch2><watts>14405</watts>\
-</ch2><ch3><watts>10405</watts></ch3></msg>"
-CURRENTCOST_MESSAGE_3 = "<msg><src>CC128-v1.29</src><dsb>00786</dsb>\
-<time>00:31:36</time><tmpr>21.3</tmpr><sensor>0</sensor><id>00077</id>\
-<type>1</type><ch1><watts>00000</watts></ch1></msg>"
-WRONG_CURRENTCOST_MESSAGE = "<msg><src>ensor>0</sensor><id>00077</id>\
-<type>1</type><ch1><watts>00405</watts></ch1></msg>"
-INCORRECT_TMPR_CURRENTCOST_MESSAGE = "<msg><src>CC128-v1.29</src><dsb>00786</dsb>\
-<time>00:31:36</time><sensor>0</sensor><id>00077</id>\
-<type>1</type><ch1></ch1></msg>"
-INCORRECT_WATTS_CURRENTCOST_MESSAGE = "<msg><src>CC128-v1.29</src><dsb>\
-00786</dsb><tmpr>19.3</tmpr><time>00:31:36</time><sensor>0</sensor>\
-<id>00077</id><type>1</type></msg>"
-
-DICT_SITE = {
-    TEST_METEAR_SITE_ID: {KEY_LABEL: TEST_METEAR_LABEL, KEY_SITE_TYPE: Site.METEAR_TYPE, WITH_STUBS: True},
-    TEST_METEAR_SITE_ID_2: {KEY_LABEL: TEST_METEAR_LABEL_2, KEY_SITE_TYPE: Site.METEAR_TYPE, WITH_STUBS: True},
-    TEST_CC_SITE_ID: {KEY_LABEL: TEST_CC_LABEL, KEY_SITE_TYPE: Site.HOME_TYPE, WITH_STUBS: False},
-}
-
 DICT_METEAR_FAKE_DATA = [
     {
         KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY - timedelta(days=2, hours=8)).isoformat(" "),
@@ -150,7 +113,61 @@ DICT_METEAR_FAKE_NEWS_DATA = [
         KEY_METEAR_FAKE_DATA_ELEMENTS: [
             "3:00 AM", "18.0", "12.0", "45", "1023", "12.0", "SSE", "8.5", "-", "N/A", "", "Bien ensoleillé", "150"]
     }]
-
+# Energy
+TIMEVORTEX_CURRENTCOST_LOG_FILE = "/tmp/timevortex_energy.log"
+TEST_CC_SITE_ID = "test_site"
+TEST_CC_LABEL = "My home"
+TEST_CC_VARIABLE_ID = "test_variable"
+TEST_CC_VARIABLE_ID_WATTS_CH1 = "TEST_watts_ch1"
+TEST_CC_VARIABLE_ID_KWH_CH1 = "TEST_kwh_ch1"
+TEST_CC_VARIABLE_ID_WATTS_CH2 = "TEST_watts_ch2"
+TEST_CC_VARIABLE_ID_KWH_CH2 = "TEST_kwh_ch2"
+TEST_CC_VARIABLE_ID_WATTS_CH3 = "TEST_watts_ch3"
+TEST_CC_VARIABLE_ID_KWH_CH3 = "TEST_kwh_ch3"
+TEST_CC_VARIABLE_ID_TMPR = "TEST_tmpr"
+TEST_CC_CORRECT_TTY_PORT = "/tmp/tty_currentcost"
+TEST_CC_CORRECT_TTY_PORT_WRITER = "/tmp/tty_currentcost_writer"
+TEST_CC_BAD_TTY_PORT = "/tmp/tty_bad"
+ERROR_UNDEFINED_ERROR_TYPE = "Undefined error_type %s"
+CURRENTCOST_MESSAGE = "<msg><src>CC128-v1.29</src><dsb>00786</dsb>\
+<time>00:31:36</time><tmpr>19.3</tmpr><sensor>0</sensor><id>00077</id>\
+<type>1</type><ch1><watts>00405</watts></ch1></msg>"
+CURRENTCOST_MESSAGE_2 = "<msg><src>CC128-v1.29</src><dsb>00786</dsb>\
+<time>00:31:36</time><tmpr>20.3</tmpr><sensor>0</sensor><id>00077</id>\
+<type>1</type><ch1><watts>00406</watts></ch1><ch2><watts>14405</watts>\
+</ch2><ch3><watts>10405</watts></ch3></msg>"
+CURRENTCOST_MESSAGE_3 = "<msg><src>CC128-v1.29</src><dsb>00786</dsb>\
+<time>00:31:36</time><tmpr>21.3</tmpr><sensor>0</sensor><id>00077</id>\
+<type>1</type><ch1><watts>00000</watts></ch1></msg>"
+WRONG_CURRENTCOST_MESSAGE = "<msg><src>ensor>0</sensor><id>00077</id>\
+<type>1</type><ch1><watts>00405</watts></ch1></msg>"
+INCORRECT_TMPR_CURRENTCOST_MESSAGE = "<msg><src>CC128-v1.29</src><dsb>00786</dsb>\
+<time>00:31:36</time><sensor>0</sensor><id>00077</id>\
+<type>1</type><ch1></ch1></msg>"
+INCORRECT_WATTS_CURRENTCOST_MESSAGE = "<msg><src>CC128-v1.29</src><dsb>\
+00786</dsb><tmpr>19.3</tmpr><time>00:31:36</time><sensor>0</sensor>\
+<id>00077</id><type>1</type></msg>"
+CC_INSTANT_CONSO_1_TS_0 = "instant_consumption_1_timeseries_0"
+CC_INSTANT_CONSO_2_TS_7 = "instant_consumption_2_timeseries_7"
+CC_INSTANT_CONSO_1_TS_3 = "instant_consumption_1_timeseries_3"
+CC_INSTANT_CONSO_2_TS_3 = "instant_consumption_2_timeseries_3"
+CC_INSTANT_CONSO_2_TS_0 = "instant_consumption_2_timeseries_0"
+CC_INSTANT_CONSO_3_TS_3 = "instant_consumption_3_timeseries_3"
+ARRAY_CC_VARIABLE = [
+    TEST_CC_VARIABLE_ID_WATTS_CH1,
+    TEST_CC_VARIABLE_ID_KWH_CH1,
+    TEST_CC_VARIABLE_ID_WATTS_CH2,
+    TEST_CC_VARIABLE_ID_KWH_CH2,
+    TEST_CC_VARIABLE_ID_WATTS_CH3,
+    TEST_CC_VARIABLE_ID_KWH_CH3,
+    TEST_CC_VARIABLE_ID_TMPR,
+]
+# Common
+DICT_SITE = {
+    TEST_METEAR_SITE_ID: {KEY_LABEL: TEST_METEAR_LABEL, KEY_SITE_TYPE: Site.METEAR_TYPE, WITH_STUBS: True},
+    TEST_METEAR_SITE_ID_2: {KEY_LABEL: TEST_METEAR_LABEL_2, KEY_SITE_TYPE: Site.METEAR_TYPE, WITH_STUBS: True},
+    TEST_CC_SITE_ID: {KEY_LABEL: TEST_CC_LABEL, KEY_SITE_TYPE: Site.HOME_TYPE, WITH_STUBS: False},
+}
 DICT_TSL_ERROR_DATA = {
     KEY_TSL_BAD_JSON: None,
     KEY_TSL_NO_SITE_ID: {
@@ -205,7 +222,7 @@ DICT_TSL_ERROR_DATA = {
     },
     "ts_first_watts": {
         KEY_SITE_ID: TEST_CC_SITE_ID,
-        KEY_VARIABLE_ID: TEST_CC_VARIABLE_ID_WATTS,
+        KEY_VARIABLE_ID: TEST_CC_VARIABLE_ID_WATTS_CH2,
         KEY_DATE: "2015-12-27T22:00:00.000000+00:00",
         KEY_VALUE: "350",
         KEY_DST_TIMEZONE: tzname[1],
@@ -213,7 +230,7 @@ DICT_TSL_ERROR_DATA = {
     },
     "ts_first_kwh": {
         KEY_SITE_ID: TEST_CC_SITE_ID,
-        KEY_VARIABLE_ID: TEST_CC_VARIABLE_ID_KWH,
+        KEY_VARIABLE_ID: TEST_CC_VARIABLE_ID_KWH_CH2,
         KEY_DATE: "2015-12-27T22:00:00.000000+00:00",
         KEY_VALUE: "0.00254",
         KEY_DST_TIMEZONE: tzname[1],
@@ -229,7 +246,7 @@ DICT_TSL_ERROR_DATA = {
     },
     "ts_second_watts": {
         KEY_SITE_ID: TEST_CC_SITE_ID,
-        KEY_VARIABLE_ID: TEST_CC_VARIABLE_ID_WATTS,
+        KEY_VARIABLE_ID: TEST_CC_VARIABLE_ID_WATTS_CH2,
         KEY_DATE: "2015-12-28T22:00:00.000000+00:00",
         KEY_VALUE: "2458",
         KEY_DST_TIMEZONE: tzname[1],
@@ -237,7 +254,7 @@ DICT_TSL_ERROR_DATA = {
     },
     "ts_second_kwh": {
         KEY_SITE_ID: TEST_CC_SITE_ID,
-        KEY_VARIABLE_ID: TEST_CC_VARIABLE_ID_KWH,
+        KEY_VARIABLE_ID: TEST_CC_VARIABLE_ID_KWH_CH2,
         KEY_DATE: "2015-12-28T22:00:00.000000+00:00",
         KEY_VALUE: "1.02356",
         KEY_DST_TIMEZONE: tzname[1],
@@ -252,6 +269,7 @@ DICT_TSL_ERROR_DATA = {
         KEY_NON_DST_TIMEZONE: tzname[0],
     },
 }
+
 
 
 class SocatMessager(Thread):
@@ -405,6 +423,19 @@ def check_response_script(commands_response, error):
         assertEqual(error, cmdr)
 
 
+@given("I created a testing Site '{site_id}'")
+def create_testing_site(context, site_id):
+    LOGGER.debug("Start creation site")
+    reset_testing_environment()
+    Site.objects.create(slug=site_id, label=DICT_SITE[site_id][KEY_LABEL], site_type=DICT_SITE[site_id][KEY_SITE_TYPE])
+    context.site_id = site_id
+    if DICT_SITE[site_id][WITH_STUBS] is True:
+        commands = STUBS_COMMAND
+        context.stubs = subprocess.Popen(shlex.split(commands), stdout=subprocess.PIPE, preexec_fn=os.setsid)
+        sleep(1)
+        stubs_change_api_configuration({KEY_STUBS_OPEN_METEAR_API: True})
+
+
 @when("I run the '{script_name}' script with '{setting_type}' settings")
 def run_script(context, script_name, setting_type):
     out = StringIO()
@@ -418,6 +449,9 @@ def run_script(context, script_name, setting_type):
         tty_port = TEST_CC_CORRECT_TTY_PORT
         timeout = 10
         usb_retry = 1
+        ch1 = None
+        ch2 = None
+        ch3 = None
         command = CurrentCostCommand()
         command.out = out
         if setting_type in ERROR_CC_BAD_PORT:
@@ -442,13 +476,25 @@ def run_script(context, script_name, setting_type):
             context.thread = SocatMessager(context, tty_port, INCORRECT_WATTS_CURRENTCOST_MESSAGE)
             context.thread.start()
             context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, INCORRECT_WATTS_CURRENTCOST_MESSAGE)
+        elif setting_type in [CC_INSTANT_CONSO_1_TS_0, CC_INSTANT_CONSO_1_TS_3]:
+            context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE)
+            context.thread.start()
+        elif setting_type in [CC_INSTANT_CONSO_2_TS_7, CC_INSTANT_CONSO_2_TS_3, CC_INSTANT_CONSO_2_TS_0]:
+            context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE_2)
+            context.thread.start()
+        elif setting_type in CC_INSTANT_CONSO_3_TS_3:
+            context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE_3)
+            context.thread.start()
         command.handle(
             site_id=context.site_id,
             variable_id=TEST_CC_VARIABLE_ID,
             tty_port=tty_port,
             timeout=timeout,
             usb_retry=usb_retry,
-            break_loop=True)
+            break_loop=True,
+            ch1=ch1,
+            ch2=ch2,
+            ch3=ch3,)
     context.commands_response = [out.getvalue().strip()]
 
     try:
@@ -482,6 +528,13 @@ def verify_error_message_on_log(context, error_type, log_file):
     elif log_file == KEY_CURRENTCOST:
         log_file_path = TIMEVORTEX_CURRENTCOST_LOG_FILE
 
+    if error_type in [CC_INSTANT_CONSO_1_TS_0, CC_INSTANT_CONSO_1_TS_3]:
+        error = CURRENTCOST_MESSAGE
+    elif error_type in [CC_INSTANT_CONSO_2_TS_7, CC_INSTANT_CONSO_2_TS_3, CC_INSTANT_CONSO_2_TS_0]:
+        error = CURRENTCOST_MESSAGE_2
+    elif error_type in CC_INSTANT_CONSO_3_TS_3:
+        error = CURRENTCOST_MESSAGE_3
+
     extract_from_log(error, log_file_path, -2)
 
 
@@ -509,17 +562,83 @@ def verify_error_message_on_system_tsv_file(context, error_type, tsv_file_type):
     assertEqual(error, last_error[KEY_VALUE])
 
 
-@given("I created a testing Site '{site_id}'")
-def create_testing_site(context, site_id):
-    LOGGER.debug("Start creation site")
-    reset_testing_environment()
-    Site.objects.create(slug=site_id, label=DICT_SITE[site_id][KEY_LABEL], site_type=DICT_SITE[site_id][KEY_SITE_TYPE])
-    context.site_id = site_id
-    if DICT_SITE[site_id][WITH_STUBS] is True:
-        commands = STUBS_COMMAND
-        context.stubs = subprocess.Popen(shlex.split(commands), stdout=subprocess.PIPE, preexec_fn=os.setsid)
-        sleep(1)
-        stubs_change_api_configuration({KEY_STUBS_OPEN_METEAR_API: True})
+@then("I should see '{data_type}' data update in DB for '{site_id}'")
+def verify_data_update_db(context, data_type, site_id):
+    if data_type in ["new", "historical"]:
+        start_array_index = 0
+        end_array_index = -2
+        site = Site.objects.get(slug=site_id)
+        fixtures = DICT_METEAR_FAKE_DATA
+        if data_type in "new":
+            counter_from_log("GET", 1, TIMEVORTEX_WEATHER_LOG_FILE, -3)
+            counter_from_log("GET", 0, TIMEVORTEX_WEATHER_LOG_FILE, -4)
+            fixtures = DICT_METEAR_FAKE_NEWS_DATA
+        variables = Variable.objects.filter(site=site)
+        expected_variables_len = len(fixtures[start_array_index][KEY_METEAR_FAKE_DATA_ELEMENTS]) - 1
+        expected_start_date = "%s+00:00" % fixtures[start_array_index][KEY_METEAR_FAKE_DATA_DATE]
+        expected_end_date = "%s+00:00" % fixtures[end_array_index][KEY_METEAR_FAKE_DATA_DATE]
+        expected_start_value = transform_metear_array_into_dict(
+            fixtures[start_array_index][KEY_METEAR_FAKE_DATA_ELEMENTS])
+        expected_end_value = transform_metear_array_into_dict(
+            fixtures[end_array_index][KEY_METEAR_FAKE_DATA_ELEMENTS])
+        assertEqual(len(variables), expected_variables_len)
+        for variable in variables:
+            assertEqual(variable.start_date.isoformat(" "), expected_start_date)
+            assertEqual(variable.end_date.isoformat(" "), expected_end_date)
+            assertEqual(variable.start_value, expected_start_value[variable.slug])
+            assertEqual(variable.end_value, expected_end_value[variable.slug])
+    elif data_type in CC_INSTANT_CONSO_1_TS_0:
+        for variable_id in ARRAY_CC_VARIABLE:
+            try:
+                Variable.objects.get(slug=variable_id)
+                assertEqual(True, False)
+            except Variable.DoesNotExist:
+                pass
+    elif data_type in CC_INSTANT_CONSO_2_TS_7:
+        assertEqual(True, False)
+    elif data_type in CC_INSTANT_CONSO_1_TS_3:
+        assertEqual(True, False)
+    elif data_type in CC_INSTANT_CONSO_2_TS_3:
+        assertEqual(True, False)
+    elif data_type in CC_INSTANT_CONSO_2_TS_0:
+        assertEqual(True, False)
+    elif data_type in CC_INSTANT_CONSO_3_TS_3:
+        assertEqual(True, False)
+
+
+@then("I should see '{data_type}' data update in TSV file for '{site_id}'")
+def verify_data_update_tsv_file(context, data_type, site_id):
+    if data_type in CC_INSTANT_CONSO_1_TS_0:
+        for variable_id in ARRAY_CC_VARIABLE:
+            last_series = FILE_STORAGE_SPACE.get_last_series(TEST_CC_SITE_ID, variable_id)
+            assertEqual(last_series, None)
+    else:
+        try:
+            expected_message = json.loads(context.specific_error)
+            site_id = expected_message[KEY_SITE_ID]
+            variable_id = expected_message[KEY_VARIABLE_ID]
+            last_series = FILE_STORAGE_SPACE.get_last_series(site_id, variable_id)
+            verify_json_message(last_series, expected_message)
+            return
+        except AttributeError:
+            fixtures = DICT_METEAR_FAKE_DATA
+            if data_type in "new":
+                fixtures = DICT_METEAR_FAKE_NEWS_DATA
+            fixtures_data = {}
+            folder_data = {}
+            for fix in fixtures:
+                if fix[KEY_METEAR_FAKE_DATA_STATUS] == KEY_METEAR_FAKE_DATA_OK:
+                    variables = transform_metear_array_into_dict(fix[KEY_METEAR_FAKE_DATA_ELEMENTS])
+                    for key in variables:
+                        if key not in fixtures_data:
+                            fixtures_data[key] = {}
+                            folder_data[key] = FILE_STORAGE_SPACE.get_series(site_id, key)
+                        fixtures_data[key][fix[KEY_METEAR_FAKE_DATA_DATE]] = variables[key]
+
+            for variable in fixtures_data:
+                for date in fixtures_data[variable]:
+                    iso_date = "%s+00:00" % date.replace(" ", "T")
+                    assertEqual(fixtures_data[variable][date], folder_data[variable][iso_date])
 
 
 # @given("I created according settings for '{script_name}' to test '{error_type}'")

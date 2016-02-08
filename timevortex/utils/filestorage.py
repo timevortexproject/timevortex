@@ -126,9 +126,12 @@ class FileStorage(object):
                         LOGGER.error("Not right file")
 
             last_filename = "%s/%s" % (site_folder, last_filename)
-            with open(last_filename, "rb") as f:
-                for last in f:
-                    pass
+            try:
+                with open(last_filename, "rb") as f:
+                    for last in f:
+                        pass
+            except IsADirectoryError:
+                return None
 
             LOGGER.debug(last)
             last = last.decode("utf-8").replace("\n", "")

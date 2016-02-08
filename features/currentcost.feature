@@ -25,7 +25,8 @@ Feature: Current Cost data collection
     Scenario Outline: 2.Nominal case instant consumption
         Given I created a testing Site 'test_site'  
         When I run the 'currentcost' script with '<setting_type>' settings
-        Then I should see '<setting_type>' data update in DB for 'test_site'
+        Then I should see an error message '<setting_type>' in the 'currentcost' log
+        And I should see '<setting_type>' data update in DB for 'test_site'
         And I should see '<setting_type>' data update in TSV file for 'test_site'
 
     Examples: 2.Nominal case instant consumption

@@ -46,6 +46,7 @@
     * Integrate code into github
     * Integrate code with travis
     * Integrate a profiler for development
+    * Fix behave test to organise metear stuff in metear.py, energy stuff in currentcost.py, common stuff in test_utils
 
 * Deployment
     * Simplify deployment

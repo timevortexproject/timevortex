@@ -34,6 +34,10 @@ class AbstractCommand(BaseCommand):
         except AttributeError:
             self.logger.error(ERROR_TIMESERIES_NOT_DEFINED)
 
+    def log_error(self, error):
+        self.out.write("%s\n" % error)
+        self.logger.error(error)
+
     def send_error(self, error):
         try:
             error_message = json.dumps({
@@ -47,8 +51,7 @@ class AbstractCommand(BaseCommand):
             SIGNAL_TIMESERIES.send(sender=self.__class__, timeseries=error_message)
         except AttributeError:
             pass
-        self.out.write("%s\n" % error)
-        self.logger.error(error)
+        self.log_error(error)
 
     def run(self, *args, **options):
         pass

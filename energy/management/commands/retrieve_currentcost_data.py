@@ -19,9 +19,11 @@ from timevortex.utils.commands import AbstractCommand
 LOGGER = logging.getLogger(KEY_ENERGY)
 BAUDS = 57600
 
+
 class ExceptionWithValue(Exception):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
 
@@ -54,7 +56,7 @@ def convert_cc_xml_to_dict(cc_xml):
     """
     if len(cc_xml) == 0:
         raise CCNoMessage
- 
+
     try:
         cc_xml = cc_xml.decode("utf-8").replace("\n", "").replace("\r", "")
         cc_xml_parsed = ElementTree.fromstring(cc_xml)
@@ -73,18 +75,18 @@ def convert_cc_xml_to_dict(cc_xml):
             raise CCNoTmpr(cc_xml)
         else:
             temperature = float(temperature)
-            if ch1_w is None and ch2_w is None and ch3_w is None:
-                raise CCNoWatts(cc_xml)
             if cc_xml_parsed.find("ch1") is not None:
                 ch1_w = float(cc_xml_parsed.find("ch1").findtext("watts"))
             if cc_xml_parsed.find("ch2") is not None:
                 ch2_w = float(cc_xml_parsed.find("ch2").findtext("watts"))
             if cc_xml_parsed.find("ch3") is not None:
                 ch3_w = float(cc_xml_parsed.find("ch3").findtext("watts"))
+            if ch1_w is None and ch2_w is None and ch3_w is None:
+                raise CCNoWatts(cc_xml)
     else:
         hist = True
 
-    return ch1_w, ch2_w, ch3_w, temperature, hist
+    return cc_xml, ch1_w, ch2_w, ch3_w, temperature, hist
 
 
 class Command(AbstractCommand):
@@ -107,6 +109,9 @@ class Command(AbstractCommand):
             '--usb_retry', action='store', dest="usb_retry", default=5, type=int, help='Define usb_retry for this cmd')
         parser.add_argument(
             '--break_loop', action='store_true', dest="break_loop", default=False, help='Break the infinite loop')
+        parser.add_argument('--ch1', action='store', dest="ch1", default=None, type=str, help='Affect name to ch1')
+        parser.add_argument('--ch2', action='store', dest="ch2", default=None, type=str, help='Affect name to ch2')
+        parser.add_argument('--ch3', action='store', dest="ch3", default=None, type=str, help='Affect name to ch3')
 
     def run(self, *args, **options):
         self.site_id = options["site_id"]
@@ -115,6 +120,9 @@ class Command(AbstractCommand):
         timeout = options["timeout"]
         usb_retry = options["usb_retry"]
         break_loop = options["break_loop"]
+        ch1 = options["ch1"]
+        ch2 = options["ch2"]
+        ch3 = options["ch3"]
         ser_connection = None
         infinite_loop = True
         while infinite_loop:
@@ -129,7 +137,8 @@ class Command(AbstractCommand):
                 if ser_connection is not None:
                     # We wait for a new message on this socket
                     cc_xml = ser_connection.readline()
-                    ch1_w, ch2_w, ch3_w, temperature, hist = convert_cc_xml_to_dict(cc_xml)
+                    cc_xml, ch1_w, ch2_w, ch3_w, temperature, hist = convert_cc_xml_to_dict(cc_xml)
+                    self.log_error(cc_xml)
                     # data_date = datetime.utcnow().isoformat('T')
                     # data_dst_timezone = tzname[1]
                     # data_non_dst_timezone = tzname[0]
@@ -170,7 +179,7 @@ class Command(AbstractCommand):
                     variable_id, self.site_id, err.value)
                 self.send_error(error)
             except (OSError, serial.serialutil.SerialException):
-                # If we are connected                    
+                # if we are connected
                 if ser_connection is not None:
                     # We reinit serial connection
                     ser_connection.close()
@@ -178,9 +187,9 @@ class Command(AbstractCommand):
                     # And we log this error
                     error = ERROR_CURRENTCOST[ERROR_CC_DISCONNECTED] % (variable_id, self.site_id, tty_port)
                     self.send_error(error)
-                # Else
+                # Else
                 else:
-                    # We send this error
+                    # We send this error
                     error = ERROR_CURRENTCOST[ERROR_CC_BAD_PORT] % (variable_id, self.site_id, tty_port, usb_retry)
                     self.send_error(error)
                     sleep(usb_retry)
