@@ -9,12 +9,14 @@ import serial
 import logging
 from time import sleep
 from xml.etree import ElementTree
+from django.utils import timezone
 from energy.utils.globals import KEY_ENERGY, ERROR_CURRENTCOST, ERROR_CC_NO_MESSAGE, ERROR_CC_BAD_PORT
 from energy.utils.globals import TTY_CONNECTION_SUCCESS, ERROR_CC_DISCONNECTED, ERROR_CC_INCORRECT_MESSAGE
 from energy.utils.globals import CURRENTCOST_UNICODE_ERROR, ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS
 from timevortex.utils.commands import AbstractCommand
-# from timevortex.models import retrieve_site_by_slug
+from timevortex.utils.globals import timeseries_json
+from timevortex.models import get_site_by_slug, create_site, Site, update_or_create_variable
 
 LOGGER = logging.getLogger(KEY_ENERGY)
 BAUDS = 57600
@@ -110,8 +112,12 @@ class Command(AbstractCommand):
         parser.add_argument(
             '--break_loop', action='store_true', dest="break_loop", default=False, help='Break the infinite loop')
         parser.add_argument('--ch1', action='store', dest="ch1", default=None, type=str, help='Affect name to ch1')
+        parser.add_argument('--ch1_kwh', action='store', dest="ch1_kwh", default=None, type=str, help='Affect name to ch1_kwh')
         parser.add_argument('--ch2', action='store', dest="ch2", default=None, type=str, help='Affect name to ch2')
+        parser.add_argument('--ch2_kwh', action='store', dest="ch2_kwh", default=None, type=str, help='Affect name to ch2_kwh')
         parser.add_argument('--ch3', action='store', dest="ch3", default=None, type=str, help='Affect name to ch3')
+        parser.add_argument('--ch3_kwh', action='store', dest="ch3_kwh", default=None, type=str, help='Affect name to ch3_kwh')
+        parser.add_argument('--tmpr', action='store', dest="tmpr", default=None, type=str, help='Affect name to tmpr')
 
     def run(self, *args, **options):
         self.site_id = options["site_id"]
@@ -123,6 +129,10 @@ class Command(AbstractCommand):
         ch1 = options["ch1"]
         ch2 = options["ch2"]
         ch3 = options["ch3"]
+        ch1_kwh = options["ch1_kwh"]
+        ch2_kwh = options["ch2_kwh"]
+        ch3_kwh = options["ch3_kwh"]
+        tmpr = options["tmpr"]
         ser_connection = None
         infinite_loop = True
         while infinite_loop:
@@ -137,11 +147,48 @@ class Command(AbstractCommand):
                 if ser_connection is not None:
                     # We wait for a new message on this socket
                     cc_xml = ser_connection.readline()
+                    date_readline = timezone.now()
+                    # We get a clean xml and channel values
                     cc_xml, ch1_w, ch2_w, ch3_w, temperature, hist = convert_cc_xml_to_dict(cc_xml)
-                    self.log_error(cc_xml)
-                    # data_date = datetime.utcnow().isoformat('T')
-                    # data_dst_timezone = tzname[1]
-                    # data_non_dst_timezone = tzname[0]
+                    # We log current xml message for hard recovery
+                    self.log_error(timeseries_json(self.site_id, "cc_xml", cc_xml, date_readline.isoformat()))
+                    # For each channel, we update value in DB and send timeseries signal
+                    #
+                    # Todo: compute kwh, log history
+                    #
+                    site = get_site_by_slug(self.site_id)
+                    if site is None:
+                        site = create_site(slug=self.site_id, site_type=Site.HOME_TYPE)
+                    if ch1 is not None and ch1_w is not None:
+                        variable_ch1 = update_or_create_variable(site=site, slug=ch1, date=date_readline, value=ch1_w)
+                        self.send_timeseries(timeseries_json(self.site_id, ch1, ch1_w, date_readline.isoformat()))
+                        if ch1_kwh:
+                            ch1_kwh_value = "0.0"
+                            update_or_create_variable(site=site, slug=ch1_kwh, date=date_readline, value=ch1_kwh_value)
+                            self.send_timeseries(
+                                timeseries_json(self.site_id, ch1_kwh, ch1_kwh_value, date_readline.isoformat()))
+                    if ch2 is not None and ch2_w is not None:
+                        variable_ch2 = update_or_create_variable(site=site, slug=ch2, date=date_readline, value=ch2_w)
+                        self.send_timeseries(timeseries_json(self.site_id, ch2, ch2_w, date_readline.isoformat()))
+                        if ch2_kwh:
+                            ch2_kwh_value = "0.0"
+                            update_or_create_variable(site=site, slug=ch2_kwh, date=date_readline, value=ch2_kwh_value)
+                            self.send_timeseries(
+                                timeseries_json(self.site_id, ch2_kwh, ch2_kwh_value, date_readline.isoformat()))
+                    if ch3 is not None and ch3_w is not None:
+                        variable_ch3 = update_or_create_variable(site=site, slug=ch3, date=date_readline, value=ch3_w)
+                        self.send_timeseries(timeseries_json(self.site_id, ch3, ch3_w, date_readline.isoformat()))
+                        if ch3_kwh:
+                            ch3_kwh_value = "0.0"
+                            update_or_create_variable(site=site, slug=ch3_kwh, date=date_readline, value=ch3_kwh_value)
+                            self.send_timeseries(
+                                timeseries_json(self.site_id, ch3_kwh, ch3_kwh_value, date_readline.isoformat()))
+                    if tmpr is not None and temperature is not None:
+                        update_or_create_variable(site=site, slug=tmpr, date=date_readline, value=temperature)
+                        self.send_timeseries(
+                            timeseries_json(self.site_id, tmpr, temperature, date_readline.isoformat()))
+
+                    
                     # # We parse the result
                     # topic, message = data_validator(data, variable_id, site_id)
                     # message = {

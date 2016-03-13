@@ -4,7 +4,7 @@
 
 from django.db import models
 from django.core.exceptions import ValidationError
-# from timevortex.utils.globals import LOGGER
+from timevortex.utils.globals import LOGGER
 
 EXCEPTION_VARIABLES_PAST_DATE = "Date are in the past"
 APP_NAME = "timevortex"
@@ -52,6 +52,13 @@ class Variable(models.Model):
     def update_value(self, date, value):
         """Update value
         """
+        LOGGER.info(self.slug)
+        LOGGER.info(self.start_date)
+        LOGGER.info(self.start_value)
+        LOGGER.info(self.end_date)
+        LOGGER.info(self.end_value)
+        LOGGER.info(date)
+        LOGGER.info(value)
         if date > self.end_date:
             self.end_date = date
             self.end_value = value
@@ -80,13 +87,38 @@ def get_sites_by_type(site_type=Site.NO_TYPE):
 
 def get_site_by_slug(slug):
     try:
-        return Site.objects.filter(slug=slug)
+        return Site.objects.get(slug=slug)
     except Site.DoesNotExist:
         return None
 
 
 def get_site_by_slug_and_type(slug, site_type):
     try:
-        return Site.objects.filter(slug=slug, site_type=site_type)
+        return Site.objects.get(slug=slug, site_type=site_type)
     except Site.DoesNotExist:
         return None
+
+
+def create_site(slug, site_type):
+    return Site.objects.create(slug=slug, site_type=site_type)
+
+
+def update_or_create_variable(site, slug, date, value):
+    variable = None
+    try:
+        variable = Variable.objects.get(site=site, slug=slug)
+        variable.update_value(date, value)
+        variable.save()
+    except Variable.DoesNotExist:
+        LOGGER.info("Variable creation %s", slug)
+        variable = Variable.objects.create(
+            site=site,
+            slug=slug,
+            label=slug,
+            start_date=date,
+            start_value=value,
+            end_date=date,
+            end_value=value)
+    except ValidationError:
+        variable = None
+    return variable

@@ -22,80 +22,65 @@ Feature: Current Cost data collection
 
 
     @wip
-    Scenario Outline: 2.Nominal case instant consumption
+    Scenario: 2.Nominal case instant_consumption_1_timeseries_0
         Given I created a testing Site 'test_site'  
-        When I run the 'currentcost' script with '<setting_type>' settings
-        Then I should see an error message '<setting_type>' in the 'currentcost' log
-        And I should see '<setting_type>' data update in DB for 'test_site'
-        And I should see '<setting_type>' data update in TSV file for 'test_site'
+        When I run the 'currentcost' script with 'instant_consumption_1_timeseries_0' settings
+        Then I should see an error message 'instant_consumption_1_timeseries_0' in the 'currentcost' log
+        And I should see 'instant_consumption_1_timeseries_0' data update in DB for 'test_site'
+        And I should see 'instant_consumption_1_timeseries_0' data update in TSV file for 'test_site'
 
-    Examples: 2.Nominal case instant consumption
-   | setting_type                       |
-   | instant_consumption_1_timeseries_0 |
-   | instant_consumption_2_timeseries_7 |
-   | instant_consumption_1_timeseries_3 |
-   | instant_consumption_2_timeseries_3 |
-   | instant_consumption_2_timeseries_0 |
-   | instant_consumption_3_timeseries_3 |
+    @wip
+    Scenario: 3.Nominal case instant_consumption_2_timeseries_7
+        Given I created a testing Site 'test_site'  
+        When I run the 'currentcost' script with 'instant_consumption_1_timeseries_0' settings
+        When I run the 'currentcost' script with 'instant_consumption_2_timeseries_7' settings
+        Then I should see an error message 'instant_consumption_2_timeseries_7' in the 'currentcost' log
+        And I should see 'instant_consumption_2_timeseries_7' data update in DB for 'test_site'
+        And I should see 'instant_consumption_2_timeseries_7' data update in TSV file for 'test_site'
 
-    @wipa
-    Scenario: 2.Problem with USB port
-        Given current cost is connected and currentcost script is launched
-        When we disconnect USB port
-        Then we should receive a message saying that current cost is disconnected
-        And we should see currentcost is disconnected in log
+    @wip
+    Scenario: 4.Nominal case instant_consumption_1_timeseries_3
+        Given I created a testing Site 'test_site'  
+        When I run the 'currentcost' script with 'instant_consumption_1_timeseries_0' settings
+        When I run the 'currentcost' script with 'instant_consumption_2_timeseries_7' settings
+        When I run the 'currentcost' script with 'instant_consumption_1_timeseries_3' settings
+        Then I should see an error message 'instant_consumption_1_timeseries_3' in the 'currentcost' log
+        And I should see 'instant_consumption_1_timeseries_3' data update in DB for 'test_site'
+        And I should see 'instant_consumption_1_timeseries_3' data update in TSV file for 'test_site'
 
-    @wipa
-    Scenario: 3.Problem with current cost message
-        Given current cost is connected and script is launched
-        When current cost send incorrect message
-        Then we should get informed that current cost send incorrect message
-        And we should see incorrect message error in log
+    @wip
+    Scenario: 5.Nominal case instant_consumption_2_timeseries_3
+        Given I created a testing Site 'test_site'  
+        When I run the 'currentcost' script with 'instant_consumption_1_timeseries_0' settings
+        When I run the 'currentcost' script with 'instant_consumption_2_timeseries_7' settings
+        When I run the 'currentcost' script with 'instant_consumption_1_timeseries_3' settings
+        When I run the 'currentcost' script with 'instant_consumption_2_timeseries_3' settings
+        Then I should see an error message 'instant_consumption_2_timeseries_3' in the 'currentcost' log
+        And I should see 'instant_consumption_2_timeseries_3' data update in DB for 'test_site'
+        And I should see 'instant_consumption_2_timeseries_3' data update in TSV file for 'test_site'
 
-    @wipa
-    Scenario: 2.Nominal case instant consumption
-        Given current cost is connected and script is launched
-        When current cost send instant consumption
-        Then we should receive instant consumption and 0 ts over the network
 
-    @wipa
-    Scenario: 5.Nominal case instant consumption with 7 timeseries
-        Given current cost is connected and script is launched with 7 params
-        When current cost send instant consumption 2
-        Then we should receive instant consumption 2 and 7 ts over the network
+    @wip
+    Scenario: 6.Nominal case instant_consumption_2_timeseries_0
+        Given I created a testing Site 'test_site'  
+        When I run the 'currentcost' script with 'instant_consumption_1_timeseries_0' settings
+        When I run the 'currentcost' script with 'instant_consumption_2_timeseries_7' settings
+        When I run the 'currentcost' script with 'instant_consumption_1_timeseries_3' settings
+        When I run the 'currentcost' script with 'instant_consumption_2_timeseries_3' settings
+        When I run the 'currentcost' script with 'instant_consumption_2_timeseries_0' settings
+        Then I should see an error message 'instant_consumption_2_timeseries_0' in the 'currentcost' log
+        And I should see 'instant_consumption_2_timeseries_0' data update in DB for 'test_site'
+        And I should see 'instant_consumption_2_timeseries_0' data update in TSV file for 'test_site'
 
-    @wipa
-    Scenario: 6.Nominal case instant consumption with 3 timeseries
-        Given current cost is connected and script is launched with 3 params
-        When current cost send instant consumption
-        Then we should receive instant consumption and 3 ts over the network
-
-    @wipa
-    Scenario: 7.Nominal case instant consumption with 3 timeseries 2
-        Given current cost is connected and script is launched with 3 params
-        When current cost send instant consumption 2
-        Then we should receive instant consumption 2 and 3 ts over the network
-
-    @wipa
-    Scenario: 8.Nominal case instant consumption with 3 timeseries 3
-        Given current cost is connected and script is launched with 3 params
-        When current cost send instant consumption 2
-        Then we should receive instant consumption 2 and 0 ts over the network
-
-    @wipa
-    Scenario: 9.Nominal case instant consumption with 3 timeseries 4 not sudo
-        Given current cost is connected and script is launched with 3 params
-        When current cost send instant consumption 3
-        Then we should receive instant consumption 3 and 3 ts over the network
-
-    @wipa
-    Scenario: 10.Error case incorrect tmpr instant consumption
-        Given current cost is connected and script is launched
-        When current cost send incorrect tmpr instant consumption
-        Then we should receive an tmpr error and 0 ts on RabbitMQ
-
-    @wipa
-    Scenario: 11.Error case incorrect watts instant consumption
-        Given current cost is connected and script is launched
-        When current cost send incorrect watts instant consumption
-        Then we should receive an watts error and 0 ts on RabbitMQ
+    @wip
+    Scenario: 7.Nominal case instant_consumption_3_timeseries_3
+        Given I created a testing Site 'test_site'  
+        When I run the 'currentcost' script with 'instant_consumption_1_timeseries_0' settings
+        When I run the 'currentcost' script with 'instant_consumption_2_timeseries_7' settings
+        When I run the 'currentcost' script with 'instant_consumption_1_timeseries_3' settings
+        When I run the 'currentcost' script with 'instant_consumption_2_timeseries_3' settings
+        When I run the 'currentcost' script with 'instant_consumption_2_timeseries_0' settings
+        When I run the 'currentcost' script with 'instant_consumption_3_timeseries_3' settings
+        Then I should see an error message 'instant_consumption_3_timeseries_3' in the 'currentcost' log
+        And I should see 'instant_consumption_3_timeseries_3' data update in DB for 'test_site'
+        And I should see 'instant_consumption_3_timeseries_3' data update in TSV file for 'test_site'

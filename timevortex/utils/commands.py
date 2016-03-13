@@ -23,14 +23,16 @@ class AbstractCommand(BaseCommand):
     def set_logger(self, logger):
         self.logger = logger
 
-    def send_timeseries(self):
+    def send_timeseries(self, timeseries=None):
         """Send pub/sub timeseries timeseries
         """
         try:
             # LOGGER.debug("send timeseries")
             # LOGGER.debug(self.timeseries)
-            timeseries = json.dumps(self.timeseries)
-            SIGNAL_TIMESERIES.send(sender=self.__class__, timeseries=timeseries)
+            if timeseries is None:
+                timeseries = self.timeseries
+            timeseries_dumped = json.dumps(timeseries)
+            SIGNAL_TIMESERIES.send(sender=self.__class__, timeseries=timeseries_dumped)
         except AttributeError:
             self.logger.error(ERROR_TIMESERIES_NOT_DEFINED)
 

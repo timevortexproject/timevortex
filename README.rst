@@ -33,7 +33,7 @@
     * [BLOCKED] django-admin-tools-stats is not python 3 compatible
 
 * CMS
-    * Test CMS integration into django app to manage content only through this option
+    * (1.5)  Test CMS integration into django app to manage content only through this option
 
 * Documentation
     * Update documentation for this project
@@ -41,41 +41,42 @@
     * Generate document from .rst file
 
 * Code quality
-    * Clean coverage report
-    * Pass pylint test
+    * (0.5)  Refactor behave test to organise metear stuff in metear.py, energy stuff in currentcost.py, common stuff in test_utils
+    * (0.25) Clean coverage report
+    * (0.5)  Pass pylint test
     * Integrate code into github
     * Integrate code with travis
     * Integrate a profiler for development
-    * Fix behave test to organise metear stuff in metear.py, energy stuff in currentcost.py, common stuff in test_utils
 
 * Deployment
-    * Simplify deployment
-    * Migrate on postgresql DB
-    * Modify settings.py to be production ready
-    * Create a local.py that define development settings
+    * (5)    Simplify deployment (study approach + setup.py + pip install + debian package + docker)
+    * (0.25) Migrate on postgresql
+    * (0.25) Modify settings.py to be production ready + create a local.py that define development settings
     
 * Admin
-    * Install django-extension
-    * Install django-toolbar
-    * Install chronograph to manage cron task
-    * Install sentry
+    * (0.25) Install django-extension + django-toolbar + sentry
+    * (0.5)  Install chronograph to manage cron task
 
 * TimeVortex
-    * Create an email that send daily report
-    * Create a backup tools
+    * (0.5)  Create an email that send daily report
+    * (1)    Create a backup tools
         * cd /opt/timevortex/data/ && rsync -az liogen_home liogen@192.168.0.44:/home/liogen/workspace/timevortex/timevortex.data/backup
         * cd /var/log && rsync -az timevortex liogen@192.168.0.44:/home/liogen/workspace/timevortex/timevortex.data/backup
-    * Add daily rotation for log
-    * Create commit, release, changelog, ... tools
-    * Clean laptop folder
-    * Avoid to access DB data from Sites.objects... or Variables.objects...
+    * (0.5)  Add daily rotation for log
+    * (2)    Create commit, release, changelog, ... tools
+    * (1)    Clean laptop folder
+    * (0.5)  Avoid to access DB data from Sites.objects... or Variables.objects...
 
 * CurrentCost
-    * Integrate currentcost module
+    * (1)    Integrate currentcost module
 
 * CSV crawler
-    * Finance
-    * Garmin data
+    * Finance (CSV)
+    * Garmin data (CSV)
+    * Fitbit (API)
+    * Withing (API)
+    * Jawbone (API)
+    * Runkeeper (API)
 
 * Hardware
     * Retrieve CPU data

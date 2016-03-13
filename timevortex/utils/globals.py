@@ -5,6 +5,7 @@
 """Globals"""
 
 import logging
+from time import tzname
 
 SYSTEM_SITE_ID = "system"
 LOGGER = logging.getLogger("timevortex")
@@ -17,3 +18,13 @@ KEY_NON_DST_TIMEZONE = "nonDstTimezone"
 KEY_ERROR = "error"
 KEY_TIMESERIES = "timeseries"
 ERROR_TIMESERIES_NOT_DEFINED = "self.timeseries does not exist. Please create one before send any message."
+
+def timeseries_json(site_id, variable_id, value, date):
+    return {
+        KEY_SITE_ID: site_id,
+        KEY_VARIABLE_ID: variable_id,
+        KEY_VALUE: value,
+        KEY_DATE: date,
+        KEY_DST_TIMEZONE: tzname[1],
+        KEY_NON_DST_TIMEZONE: tzname[0]
+    }

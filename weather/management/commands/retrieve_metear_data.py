@@ -14,12 +14,11 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from timevortex.utils.commands import HTMLCrawlerCommand, AbstractCommand
-from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE
-from timevortex.utils.globals import KEY_DATE, KEY_DST_TIMEZONE, KEY_NON_DST_TIMEZONE
+from timevortex.utils.globals import timeseries_json, KEY_DATE
 from weather.utils.globals import ERROR_METEAR, KEY_METEAR_NO_SITE_ID, SETTINGS_METEAR_URL, SETTINGS_DEFAULT_METEAR_URL
 from weather.utils.globals import KEY_METEAR_BAD_URL, KEY_METEAR_PROBLEM_WS, KEY_METEAR_BAD_CONTENT
 from weather.utils.globals import SETTINGS_METEAR_START_DATE, SETTINGS_DEFAULT_METEAR_START_DATE
-from timevortex.models import Site, Variable, get_sites_by_type
+from timevortex.models import Site, get_site_by_slug_and_type, get_sites_by_type, update_or_create_variable, Variable
 
 LOGGER = logging.getLogger("weather")
 SLUG_METEAR_TEMPERATURE_CELSIUS = "metear_temperature_celsius"
@@ -102,33 +101,10 @@ class MyMETEARCrawler(HTMLCrawlerCommand):
         send = False
         value = self.transformed_row[self.variable_id]
         row_date = self.transformed_row[KEY_DATE]
-        site = Site.objects.get(slug=self.site_id, site_type=Site.METEAR_TYPE)
-        try:
-            variable = Variable.objects.get(site=site, slug=self.variable_id)
-            variable.update_value(row_date, value)
-            variable.save()
-            send = True
-        except Variable.DoesNotExist:
-            send = True
-            Variable.objects.create(
-                site=site,
-                slug=self.variable_id,
-                label=self.variable_id,
-                start_date=row_date,
-                start_value=value,
-                end_date=row_date,
-                end_value=value)
-        except ValidationError:
-            pass
-        if send:
-            self.timeseries = {
-                KEY_SITE_ID: self.site_id,
-                KEY_VARIABLE_ID: self.variable_id,
-                KEY_VALUE: value,
-                KEY_DATE: row_date.isoformat(),
-                KEY_DST_TIMEZONE: tzname[1],
-                KEY_NON_DST_TIMEZONE: tzname[0]
-            }
+        site = get_site_by_slug_and_type(slug=self.site_id, site_type=Site.METEAR_TYPE)
+        variable = update_or_create_variable(site=site, slug=self.variable_id, date=row_date, value=value)
+        if variable is not None:
+            self.timeseries = timeseries_json(self.site_id, self.variable_id, value, row_date.isoformat())
 
 
 class Command(AbstractCommand):

@@ -153,6 +153,190 @@ CC_INSTANT_CONSO_1_TS_3 = "instant_consumption_1_timeseries_3"
 CC_INSTANT_CONSO_2_TS_3 = "instant_consumption_2_timeseries_3"
 CC_INSTANT_CONSO_2_TS_0 = "instant_consumption_2_timeseries_0"
 CC_INSTANT_CONSO_3_TS_3 = "instant_consumption_3_timeseries_3"
+KEY_START_VALUE = "start_value"
+KEY_END_VALUE = "end_value"
+DICT_CC_INSTANT_CONSO = {
+    CC_INSTANT_CONSO_1_TS_0: {
+        TEST_CC_VARIABLE_ID_WATTS_CH1: {
+            KEY_START_VALUE: None,
+            KEY_END_VALUE: None
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH1: {
+            KEY_START_VALUE: None,
+            KEY_END_VALUE: None
+        },
+        TEST_CC_VARIABLE_ID_WATTS_CH2: {
+            KEY_START_VALUE: None,
+            KEY_END_VALUE: None
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH2: {
+            KEY_START_VALUE: None,
+            KEY_END_VALUE: None
+        },
+        TEST_CC_VARIABLE_ID_WATTS_CH3: {
+            KEY_START_VALUE: None,
+            KEY_END_VALUE: None
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH3: {
+            KEY_START_VALUE: None,
+            KEY_END_VALUE: None
+        },
+        TEST_CC_VARIABLE_ID_TMPR: {
+            KEY_START_VALUE: None,
+            KEY_END_VALUE: None
+        }
+    },
+    CC_INSTANT_CONSO_2_TS_7: {
+        TEST_CC_VARIABLE_ID_WATTS_CH1: {
+            KEY_START_VALUE: "406.0",
+            KEY_END_VALUE: "406.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH1: {
+            KEY_START_VALUE: "0.0",
+            KEY_END_VALUE: "0.0"
+        },
+        TEST_CC_VARIABLE_ID_WATTS_CH2: {
+            KEY_START_VALUE: "14405.0",
+            KEY_END_VALUE: "14405.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH2: {
+            KEY_START_VALUE: "0.0",
+            KEY_END_VALUE: "0.0"
+        },
+        TEST_CC_VARIABLE_ID_WATTS_CH3: {
+            KEY_START_VALUE: "10405.0",
+            KEY_END_VALUE: "10405.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH3: {
+            KEY_START_VALUE: "0.0",
+            KEY_END_VALUE: "0.0"
+        },
+        TEST_CC_VARIABLE_ID_TMPR: {
+            KEY_START_VALUE: "20.3",
+            KEY_END_VALUE: "20.3"
+        }
+    },
+    CC_INSTANT_CONSO_1_TS_3: {
+        TEST_CC_VARIABLE_ID_WATTS_CH1: {
+            KEY_START_VALUE: "406.0",
+            KEY_END_VALUE: "405.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH1: {
+            KEY_START_VALUE: "0.0",
+            KEY_END_VALUE: "1.0"
+        },
+        TEST_CC_VARIABLE_ID_WATTS_CH2: {
+            KEY_START_VALUE: "14405.0",
+            KEY_END_VALUE: "14405.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH2: {
+            KEY_START_VALUE: "0.0",
+            KEY_END_VALUE: "0.0"
+        },
+        TEST_CC_VARIABLE_ID_WATTS_CH3: {
+            KEY_START_VALUE: "10405.0",
+            KEY_END_VALUE: "10405.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH3: {
+            KEY_START_VALUE: "0.0",
+            KEY_END_VALUE: "0.0"
+        },
+        TEST_CC_VARIABLE_ID_TMPR: {
+            KEY_START_VALUE: "20.3",
+            KEY_END_VALUE: "19.3"
+        }
+    },
+    CC_INSTANT_CONSO_2_TS_3: {
+        TEST_CC_VARIABLE_ID_WATTS_CH1: {
+            KEY_START_VALUE: "406.0",
+            KEY_END_VALUE: "406.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH1: {
+            KEY_START_VALUE: "2.0",
+            KEY_END_VALUE: "2.0"
+        },
+        TEST_CC_VARIABLE_ID_WATTS_CH2: {
+            KEY_START_VALUE: "14405.0",
+            KEY_END_VALUE: "14405.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH2: {
+            KEY_START_VALUE: "0.0",
+            KEY_END_VALUE: "0.0"
+        },
+        TEST_CC_VARIABLE_ID_WATTS_CH3: {
+            KEY_START_VALUE: "10405.0",
+            KEY_END_VALUE: "10405.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH3: {
+            KEY_START_VALUE: "0.0",
+            KEY_END_VALUE: "0.0"
+        },
+        TEST_CC_VARIABLE_ID_TMPR: {
+            KEY_START_VALUE: "20.3",
+            KEY_END_VALUE: "20.3"
+        }
+    },
+    CC_INSTANT_CONSO_2_TS_0: {
+        TEST_CC_VARIABLE_ID_WATTS_CH1: {
+            KEY_START_VALUE: "406.0",
+            KEY_END_VALUE: "406.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH1: {
+            KEY_START_VALUE: "2.0",
+            KEY_END_VALUE: "2.0"
+        },
+        TEST_CC_VARIABLE_ID_WATTS_CH2: {
+            KEY_START_VALUE: "14405.0",
+            KEY_END_VALUE: "14405.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH2: {
+            KEY_START_VALUE: "0.0",
+            KEY_END_VALUE: "0.0"
+        },
+        TEST_CC_VARIABLE_ID_WATTS_CH3: {
+            KEY_START_VALUE: "10405.0",
+            KEY_END_VALUE: "10405.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH3: {
+            KEY_START_VALUE: "0.0",
+            KEY_END_VALUE: "0.0"
+        },
+        TEST_CC_VARIABLE_ID_TMPR: {
+            KEY_START_VALUE: "20.3",
+            KEY_END_VALUE: "20.3"
+        }
+    },
+    CC_INSTANT_CONSO_3_TS_3: {
+        TEST_CC_VARIABLE_ID_WATTS_CH1: {
+            KEY_START_VALUE: "406.0",
+            KEY_END_VALUE: "0.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH1: {
+            KEY_START_VALUE: "3.0",
+            KEY_END_VALUE: "3.0"
+        },
+        TEST_CC_VARIABLE_ID_WATTS_CH2: {
+            KEY_START_VALUE: "14405.0",
+            KEY_END_VALUE: "14405.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH2: {
+            KEY_START_VALUE: "0.0",
+            KEY_END_VALUE: "0.0"
+        },
+        TEST_CC_VARIABLE_ID_WATTS_CH3: {
+            KEY_START_VALUE: "10405.0",
+            KEY_END_VALUE: "10405.0"
+        },
+        TEST_CC_VARIABLE_ID_KWH_CH3: {
+            KEY_START_VALUE: "0.0",
+            KEY_END_VALUE: "0.0"
+        },
+        TEST_CC_VARIABLE_ID_TMPR: {
+            KEY_START_VALUE: "20.3",
+            KEY_END_VALUE: "21.3"
+        }
+    },
+}
 ARRAY_CC_VARIABLE = [
     TEST_CC_VARIABLE_ID_WATTS_CH1,
     TEST_CC_VARIABLE_ID_KWH_CH1,
@@ -408,7 +592,7 @@ def extract_from_log(expected_message, log_file_path, line):
     try:
         verify_json_message(body, expected_message)
     except ValueError:
-        assertEqual(body, expected_message)
+        assertEqual(expected_message, body)
 
 
 def check_response_script(commands_response, error):
@@ -452,6 +636,10 @@ def run_script(context, script_name, setting_type):
         ch1 = None
         ch2 = None
         ch3 = None
+        ch1_kwh = None
+        ch2_kwh = None
+        ch3_kwh = None
+        tmpr = None
         command = CurrentCostCommand()
         command.out = out
         if setting_type in ERROR_CC_BAD_PORT:
@@ -476,13 +664,38 @@ def run_script(context, script_name, setting_type):
             context.thread = SocatMessager(context, tty_port, INCORRECT_WATTS_CURRENTCOST_MESSAGE)
             context.thread.start()
             context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, INCORRECT_WATTS_CURRENTCOST_MESSAGE)
-        elif setting_type in [CC_INSTANT_CONSO_1_TS_0, CC_INSTANT_CONSO_1_TS_3]:
+        elif setting_type in CC_INSTANT_CONSO_1_TS_0:
             context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE)
             context.thread.start()
-        elif setting_type in [CC_INSTANT_CONSO_2_TS_7, CC_INSTANT_CONSO_2_TS_3, CC_INSTANT_CONSO_2_TS_0]:
+        elif setting_type in CC_INSTANT_CONSO_1_TS_3:
+            ch1 = TEST_CC_VARIABLE_ID_WATTS_CH1
+            ch1_kwh = TEST_CC_VARIABLE_ID_KWH_CH1
+            tmpr = TEST_CC_VARIABLE_ID_TMPR
+            context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE)
+            context.thread.start()
+        elif setting_type in CC_INSTANT_CONSO_2_TS_3:
+            ch1 = TEST_CC_VARIABLE_ID_WATTS_CH1
+            ch1_kwh = TEST_CC_VARIABLE_ID_KWH_CH1
+            tmpr = TEST_CC_VARIABLE_ID_TMPR
+            context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE_2)
+            context.thread.start()
+        elif setting_type in CC_INSTANT_CONSO_2_TS_0:
+            context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE_2)
+            context.thread.start()
+        elif setting_type in CC_INSTANT_CONSO_2_TS_7:
+            ch1 = TEST_CC_VARIABLE_ID_WATTS_CH1
+            ch1_kwh = TEST_CC_VARIABLE_ID_KWH_CH1
+            ch2 = TEST_CC_VARIABLE_ID_WATTS_CH2
+            ch2_kwh = TEST_CC_VARIABLE_ID_KWH_CH2
+            ch3 = TEST_CC_VARIABLE_ID_WATTS_CH3
+            ch3_kwh = TEST_CC_VARIABLE_ID_KWH_CH3
+            tmpr = TEST_CC_VARIABLE_ID_TMPR
             context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE_2)
             context.thread.start()
         elif setting_type in CC_INSTANT_CONSO_3_TS_3:
+            ch1 = TEST_CC_VARIABLE_ID_WATTS_CH1
+            ch1_kwh = TEST_CC_VARIABLE_ID_KWH_CH1
+            tmpr = TEST_CC_VARIABLE_ID_TMPR
             context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE_3)
             context.thread.start()
         command.handle(
@@ -493,8 +706,12 @@ def run_script(context, script_name, setting_type):
             usb_retry=usb_retry,
             break_loop=True,
             ch1=ch1,
+            ch1_kwh=ch1_kwh,
             ch2=ch2,
-            ch3=ch3,)
+            ch2_kwh=ch2_kwh,
+            ch3=ch3,
+            ch3_kwh=ch3_kwh,
+            tmpr=tmpr)
     context.commands_response = [out.getvalue().strip()]
 
     try:
@@ -534,7 +751,7 @@ def verify_error_message_on_log(context, error_type, log_file):
         error = CURRENTCOST_MESSAGE_2
     elif error_type in CC_INSTANT_CONSO_3_TS_3:
         error = CURRENTCOST_MESSAGE_3
-
+    
     extract_from_log(error, log_file_path, -2)
 
 
@@ -587,31 +804,35 @@ def verify_data_update_db(context, data_type, site_id):
             assertEqual(variable.end_date.isoformat(" "), expected_end_date)
             assertEqual(variable.start_value, expected_start_value[variable.slug])
             assertEqual(variable.end_value, expected_end_value[variable.slug])
-    elif data_type in CC_INSTANT_CONSO_1_TS_0:
-        for variable_id in ARRAY_CC_VARIABLE:
+    elif data_type in DICT_CC_INSTANT_CONSO:
+        try:
+            site = Site.objects.get(slug=site_id)
+        except Site.DoesNotExist:
+            assertEqual("Site %s does not exist" % site_id, False)
+    
+        for variable_id in DICT_CC_INSTANT_CONSO[data_type]:
             try:
-                Variable.objects.get(slug=variable_id)
-                assertEqual(True, False)
+                variable = Variable.objects.get(site=site, slug=variable_id)
+                assertEqual(variable.start_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_START_VALUE])
+                assertEqual(variable.end_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
             except Variable.DoesNotExist:
-                pass
-    elif data_type in CC_INSTANT_CONSO_2_TS_7:
-        assertEqual(True, False)
-    elif data_type in CC_INSTANT_CONSO_1_TS_3:
-        assertEqual(True, False)
-    elif data_type in CC_INSTANT_CONSO_2_TS_3:
-        assertEqual(True, False)
-    elif data_type in CC_INSTANT_CONSO_2_TS_0:
-        assertEqual(True, False)
-    elif data_type in CC_INSTANT_CONSO_3_TS_3:
-        assertEqual(True, False)
+                if data_type not in CC_INSTANT_CONSO_1_TS_0:
+                    assertEqual("Variable %s does not exist" % variable_id, False)
+    else:
+        assertEqual("Unknown datatype %s error" % data_type, False)
 
 
 @then("I should see '{data_type}' data update in TSV file for '{site_id}'")
 def verify_data_update_tsv_file(context, data_type, site_id):
-    if data_type in CC_INSTANT_CONSO_1_TS_0:
-        for variable_id in ARRAY_CC_VARIABLE:
-            last_series = FILE_STORAGE_SPACE.get_last_series(TEST_CC_SITE_ID, variable_id)
-            assertEqual(last_series, None)
+    if data_type in DICT_CC_INSTANT_CONSO:
+        for variable_id in DICT_CC_INSTANT_CONSO[data_type]:
+            last_series = FILE_STORAGE_SPACE.get_last_series(site_id, variable_id)
+            if data_type in CC_INSTANT_CONSO_1_TS_0:
+                assertEqual(last_series, None)
+            else:
+                assertEqual(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
+                assertEqual(last_series[KEY_SITE_ID], site_id)
+                assertEqual(last_series[KEY_VARIABLE_ID], variable_id)
     else:
         try:
             expected_message = json.loads(context.specific_error)
