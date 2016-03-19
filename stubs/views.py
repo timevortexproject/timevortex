@@ -9,8 +9,8 @@ from django.views.decorators.csrf import csrf_exempt
 # from timevortex.utils.globals import LOGGER
 from stubs.models import StubsAPIOpening
 from stubs.utils.globals import KEY_STUBS_OPEN_METEAR_API
-from features.steps.test_utils import TEST_METEAR_SITE_ID_2, DICT_METEAR_FAKE_DATA, DICT_METEAR_FAKE_NEWS_DATA
-from features.steps.test_utils import TEST_METEAR_SITE_ID, KEY_METEAR_FAKE_DATA_ELEMENTS, KEY_METEAR_FAKE_DATA_DATE
+from features.steps.metear import TEST_METEAR_SITE_ID_2, DICT_METEAR_FAKE_DATA, DICT_METEAR_FAKE_NEWS_DATA
+from features.steps.metear import TEST_METEAR_SITE_ID, KEY_METEAR_FAKE_DATA_ELEMENTS, KEY_METEAR_FAKE_DATA_DATE
 
 
 @require_POST

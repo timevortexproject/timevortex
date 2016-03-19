@@ -84,3 +84,9 @@ Feature: Current Cost data collection
         Then I should see an error message 'instant_consumption_3_timeseries_3' in the 'currentcost' log
         And I should see 'instant_consumption_3_timeseries_3' data update in DB for 'test_site'
         And I should see 'instant_consumption_3_timeseries_3' data update in TSV file for 'test_site'
+
+    @wip
+    Scenario: 8.Historical case consumption
+        Given I created a testing Site 'test_site'  
+        When I run the 'currentcost' script with 'currentcost_historical_consumption' settings
+        Then I should see an error message 'currentcost_historical_consumption' in the 'currentcost' log

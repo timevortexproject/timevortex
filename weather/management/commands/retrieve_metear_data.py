@@ -6,19 +6,18 @@
 
 import sys
 import logging
-from time import tzname
 from datetime import timedelta
 import dateutil.parser
 import pytz
 from django.conf import settings
 from django.utils import timezone
-from django.core.exceptions import ValidationError
 from timevortex.utils.commands import HTMLCrawlerCommand, AbstractCommand
 from timevortex.utils.globals import timeseries_json, KEY_DATE
 from weather.utils.globals import ERROR_METEAR, KEY_METEAR_NO_SITE_ID, SETTINGS_METEAR_URL, SETTINGS_DEFAULT_METEAR_URL
 from weather.utils.globals import KEY_METEAR_BAD_URL, KEY_METEAR_PROBLEM_WS, KEY_METEAR_BAD_CONTENT
 from weather.utils.globals import SETTINGS_METEAR_START_DATE, SETTINGS_DEFAULT_METEAR_START_DATE
-from timevortex.models import Site, get_site_by_slug_and_type, get_sites_by_type, update_or_create_variable, Variable
+from timevortex.models import Site, get_site_by_slug_and_type, get_sites_by_type, update_or_create_variable
+from timevortex.models import get_variable_by_slug
 
 LOGGER = logging.getLogger("weather")
 SLUG_METEAR_TEMPERATURE_CELSIUS = "metear_temperature_celsius"
@@ -98,7 +97,6 @@ class MyMETEARCrawler(HTMLCrawlerCommand):
 
     def prepare_timeseries(self):
         self.timeseries = None
-        send = False
         value = self.transformed_row[self.variable_id]
         row_date = self.transformed_row[KEY_DATE]
         site = get_site_by_slug_and_type(slug=self.site_id, site_type=Site.METEAR_TYPE)
@@ -127,10 +125,7 @@ class Command(AbstractCommand):
             for site in metear_sites:
                 variable_start_date = bound_end_date
                 variable_end_date = bound_end_date
-                try:
-                    variable = Variable.objects.get(site=site, slug=SLUG_METEAR_TEMPERATURE_CELSIUS)
-                except Variable.DoesNotExist:
-                    variable = None
+                variable = get_variable_by_slug(site=site, slug=SLUG_METEAR_TEMPERATURE_CELSIUS)
                 if variable is not None:
                     variable_start_date = variable.start_date
                     variable_end_date = variable.end_date

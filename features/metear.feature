@@ -55,6 +55,6 @@ Feature: Retrieve METEAR data
     @wipa
     Scenario: 7.Retrieve other airport data
         Given I created a testing Site 'LFBP'
-        When I run the 'metear' script
+        When I run the 'metear' script with 'correct' settings
         Then I should see 'historical' data update in DB for 'LFBP'
         And I should see 'historical' data update in TSV file for 'LFBP'

@@ -19,6 +19,7 @@ KEY_ERROR = "error"
 KEY_TIMESERIES = "timeseries"
 ERROR_TIMESERIES_NOT_DEFINED = "self.timeseries does not exist. Please create one before send any message."
 
+
 def timeseries_json(site_id, variable_id, value, date):
     return {
         KEY_SITE_ID: site_id,

@@ -16,7 +16,7 @@ from energy.utils.globals import CURRENTCOST_UNICODE_ERROR, ERROR_CC_INCORRECT_M
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS
 from timevortex.utils.commands import AbstractCommand
 from timevortex.utils.globals import timeseries_json
-from timevortex.models import get_site_by_slug, create_site, Site, update_or_create_variable
+from timevortex.models import get_site_by_slug, create_site, Site, update_or_create_variable, get_variable_by_slug
 
 LOGGER = logging.getLogger(KEY_ENERGY)
 BAUDS = 57600
@@ -46,6 +46,22 @@ class CCIncorrectData(ExceptionWithValue):
     pass
 
 
+def get_kwh_value(variable_kwh, variable_watts, actual_date):
+    if (variable_kwh is not None and
+            variable_watts is not None):
+        last_energy_value = float(variable_kwh.end_value)
+        last_energy_date = variable_kwh.end_date
+        last_power_value = float(variable_watts.end_value)
+        date_delta = actual_date - last_energy_date
+        watts_seconds = last_power_value * date_delta.total_seconds()
+        watts_hours = watts_seconds / 3600.
+        kwh = watts_hours / 1000.
+        last_energy_value += kwh
+        return round(last_energy_value, 6)
+    else:
+        return 0.0
+
+
 def convert_cc_xml_to_dict(cc_xml):
     """Analyse data from currentcost and return according TOPIC and MESSAGE.
 
@@ -73,6 +89,7 @@ def convert_cc_xml_to_dict(cc_xml):
     temperature = cc_xml_parsed.findtext("tmpr")
     hist = cc_xml_parsed.findtext("hist")
     if hist is None:
+        hist = False
         if temperature is None:
             raise CCNoTmpr(cc_xml)
         else:
@@ -112,11 +129,14 @@ class Command(AbstractCommand):
         parser.add_argument(
             '--break_loop', action='store_true', dest="break_loop", default=False, help='Break the infinite loop')
         parser.add_argument('--ch1', action='store', dest="ch1", default=None, type=str, help='Affect name to ch1')
-        parser.add_argument('--ch1_kwh', action='store', dest="ch1_kwh", default=None, type=str, help='Affect name to ch1_kwh')
+        parser.add_argument(
+            '--ch1_kwh', action='store', dest="ch1_kwh", default=None, type=str, help='Affect name to ch1_kwh')
         parser.add_argument('--ch2', action='store', dest="ch2", default=None, type=str, help='Affect name to ch2')
-        parser.add_argument('--ch2_kwh', action='store', dest="ch2_kwh", default=None, type=str, help='Affect name to ch2_kwh')
+        parser.add_argument(
+            '--ch2_kwh', action='store', dest="ch2_kwh", default=None, type=str, help='Affect name to ch2_kwh')
         parser.add_argument('--ch3', action='store', dest="ch3", default=None, type=str, help='Affect name to ch3')
-        parser.add_argument('--ch3_kwh', action='store', dest="ch3_kwh", default=None, type=str, help='Affect name to ch3_kwh')
+        parser.add_argument(
+            '--ch3_kwh', action='store', dest="ch3_kwh", default=None, type=str, help='Affect name to ch3_kwh')
         parser.add_argument('--tmpr', action='store', dest="tmpr", default=None, type=str, help='Affect name to tmpr')
 
     def run(self, *args, **options):
@@ -152,65 +172,37 @@ class Command(AbstractCommand):
                     cc_xml, ch1_w, ch2_w, ch3_w, temperature, hist = convert_cc_xml_to_dict(cc_xml)
                     # We log current xml message for hard recovery
                     self.log_error(timeseries_json(self.site_id, "cc_xml", cc_xml, date_readline.isoformat()))
-                    # For each channel, we update value in DB and send timeseries signal
-                    #
-                    # Todo: compute kwh, log history
-                    #
-                    site = get_site_by_slug(self.site_id)
-                    if site is None:
-                        site = create_site(slug=self.site_id, site_type=Site.HOME_TYPE)
-                    if ch1 is not None and ch1_w is not None:
-                        variable_ch1 = update_or_create_variable(site=site, slug=ch1, date=date_readline, value=ch1_w)
-                        self.send_timeseries(timeseries_json(self.site_id, ch1, ch1_w, date_readline.isoformat()))
-                        if ch1_kwh:
-                            ch1_kwh_value = "0.0"
-                            update_or_create_variable(site=site, slug=ch1_kwh, date=date_readline, value=ch1_kwh_value)
+                    if hist is False:
+                        # For each channel, we update value in DB and send timeseries signal
+                        site = get_site_by_slug(self.site_id)
+                        if site is None:
+                            site = create_site(slug=self.site_id, site_type=Site.HOME_TYPE)
+
+                        channels = [
+                            [ch1, ch1_w, ch1_kwh],
+                            [ch2, ch2_w, ch2_kwh],
+                            [ch3, ch3_w, ch3_kwh],
+                        ]
+
+                        for channel, watts_value, kwh_channel in channels:
+                            if channel is not None and watts_value is not None:
+                                variable_watts = get_variable_by_slug(site=site, slug=channel)
+                                if kwh_channel:
+                                    variable_kwh = get_variable_by_slug(site=site, slug=kwh_channel)
+                                    new_kwh_value = get_kwh_value(variable_kwh, variable_watts, date_readline)
+                                    update_or_create_variable(
+                                        site=site, slug=kwh_channel, date=date_readline, value=new_kwh_value)
+                                    self.send_timeseries(
+                                        timeseries_json(
+                                            self.site_id, kwh_channel, new_kwh_value, date_readline.isoformat()))
+                                update_or_create_variable(
+                                    site=site, slug=channel, date=date_readline, value=watts_value)
+                                self.send_timeseries(
+                                    timeseries_json(self.site_id, channel, watts_value, date_readline.isoformat()))
+                        if tmpr is not None and temperature is not None:
+                            update_or_create_variable(site=site, slug=tmpr, date=date_readline, value=temperature)
                             self.send_timeseries(
-                                timeseries_json(self.site_id, ch1_kwh, ch1_kwh_value, date_readline.isoformat()))
-                    if ch2 is not None and ch2_w is not None:
-                        variable_ch2 = update_or_create_variable(site=site, slug=ch2, date=date_readline, value=ch2_w)
-                        self.send_timeseries(timeseries_json(self.site_id, ch2, ch2_w, date_readline.isoformat()))
-                        if ch2_kwh:
-                            ch2_kwh_value = "0.0"
-                            update_or_create_variable(site=site, slug=ch2_kwh, date=date_readline, value=ch2_kwh_value)
-                            self.send_timeseries(
-                                timeseries_json(self.site_id, ch2_kwh, ch2_kwh_value, date_readline.isoformat()))
-                    if ch3 is not None and ch3_w is not None:
-                        variable_ch3 = update_or_create_variable(site=site, slug=ch3, date=date_readline, value=ch3_w)
-                        self.send_timeseries(timeseries_json(self.site_id, ch3, ch3_w, date_readline.isoformat()))
-                        if ch3_kwh:
-                            ch3_kwh_value = "0.0"
-                            update_or_create_variable(site=site, slug=ch3_kwh, date=date_readline, value=ch3_kwh_value)
-                            self.send_timeseries(
-                                timeseries_json(self.site_id, ch3_kwh, ch3_kwh_value, date_readline.isoformat()))
-                    if tmpr is not None and temperature is not None:
-                        update_or_create_variable(site=site, slug=tmpr, date=date_readline, value=temperature)
-                        self.send_timeseries(
-                            timeseries_json(self.site_id, tmpr, temperature, date_readline.isoformat()))
-
-                    
-                    # # We parse the result
-                    # topic, message = data_validator(data, variable_id, site_id)
-                    # message = {
-                    #     "siteID": site_id,
-                    #     "variableID": variable_id,
-                    #     "value": message,
-                    #     "date": data_date,
-                    #     "dstTimezone": data_dst_timezone,
-                    #     "nonDstTimezone": data_non_dst_timezone
-                    # }
-
-                    # topic, message, series = get_currentcost_message(
-                    #     topic, message, data, timeseries_args, data_folder)
-
-                    # # We send message
-                    # messager.send(topic, message)
-
-                    # for serie in series:
-                    #     # We send JSON series
-                    #     messager.send(
-                    #         TIMESERIES,
-                    #         json.dumps(serie))
+                                timeseries_json(self.site_id, tmpr, temperature, date_readline.isoformat()))
             except CCNoMessage:
                 error = ERROR_CURRENTCOST[ERROR_CC_NO_MESSAGE] % (variable_id, self.site_id)
                 self.send_error(error)

@@ -99,8 +99,8 @@ def get_site_by_slug_and_type(slug, site_type):
         return None
 
 
-def create_site(slug, site_type):
-    return Site.objects.create(slug=slug, site_type=site_type)
+def create_site(slug, site_type, label=None):
+    return Site.objects.create(slug=slug, site_type=site_type, label=label)
 
 
 def update_or_create_variable(site, slug, date, value):
@@ -122,3 +122,14 @@ def update_or_create_variable(site, slug, date, value):
     except ValidationError:
         variable = None
     return variable
+
+
+def get_variable_by_slug(site, slug):
+    try:
+        return Variable.objects.get(site=site, slug=slug)
+    except Variable.DoesNotExist:
+        return None
+
+
+def get_site_variables(site):
+    return Variable.objects.filter(site=site)
