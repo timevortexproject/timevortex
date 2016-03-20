@@ -14,22 +14,6 @@
 </tr>
 <tr class="even">
 <td>convention</td>
-<td>hardware.apps</td>
-<td>&#160;</td>
-<td>1</td>
-<td>0</td>
-<td>Missing module docstring</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>hardware.apps</td>
-<td>HardwareConfig</td>
-<td>4</td>
-<td>0</td>
-<td>Missing class docstring</td>
-</tr>
-<tr class="even">
-<td>convention</td>
 <td>energy.apps</td>
 <td>&#160;</td>
 <td>1</td>
@@ -40,6 +24,22 @@
 <td>convention</td>
 <td>energy.apps</td>
 <td>EnergyConfig</td>
+<td>4</td>
+<td>0</td>
+<td>Missing class docstring</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>hardware.apps</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Missing module docstring</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>hardware.apps</td>
+<td>HardwareConfig</td>
 <td>4</td>
 <td>0</td>
 <td>Missing class docstring</td>
@@ -161,8 +161,8 @@
 <td>stubs.views</td>
 <td>retrieve_metear_new_data</td>
 <td>64</td>
-<td>38</td>
-<td>Unused argument 'airport'</td>
+<td>47</td>
+<td>Unused argument 'year'</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -177,8 +177,8 @@
 <td>stubs.views</td>
 <td>retrieve_metear_new_data</td>
 <td>64</td>
-<td>47</td>
-<td>Unused argument 'year'</td>
+<td>38</td>
+<td>Unused argument 'airport'</td>
 </tr>
 <tr class="odd">
 <td>convention</td>
@@ -201,8 +201,8 @@
 <td>stubs.views</td>
 <td>retrieve_metear_data</td>
 <td>73</td>
-<td>34</td>
-<td>Unused argument 'airport'</td>
+<td>43</td>
+<td>Unused argument 'year'</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -217,8 +217,8 @@
 <td>stubs.views</td>
 <td>retrieve_metear_data</td>
 <td>73</td>
-<td>43</td>
-<td>Unused argument 'year'</td>
+<td>34</td>
+<td>Unused argument 'airport'</td>
 </tr>
 <tr class="even">
 <td>convention</td>
@@ -278,13 +278,21 @@
 </tr>
 <tr class="odd">
 <td>convention</td>
+<td>timevortex.wsgi</td>
+<td>&#160;</td>
+<td>16</td>
+<td>0</td>
+<td>Invalid constant name "application"</td>
+</tr>
+<tr class="even">
+<td>convention</td>
 <td>timevortex.admin</td>
 <td>&#160;</td>
 <td>1</td>
 <td>0</td>
 <td>Missing module docstring</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>convention</td>
 <td>timevortex.admin</td>
 <td>SiteAdmin</td>
@@ -292,21 +300,13 @@
 <td>0</td>
 <td>Missing class docstring</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>convention</td>
 <td>timevortex.admin</td>
 <td>VariableAdmin</td>
 <td>15</td>
 <td>0</td>
 <td>Missing class docstring</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>timevortex.wsgi</td>
-<td>&#160;</td>
-<td>16</td>
-<td>0</td>
-<td>Invalid constant name "application"</td>
 </tr>
 <tr class="odd">
 <td>convention</td>
@@ -454,246 +454,6 @@
 </tr>
 <tr class="odd">
 <td>error</td>
-<td>metear</td>
-<td>&#160;</td>
-<td>9</td>
-<td>0</td>
-<td>No name 'given' in module 'behave'</td>
-</tr>
-<tr class="even">
-<td>error</td>
-<td>metear</td>
-<td>&#160;</td>
-<td>15</td>
-<td>0</td>
-<td>Unable to import 'features.steps.test_globals'</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>metear</td>
-<td>define_wrong_metear_url</td>
-<td>152</td>
-<td>0</td>
-<td>Missing function docstring</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>metear</td>
-<td>define_wrong_metear_url</td>
-<td>152</td>
-<td>28</td>
-<td>Unused argument 'context'</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>metear</td>
-<td>define_bad_content_metear_ws</td>
-<td>157</td>
-<td>0</td>
-<td>Missing function docstring</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>metear</td>
-<td>define_bad_content_metear_ws</td>
-<td>157</td>
-<td>33</td>
-<td>Unused argument 'context'</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>metear</td>
-<td>new_data_available</td>
-<td>162</td>
-<td>0</td>
-<td>Missing function docstring</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>metear</td>
-<td>new_data_available</td>
-<td>162</td>
-<td>23</td>
-<td>Unused argument 'context'</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>metear</td>
-<td>run_metear_script_populate</td>
-<td>167</td>
-<td>0</td>
-<td>Missing function docstring</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>metear</td>
-<td>run_metear_script_populate</td>
-<td>167</td>
-<td>31</td>
-<td>Unused argument 'context'</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>metear</td>
-<td>transform_metear_array_into_dict</td>
-<td>174</td>
-<td>0</td>
-<td>Invalid function name "transform_metear_array_into_dict"</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>metear</td>
-<td>transform_metear_array_into_dict</td>
-<td>174</td>
-<td>0</td>
-<td>Missing function docstring</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>metear</td>
-<td>launch_metear_command</td>
-<td>191</td>
-<td>0</td>
-<td>Missing function docstring</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>metear</td>
-<td>verify_metear_data_update</td>
-<td>197</td>
-<td>0</td>
-<td>Missing function docstring</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>metear</td>
-<td>verify_metear_tsv_update</td>
-<td>222</td>
-<td>0</td>
-<td>Missing function docstring</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>metear</td>
-<td>&#160;</td>
-<td>10</td>
-<td>0</td>
-<td>standard import "from datetime import datetime, timedelta" comes before "from django.conf import settings"</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>stubs.migrations.0001_initial</td>
-<td>&#160;</td>
-<td>1</td>
-<td>0</td>
-<td>Invalid module name "0001_initial"</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>stubs.migrations.0001_initial</td>
-<td>&#160;</td>
-<td>1</td>
-<td>0</td>
-<td>Missing module docstring</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>stubs.migrations.0001_initial</td>
-<td>Migration</td>
-<td>8</td>
-<td>0</td>
-<td>Missing class docstring</td>
-</tr>
-<tr class="even">
-<td>error</td>
-<td>timeserieslogger</td>
-<td>&#160;</td>
-<td>9</td>
-<td>0</td>
-<td>No name 'when' in module 'behave'</td>
-</tr>
-<tr class="odd">
-<td>error</td>
-<td>timeserieslogger</td>
-<td>&#160;</td>
-<td>12</td>
-<td>0</td>
-<td>Unable to import 'features.steps.test_globals'</td>
-</tr>
-<tr class="even">
-<td>error</td>
-<td>timeserieslogger</td>
-<td>&#160;</td>
-<td>20</td>
-<td>0</td>
-<td>Unable to import 'features.steps.currentcost'</td>
-</tr>
-<tr class="odd">
-<td>error</td>
-<td>timeserieslogger</td>
-<td>&#160;</td>
-<td>21</td>
-<td>0</td>
-<td>Unable to import 'features.steps.currentcost'</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>timeserieslogger</td>
-<td>sending_json_message</td>
-<td>128</td>
-<td>0</td>
-<td>Missing function docstring</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>timeserieslogger</td>
-<td>&#160;</td>
-<td>10</td>
-<td>0</td>
-<td>standard import "from io import StringIO" comes before "from behave import when"</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>timeserieslogger</td>
-<td>&#160;</td>
-<td>14</td>
-<td>0</td>
-<td>standard import "from time import tzname" comes before "from behave import when"</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>timeserieslogger</td>
-<td>&#160;</td>
-<td>14</td>
-<td>0</td>
-<td>Imports from package time are not grouped</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>timevortex.migrations.0001_initial</td>
-<td>&#160;</td>
-<td>1</td>
-<td>0</td>
-<td>Invalid module name "0001_initial"</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>timevortex.migrations.0001_initial</td>
-<td>&#160;</td>
-<td>1</td>
-<td>0</td>
-<td>Missing module docstring</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>timevortex.migrations.0001_initial</td>
-<td>Migration</td>
-<td>8</td>
-<td>0</td>
-<td>Missing class docstring</td>
-</tr>
-<tr class="odd">
-<td>error</td>
 <td>currentcost</td>
 <td>&#160;</td>
 <td>17</td>
@@ -763,6 +523,294 @@
 <td>13</td>
 <td>0</td>
 <td>standard import "from threading import Thread" comes before "import serial"</td>
+</tr>
+<tr class="even">
+<td>error</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>9</td>
+<td>0</td>
+<td>No name 'given' in module 'behave'</td>
+</tr>
+<tr class="odd">
+<td>error</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>15</td>
+<td>0</td>
+<td>Unable to import 'features.steps.test_globals'</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>metear</td>
+<td>define_wrong_metear_url</td>
+<td>152</td>
+<td>0</td>
+<td>Missing function docstring</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>metear</td>
+<td>define_wrong_metear_url</td>
+<td>152</td>
+<td>28</td>
+<td>Unused argument 'context'</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>metear</td>
+<td>define_bad_content_metear_ws</td>
+<td>157</td>
+<td>0</td>
+<td>Missing function docstring</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>metear</td>
+<td>define_bad_content_metear_ws</td>
+<td>157</td>
+<td>33</td>
+<td>Unused argument 'context'</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>metear</td>
+<td>new_data_available</td>
+<td>162</td>
+<td>0</td>
+<td>Missing function docstring</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>metear</td>
+<td>new_data_available</td>
+<td>162</td>
+<td>23</td>
+<td>Unused argument 'context'</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>metear</td>
+<td>run_metear_script_populate</td>
+<td>167</td>
+<td>0</td>
+<td>Missing function docstring</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>metear</td>
+<td>run_metear_script_populate</td>
+<td>167</td>
+<td>31</td>
+<td>Unused argument 'context'</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>metear</td>
+<td>transform_metear_array_into_dict</td>
+<td>174</td>
+<td>0</td>
+<td>Invalid function name "transform_metear_array_into_dict"</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>metear</td>
+<td>transform_metear_array_into_dict</td>
+<td>174</td>
+<td>0</td>
+<td>Missing function docstring</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>metear</td>
+<td>launch_metear_command</td>
+<td>191</td>
+<td>0</td>
+<td>Missing function docstring</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>metear</td>
+<td>verify_metear_data_update</td>
+<td>197</td>
+<td>0</td>
+<td>Missing function docstring</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>metear</td>
+<td>verify_metear_tsv_update</td>
+<td>222</td>
+<td>0</td>
+<td>Missing function docstring</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>metear</td>
+<td>&#160;</td>
+<td>10</td>
+<td>0</td>
+<td>standard import "from datetime import datetime, timedelta" comes before "from django.conf import settings"</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>stubs.migrations.0001_initial</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Invalid module name "0001_initial"</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>stubs.migrations.0001_initial</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Missing module docstring</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>stubs.migrations.0001_initial</td>
+<td>Migration</td>
+<td>8</td>
+<td>0</td>
+<td>Missing class docstring</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>timevortex.migrations.0001_initial</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Invalid module name "0001_initial"</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>timevortex.migrations.0001_initial</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Missing module docstring</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>timevortex.migrations.0001_initial</td>
+<td>Migration</td>
+<td>8</td>
+<td>0</td>
+<td>Missing class docstring</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>timevortex.migrations.0002_auto_20151224_2220</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Invalid module name "0002_auto_20151224_2220"</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>timevortex.migrations.0002_auto_20151224_2220</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Missing module docstring</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>timevortex.migrations.0002_auto_20151224_2220</td>
+<td>Migration</td>
+<td>8</td>
+<td>0</td>
+<td>Missing class docstring</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>timevortex.migrations.0004_auto_20151229_0030</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Invalid module name "0004_auto_20151229_0030"</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>timevortex.migrations.0004_auto_20151229_0030</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Missing module docstring</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>timevortex.migrations.0004_auto_20151229_0030</td>
+<td>Migration</td>
+<td>8</td>
+<td>0</td>
+<td>Missing class docstring</td>
+</tr>
+<tr class="even">
+<td>error</td>
+<td>timeserieslogger</td>
+<td>&#160;</td>
+<td>9</td>
+<td>0</td>
+<td>No name 'when' in module 'behave'</td>
+</tr>
+<tr class="odd">
+<td>error</td>
+<td>timeserieslogger</td>
+<td>&#160;</td>
+<td>12</td>
+<td>0</td>
+<td>Unable to import 'features.steps.test_globals'</td>
+</tr>
+<tr class="even">
+<td>error</td>
+<td>timeserieslogger</td>
+<td>&#160;</td>
+<td>20</td>
+<td>0</td>
+<td>Unable to import 'features.steps.currentcost'</td>
+</tr>
+<tr class="odd">
+<td>error</td>
+<td>timeserieslogger</td>
+<td>&#160;</td>
+<td>21</td>
+<td>0</td>
+<td>Unable to import 'features.steps.currentcost'</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>timeserieslogger</td>
+<td>sending_json_message</td>
+<td>128</td>
+<td>0</td>
+<td>Missing function docstring</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>timeserieslogger</td>
+<td>&#160;</td>
+<td>10</td>
+<td>0</td>
+<td>standard import "from io import StringIO" comes before "from behave import when"</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>timeserieslogger</td>
+<td>&#160;</td>
+<td>14</td>
+<td>0</td>
+<td>standard import "from time import tzname" comes before "from behave import when"</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>timeserieslogger</td>
+<td>&#160;</td>
+<td>14</td>
+<td>0</td>
+<td>Imports from package time are not grouped</td>
 </tr>
 <tr class="even">
 <td>error</td>
@@ -1046,15 +1094,15 @@
 </tr>
 <tr class="odd">
 <td>convention</td>
-<td>timevortex.migrations.0004_auto_20151229_0030</td>
+<td>timevortex.migrations.0005_auto_20151229_0042</td>
 <td>&#160;</td>
 <td>1</td>
 <td>0</td>
-<td>Invalid module name "0004_auto_20151229_0030"</td>
+<td>Invalid module name "0005_auto_20151229_0042"</td>
 </tr>
 <tr class="even">
 <td>convention</td>
-<td>timevortex.migrations.0004_auto_20151229_0030</td>
+<td>timevortex.migrations.0005_auto_20151229_0042</td>
 <td>&#160;</td>
 <td>1</td>
 <td>0</td>
@@ -1062,7 +1110,7 @@
 </tr>
 <tr class="odd">
 <td>convention</td>
-<td>timevortex.migrations.0004_auto_20151229_0030</td>
+<td>timevortex.migrations.0005_auto_20151229_0042</td>
 <td>Migration</td>
 <td>8</td>
 <td>0</td>
@@ -1087,54 +1135,6 @@
 <tr class="even">
 <td>convention</td>
 <td>timevortex.migrations.0006_auto_20151229_0044</td>
-<td>Migration</td>
-<td>8</td>
-<td>0</td>
-<td>Missing class docstring</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>timevortex.migrations.0002_auto_20151224_2220</td>
-<td>&#160;</td>
-<td>1</td>
-<td>0</td>
-<td>Invalid module name "0002_auto_20151224_2220"</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>timevortex.migrations.0002_auto_20151224_2220</td>
-<td>&#160;</td>
-<td>1</td>
-<td>0</td>
-<td>Missing module docstring</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>timevortex.migrations.0002_auto_20151224_2220</td>
-<td>Migration</td>
-<td>8</td>
-<td>0</td>
-<td>Missing class docstring</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>timevortex.migrations.0005_auto_20151229_0042</td>
-<td>&#160;</td>
-<td>1</td>
-<td>0</td>
-<td>Invalid module name "0005_auto_20151229_0042"</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>timevortex.migrations.0005_auto_20151229_0042</td>
-<td>&#160;</td>
-<td>1</td>
-<td>0</td>
-<td>Missing module docstring</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>timevortex.migrations.0005_auto_20151229_0042</td>
 <td>Migration</td>
 <td>8</td>
 <td>0</td>
@@ -1278,38 +1278,6 @@
 </tr>
 <tr class="even">
 <td>convention</td>
-<td>weather.migrations.0002_delete_sites</td>
-<td>&#160;</td>
-<td>1</td>
-<td>0</td>
-<td>Invalid module name "0002_delete_sites"</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>weather.migrations.0002_delete_sites</td>
-<td>&#160;</td>
-<td>1</td>
-<td>0</td>
-<td>Missing module docstring</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>weather.migrations.0002_delete_sites</td>
-<td>Migration</td>
-<td>8</td>
-<td>0</td>
-<td>Missing class docstring</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>weather.utils.globals</td>
-<td>&#160;</td>
-<td>8</td>
-<td>0</td>
-<td>standard import "from datetime import date, timedelta" comes before "from django.conf import settings"</td>
-</tr>
-<tr class="even">
-<td>convention</td>
 <td>timevortex.utils.filestorage</td>
 <td>&#160;</td>
 <td>122</td>
@@ -1389,6 +1357,38 @@
 <td>standard import "from os.path import isfile, join, exists" comes before "import pytz"</td>
 </tr>
 <tr class="even">
+<td>convention</td>
+<td>weather.migrations.0002_delete_sites</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Invalid module name "0002_delete_sites"</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>weather.migrations.0002_delete_sites</td>
+<td>&#160;</td>
+<td>1</td>
+<td>0</td>
+<td>Missing module docstring</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>weather.migrations.0002_delete_sites</td>
+<td>Migration</td>
+<td>8</td>
+<td>0</td>
+<td>Missing class docstring</td>
+</tr>
+<tr class="odd">
+<td>convention</td>
+<td>weather.utils.globals</td>
+<td>&#160;</td>
+<td>8</td>
+<td>0</td>
+<td>standard import "from datetime import date, timedelta" comes before "from django.conf import settings"</td>
+</tr>
+<tr class="even">
 <td>error</td>
 <td>hardware.management.commands.retrieve_hardware_data</td>
 <td>&#160;</td>
@@ -1414,21 +1414,13 @@
 </tr>
 <tr class="odd">
 <td>refactor</td>
-<td>timevortex.tests.tests_file_storage</td>
-<td>TestFileStorage.test_error_creation</td>
-<td>141</td>
-<td>8</td>
-<td>Redefinition of result type from dict to int</td>
-</tr>
-<tr class="even">
-<td>refactor</td>
 <td>weather.management.commands.retrieve_metear_data</td>
 <td>MyMETEARCrawler</td>
 <td>41</td>
 <td>0</td>
 <td>Too many instance attributes (8/7)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>convention</td>
 <td>weather.management.commands.retrieve_metear_data</td>
 <td>MyMETEARCrawler.remove_html_duplication</td>
@@ -1436,7 +1428,7 @@
 <td>4</td>
 <td>Missing method docstring</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>convention</td>
 <td>weather.management.commands.retrieve_metear_data</td>
 <td>&#160;</td>
@@ -1444,7 +1436,7 @@
 <td>0</td>
 <td>Imports from package timevortex are not grouped</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>convention</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>ExceptionWithValue</td>
@@ -1452,7 +1444,7 @@
 <td>0</td>
 <td>Missing class docstring</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>ExceptionWithValue.__init__</td>
@@ -1460,7 +1452,7 @@
 <td>4</td>
 <td>__init__ method from base class 'Exception' is not called</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>convention</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>CCNoMessage</td>
@@ -1468,7 +1460,7 @@
 <td>0</td>
 <td>Missing class docstring</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>convention</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>CCNoTmpr</td>
@@ -1476,7 +1468,7 @@
 <td>0</td>
 <td>Missing class docstring</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>convention</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>CCNoWatts</td>
@@ -1484,7 +1476,7 @@
 <td>0</td>
 <td>Missing class docstring</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>convention</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>CCIncorrectData</td>
@@ -1492,7 +1484,7 @@
 <td>0</td>
 <td>Missing class docstring</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>convention</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>get_kwh_value</td>
@@ -1500,7 +1492,7 @@
 <td>0</td>
 <td>Missing function docstring</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>refactor</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>Command.run</td>
@@ -1508,7 +1500,7 @@
 <td>4</td>
 <td>Too many local variables (34/15)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>refactor</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>Command.run</td>
@@ -1516,7 +1508,7 @@
 <td>8</td>
 <td>Too many nested blocks (7/5)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>refactor</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>Command.run</td>
@@ -1524,7 +1516,7 @@
 <td>4</td>
 <td>Too many branches (17/12)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>refactor</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>Command.run</td>
@@ -1532,7 +1524,7 @@
 <td>4</td>
 <td>Too many statements (70/50)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>Command.run</td>
@@ -1540,7 +1532,7 @@
 <td>13</td>
 <td>Attribute 'site_id' defined outside __init__</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>convention</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>&#160;</td>
@@ -1548,7 +1540,7 @@
 <td>0</td>
 <td>standard import "import logging" comes before "import serial"</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>convention</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>&#160;</td>
@@ -1556,7 +1548,7 @@
 <td>0</td>
 <td>standard import "from time import sleep" comes before "import serial"</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>convention</td>
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>&#160;</td>
@@ -1699,8 +1691,8 @@ weather
 <td>docstring</td>
 <td>418</td>
 <td>11.84</td>
-<td>331</td>
-<td>+87.00</td>
+<td>418</td>
+<td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
@@ -1753,13 +1745,13 @@ weather
 <tr class="even">
 <td>convention</td>
 <td>130</td>
-<td>131</td>
-<td>-1.00</td>
+<td>130</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>refactor</td>
-<td>9</td>
-<td>9</td>
+<td>8</td>
+<td>8</td>
 <td>=</td>
 </tr>
 <tr class="even">
@@ -1825,14 +1817,14 @@ weather
 <td>currentcost</td>
 <td>3.57</td>
 <td>0.00</td>
-<td>22.22</td>
+<td>25.00</td>
 <td>4.62</td>
 </tr>
 <tr class="even">
 <td>timevortex.tests.tests_file_storage</td>
 <td>3.57</td>
 <td>0.00</td>
-<td>11.11</td>
+<td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
@@ -1846,14 +1838,14 @@ weather
 <td>energy.management.commands.retrieve_currentcost_data</td>
 <td>0.00</td>
 <td>7.69</td>
-<td>44.44</td>
+<td>50.00</td>
 <td>6.92</td>
 </tr>
 <tr class="odd">
 <td>timevortex.utils.filestorage</td>
 <td>0.00</td>
 <td>7.69</td>
-<td>11.11</td>
+<td>12.50</td>
 <td>5.38</td>
 </tr>
 <tr class="even">
@@ -1867,7 +1859,7 @@ weather
 <td>weather.management.commands.retrieve_metear_data</td>
 <td>0.00</td>
 <td>0.00</td>
-<td>11.11</td>
+<td>12.50</td>
 <td>1.54</td>
 </tr>
 <tr class="even">
@@ -2067,35 +2059,35 @@ weather
 <td>2</td>
 </tr>
 <tr class="even">
-<td>redefined-variable-type</td>
-<td>2</td>
-</tr>
-<tr class="odd">
 <td>no-member</td>
 <td>2</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>attribute-defined-outside-init</td>
 <td>2</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>too-many-nested-blocks</td>
 <td>1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>too-many-locals</td>
 <td>1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>too-many-instance-attributes</td>
 <td>1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>superfluous-parens</td>
 <td>1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>super-init-not-called</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>redefined-variable-type</td>
 <td>1</td>
 </tr>
 <tr class="even">
@@ -2110,7 +2102,7 @@ weather
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 7.90/10 (previous run: 7.86/10, +0.04)</div>
+Your code has been rated at 7.91/10 (previous run: 7.87/10, +0.03)</div>
 </div>
 </body>
 </html>

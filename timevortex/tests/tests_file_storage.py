@@ -138,9 +138,9 @@ class TestFileStorage(TestCase):
         self.assertEqual(error[KEY_DATE], result[KEY_DATE])
 
         today = date.today().isoformat()
-        result = FILE_STORAGE_SPACE.get_number_of_error(TEST_CC_SITE_ID, today)
-        LOGGER.error(result)
-        self.assertEqual(result, ERROR_NUMBER)
+        result_number = FILE_STORAGE_SPACE.get_number_of_error(TEST_CC_SITE_ID, today)
+        LOGGER.error(result_number)
+        self.assertEqual(result_number, ERROR_NUMBER)
 
-        result = FILE_STORAGE_SPACE.get_number_of_error(TEST_CC_SITE_ID, FAKE_DATE)
-        self.assertEqual(result, 0)
+        result_number_2 = FILE_STORAGE_SPACE.get_number_of_error(TEST_CC_SITE_ID, FAKE_DATE)
+        self.assertEqual(result_number_2, 0)
