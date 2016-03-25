@@ -6,8 +6,8 @@
 
 import sys
 import json
-import requests
 from time import tzname
+import requests
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from timevortex.utils.globals import ERROR_TIMESERIES_NOT_DEFINED
@@ -20,7 +20,13 @@ class AbstractCommand(BaseCommand):
     """Abstact class that provide helpful method for django command
     """
 
+    logger = None
+    out = None
+    name = None
+
     def set_logger(self, logger):
+        """Set logger for abstract command class
+        """
         self.logger = logger
 
     def send_timeseries(self, timeseries=None):
@@ -37,10 +43,14 @@ class AbstractCommand(BaseCommand):
             self.logger.error(ERROR_TIMESERIES_NOT_DEFINED)
 
     def log_error(self, error):
+        """Display error log in screen
+        """
         self.out.write("%s\n" % error)
         self.logger.error(error)
 
     def send_error(self, error):
+        """Send signal error to error_receiver
+        """
         try:
             error_message = json.dumps({
                 KEY_SITE_ID: self.site_id,
@@ -56,9 +66,13 @@ class AbstractCommand(BaseCommand):
         self.log_error(error)
 
     def run(self, *args, **options):
+        """Main method to redefine to launch child
+        """
         pass
 
     def handle(self, *args, **options):
+        """Main django command method
+        """
         self.logger.info("Command %s started", self.name)
         self.run(*args, **options)
         self.logger.info("Command %s stopped", self.name)
@@ -123,6 +137,8 @@ class HTMLCrawlerCommand(AbstractCommand):
         return None
 
     def handle(self, *args, **options):
+        """ Main method
+        """
         self.url_generator(self, *args, **options)
         self.open_html_file()
         if self.html is None:

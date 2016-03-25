@@ -5,18 +5,17 @@
 """Functionnal test for timeserieslogger"""
 
 import json
-from time import sleep
-from behave import when
+from time import sleep, tzname
 from io import StringIO
+from behave import when  # pylint: disable=I0011,E0611
 from timevortex.utils.commands import AbstractCommand
-from features.steps.test_globals import reset_testing_environment
-from timevortex.utils.globals import LOGGER
-from time import tzname
 from timevortex.utils.timeserieslogger import KEY_TSL_NO_NON_DST_TIMEZONE
 from timevortex.utils.timeserieslogger import KEY_TSL_NO_VALUE, KEY_TSL_NO_DATE, KEY_TSL_NO_DST_TIMEZONE
 from timevortex.utils.timeserieslogger import KEY_TSL_BAD_JSON, KEY_TSL_NO_SITE_ID, KEY_TSL_NO_VARIABLE_ID
+from timevortex.utils.globals import LOGGER
 from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE, KEY_DATE, KEY_DST_TIMEZONE
 from timevortex.utils.globals import KEY_NON_DST_TIMEZONE, KEY_ERROR
+from features.steps.test_globals import reset_testing_environment
 from features.steps.currentcost import TEST_CC_SITE_ID, TEST_CC_VARIABLE_ID_WATTS_CH2, TEST_CC_VARIABLE_ID_KWH_CH2
 from features.steps.currentcost import TEST_CC_VARIABLE_ID_TMPR
 
@@ -126,6 +125,8 @@ DICT_TSL_ERROR_DATA = {
 
 @when("I send JSON message '{error_type}'")
 def sending_json_message(context, error_type):
+    """Sending JSON messages
+    """
     reset_testing_environment()
     out = StringIO()
     command = AbstractCommand()

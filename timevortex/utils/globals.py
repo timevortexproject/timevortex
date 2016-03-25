@@ -21,6 +21,8 @@ ERROR_TIMESERIES_NOT_DEFINED = "self.timeseries does not exist. Please create on
 
 
 def timeseries_json(site_id, variable_id, value, date):
+    """Create a TimeVortex json format dict
+    """
     return {
         KEY_SITE_ID: site_id,
         KEY_VARIABLE_ID: variable_id,

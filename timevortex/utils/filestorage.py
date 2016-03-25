@@ -4,14 +4,14 @@
 
 """File storage adapter for timevortex project"""
 
-import pytz
-import dateutil.parser
 from time import tzname
 from datetime import datetime
 from os import listdir, makedirs
 from os.path import isfile, join, exists
-from django.utils import timezone
+import pytz
+import dateutil.parser
 from django.conf import settings
+from django.utils import timezone
 from timevortex.utils.globals import LOGGER, KEY_ERROR, KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE, KEY_DATE
 from timevortex.utils.globals import KEY_DST_TIMEZONE, KEY_NON_DST_TIMEZONE, SYSTEM_SITE_ID
 
@@ -96,8 +96,8 @@ class FileStorage(object):
                 if is_file and file_prefix in filename:
                     completete_filename = "%s/%s" % (site_folder, filename)
                     temp_series = []
-                    with open(completete_filename, "r") as f:
-                        temp_series = f.readlines()
+                    with open(completete_filename, "r") as filed:
+                        temp_series = filed.readlines()
                         for line in temp_series:
                             array_line = line.split("\t")
                             if len(array_line) >= 2:
@@ -111,7 +111,7 @@ class FileStorage(object):
         file_prefix = "%s.tsv." % element
         site_folder = "%s/%s" % (self.folder_path, site_id)
         if exists(site_folder):
-            old_date = ""
+            old_date = None
             last_filename = ""
             for filename in listdir(site_folder):
                 is_file = isfile(join(site_folder, filename))
@@ -119,7 +119,7 @@ class FileStorage(object):
                     date = filename.replace(file_prefix, "")
                     try:
                         date = datetime.strptime(date, "%Y-%m-%d")
-                        if (old_date == "" or date > old_date):
+                        if old_date is None or date > old_date:
                             old_date = date
                             last_filename = filename
                     except ValueError:
@@ -127,14 +127,14 @@ class FileStorage(object):
 
             last_filename = "%s/%s" % (site_folder, last_filename)
             try:
-                with open(last_filename, "rb") as f:
-                    for last in f:
+                with open(last_filename, "rb") as filed2:
+                    for last in filed2:
                         pass
             except IsADirectoryError:
                 return None
 
-            LOGGER.debug(last)
-            last = last.decode("utf-8").replace("\n", "")
+            LOGGER.debug(last)  # pylint: disable=I0011,W0631
+            last = last.decode("utf-8").replace("\n", "")  # pylint: disable=I0011,W0631
 
             return {
                 KEY_VARIABLE_ID: element,

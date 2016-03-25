@@ -5,9 +5,9 @@
 """Functionnal test for METEAR"""
 
 from io import StringIO
-from django.conf import settings
-from behave import given
 from datetime import datetime, timedelta
+from django.conf import settings
+from behave import given  # pylint: disable=I0011,E0611
 from timevortex.models import get_site_by_slug, get_site_variables
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
 from weather.utils.globals import SETTINGS_METEAR_URL, SETTINGS_STUBS_NEW_METEAR_URL
@@ -149,29 +149,39 @@ DICT_METEAR_FAKE_NEWS_DATA = [
 
 
 @given("I add a bad metear url in settings")
-def define_wrong_metear_url(context):
+def define_wrong_metear_url(context):  # pylint: disable=I0011,W0613
+    """Define wrong metear URL
+    """
     setattr(settings, SETTINGS_METEAR_URL, SETTINGS_BAD_METEAR_URL)
 
 
 @given("I configure metear web service to generate bad content")
-def define_bad_content_metear_ws(context):
+def define_bad_content_metear_ws(context):  # pylint: disable=I0011,W0613
+    """Define bad content METEAR Webservice
+    """
     setattr(settings, SETTINGS_METEAR_URL, SETTINGS_BAD_CONTENT_METEAR_URL)
 
 
 @given("new data are available")
-def new_data_available(context):
+def new_data_available(context):  # pylint: disable=I0011,W0613
+    """New data available
+    """
     setattr(settings, SETTINGS_METEAR_URL, SETTINGS_STUBS_NEW_METEAR_URL)
 
 
 @given("I run for the first time the metear script")
-def run_metear_script_populate(context):
+def run_metear_script_populate(context):  # pylint: disable=I0011,W0613
+    """Run METEAR script populate
+    """
     out = StringIO()
     command = MetearCommand()
     command.out = out
     command.handle()
 
 
-def transform_metear_array_into_dict(array):
+def transform_metear_array2dict(array):  # pylint: disable=I0011,W0613
+    """Transform METEAR array into dict
+    """
     variables = {}
     variables["metear_temperature_celsius"] = array[1]
     variables["metear_dew_point_celsius"] = array[2]
@@ -189,12 +199,16 @@ def transform_metear_array_into_dict(array):
 
 
 def launch_metear_command(out):
+    """Launch METEAR command
+    """
     command = MetearCommand()
     command.out = out
     command.handle()
 
 
 def verify_metear_data_update(site_id, data_type):
+    """Verify METEAR data update
+    """
     start_array_index = 0
     end_array_index = -2
     site = get_site_by_slug(slug=site_id)
@@ -207,9 +221,9 @@ def verify_metear_data_update(site_id, data_type):
     expected_variables_len = len(fixtures[start_array_index][KEY_METEAR_FAKE_DATA_ELEMENTS]) - 1
     expected_start_date = "%s+00:00" % fixtures[start_array_index][KEY_METEAR_FAKE_DATA_DATE]
     expected_end_date = "%s+00:00" % fixtures[end_array_index][KEY_METEAR_FAKE_DATA_DATE]
-    expected_start_value = transform_metear_array_into_dict(
+    expected_start_value = transform_metear_array2dict(
         fixtures[start_array_index][KEY_METEAR_FAKE_DATA_ELEMENTS])
-    expected_end_value = transform_metear_array_into_dict(
+    expected_end_value = transform_metear_array2dict(
         fixtures[end_array_index][KEY_METEAR_FAKE_DATA_ELEMENTS])
     assertEqual(len(variables), expected_variables_len)
     for variable in variables:
@@ -220,6 +234,8 @@ def verify_metear_data_update(site_id, data_type):
 
 
 def verify_metear_tsv_update(site_id, data_type):
+    """Verify METEAR TSV update
+    """
     fixtures = DICT_METEAR_FAKE_DATA
     if data_type in "new":
         fixtures = DICT_METEAR_FAKE_NEWS_DATA
@@ -227,7 +243,7 @@ def verify_metear_tsv_update(site_id, data_type):
     folder_data = {}
     for fix in fixtures:
         if fix[KEY_METEAR_FAKE_DATA_STATUS] == KEY_METEAR_FAKE_DATA_OK:
-            variables = transform_metear_array_into_dict(fix[KEY_METEAR_FAKE_DATA_ELEMENTS])
+            variables = transform_metear_array2dict(fix[KEY_METEAR_FAKE_DATA_ELEMENTS])
             for key in variables:
                 if key not in fixtures_data:
                     fixtures_data[key] = {}

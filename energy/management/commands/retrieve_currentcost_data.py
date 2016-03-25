@@ -5,10 +5,10 @@
 """Currentcost command"""
 
 import sys
-import serial
 import logging
 from time import sleep
 from xml.etree import ElementTree
+import serial
 from django.utils import timezone
 from energy.utils.globals import KEY_ENERGY, ERROR_CURRENTCOST, ERROR_CC_NO_MESSAGE, ERROR_CC_BAD_PORT
 from energy.utils.globals import TTY_CONNECTION_SUCCESS, ERROR_CC_DISCONNECTED, ERROR_CC_INCORRECT_MESSAGE
@@ -23,7 +23,10 @@ BAUDS = 57600
 
 
 class ExceptionWithValue(Exception):
+    """ExceptionWithValue
+    """
     def __init__(self, value):
+        super(ExceptionWithValue, self).__init__(value)
         self.value = value
 
     def __str__(self):
@@ -31,22 +34,32 @@ class ExceptionWithValue(Exception):
 
 
 class CCNoMessage(Exception):
+    """CCNoMessage
+    """
     pass
 
 
 class CCNoTmpr(ExceptionWithValue):
+    """CCNoTmpr
+    """
     pass
 
 
 class CCNoWatts(ExceptionWithValue):
+    """CCNoWatts
+    """
     pass
 
 
 class CCIncorrectData(ExceptionWithValue):
+    """CCIncorrectData
+    """
     pass
 
 
 def get_kwh_value(variable_kwh, variable_watts, actual_date):
+    """Get kWh value
+    """
     if (variable_kwh is not None and
             variable_watts is not None):
         last_energy_value = float(variable_kwh.end_value)
@@ -115,6 +128,7 @@ class Command(AbstractCommand):
     out = sys.stdout
     name = "Currentcost connector"
     logger = LOGGER
+    site_id = None
 
     def add_arguments(self, parser):
         # Positional arguments
@@ -140,6 +154,8 @@ class Command(AbstractCommand):
         parser.add_argument('--tmpr', action='store', dest="tmpr", default=None, type=str, help='Affect name to tmpr')
 
     def run(self, *args, **options):
+        """Run method
+        """
         self.site_id = options["site_id"]
         variable_id = options["variable_id"]
         tty_port = options["tty_port"]

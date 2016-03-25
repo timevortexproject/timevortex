@@ -169,7 +169,7 @@ def create_testing_site(context, site_id):
     if DICT_SITE[site_id][WITH_STUBS] is True:
         commands = STUBS_COMMAND
         context.stubs = subprocess.Popen(shlex.split(commands), stdout=subprocess.PIPE, preexec_fn=os.setsid)
-        sleep(1)
+        sleep(3)
         stubs_change_api_configuration({KEY_STUBS_OPEN_METEAR_API: True})
 
 

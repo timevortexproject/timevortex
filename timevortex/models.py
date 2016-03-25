@@ -2,6 +2,8 @@
 # -*- coding: utf8 -*-
 # -*- Mode: Python; py-indent-offset: 4 -*-
 
+"""File that define Timevortex model"""
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from timevortex.utils.globals import LOGGER
@@ -79,6 +81,8 @@ class Variable(models.Model):
 
 
 def get_sites_by_type(site_type=Site.NO_TYPE):
+    """Get site by type
+    """
     try:
         return Site.objects.filter(site_type=site_type)
     except Site.DoesNotExist:
@@ -86,6 +90,8 @@ def get_sites_by_type(site_type=Site.NO_TYPE):
 
 
 def get_site_by_slug(slug):
+    """Get site by slug
+    """
     try:
         return Site.objects.get(slug=slug)
     except Site.DoesNotExist:
@@ -93,6 +99,8 @@ def get_site_by_slug(slug):
 
 
 def get_site_by_slug_and_type(slug, site_type):
+    """Get site by slug and type
+    """
     try:
         return Site.objects.get(slug=slug, site_type=site_type)
     except Site.DoesNotExist:
@@ -100,10 +108,14 @@ def get_site_by_slug_and_type(slug, site_type):
 
 
 def create_site(slug, site_type, label=None):
+    """Create site
+    """
     return Site.objects.create(slug=slug, site_type=site_type, label=label)
 
 
 def update_or_create_variable(site, slug, date, value):
+    """Update or create variable
+    """
     variable = None
     try:
         variable = Variable.objects.get(site=site, slug=slug)
@@ -125,6 +137,8 @@ def update_or_create_variable(site, slug, date, value):
 
 
 def get_variable_by_slug(site, slug):
+    """Get variable by slug
+    """
     try:
         return Variable.objects.get(site=site, slug=slug)
     except Variable.DoesNotExist:
@@ -132,4 +146,6 @@ def get_variable_by_slug(site, slug):
 
 
 def get_site_variables(site):
+    """Get variables of a site
+    """
     return Variable.objects.filter(site=site)

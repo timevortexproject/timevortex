@@ -2,6 +2,8 @@
 # -*- coding: utf8 -*-
 # -*- Mode: Python; py-indent-offset: 4 -*-
 
+"""Stubs views"""
+
 import json
 from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -16,6 +18,8 @@ from features.steps.metear import TEST_METEAR_SITE_ID, KEY_METEAR_FAKE_DATA_ELEM
 @require_POST
 @csrf_exempt
 def change_route_configuration(request):
+    """Change route configuration
+    """
     # curl -i -H "Content-Type: application/json" -XPOST 'http://127.0.0.1:8000/stubs/change_route_configuration'
     # -d'{"open_metear_api": false}' && printf "\n"
     body = json.loads(request.body.decode('ascii'))
@@ -38,6 +42,8 @@ def change_route_configuration(request):
 
 
 def is_metear_api_open():
+    """Define if metear api is open or not
+    """
     try:
         api_route = StubsAPIOpening.objects.get(id=1)
     except StubsAPIOpening.DoesNotExist:
@@ -48,6 +54,8 @@ def is_metear_api_open():
 
 
 def generate_metear_csv(fixtures, day):
+    """Generate metear CSV
+    """
     csv = "\nHeureCET,TempératureC,Point de roséeC,Humidité,Pression au niveau de la merhPa,VisibilitéKm,"\
         "Wind Direction,Vitesse du ventKm/h,Vitesse des rafalesKm/h,Précipitationmm,Evénements,Conditions,"\
         "WindDirDegrees,DateUTC<br />\n"
@@ -61,7 +69,9 @@ def generate_metear_csv(fixtures, day):
 
 
 @require_GET
-def retrieve_metear_new_data(request, airport, year, month, day):
+def retrieve_metear_new_data(request, airport, year, month, day):  # pylint: disable=I0011,W0613
+    """Retrieve METEAR new data
+    """
     # curl -i -XGET 'http://127.0.0.1:8000/stubs/history/airport/LFMN/2015/12/23/DailyHistory.html' && printf "\n"
     if not is_metear_api_open():
         return HttpResponseBadRequest()
@@ -70,7 +80,9 @@ def retrieve_metear_new_data(request, airport, year, month, day):
 
 
 @require_GET
-def retrieve_metear_data(request, airport, year, month, day):
+def retrieve_metear_data(request, airport, year, month, day):  # pylint: disable=I0011,W0613
+    """Retrieve METEAR data
+    """
     # curl -i -XGET 'http://127.0.0.1:8000/stubs/history/airport/LFMN/2015/12/23/DailyHistory.html' && printf "\n"
     if not is_metear_api_open():
         return HttpResponseBadRequest()
@@ -79,7 +91,9 @@ def retrieve_metear_data(request, airport, year, month, day):
 
 
 @require_GET
-def retrieve_bad_content_metear_data(request, airport, year, month, day):
+def retrieve_bad_metear_data(request, airport, year, month, day):  # pylint: disable=I0011,W0613
+    """Retrieve bad content METEAR data
+    """
     # curl -i -XGET 'http://127.0.0.1:8000/stubs/history/airport/LFMN/2015/12/23/badcontent.html' && printf "\n"
     if not is_metear_api_open():
         return HttpResponseBadRequest()

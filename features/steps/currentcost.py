@@ -7,10 +7,10 @@
 import os
 import shlex
 import signal
-import serial
 import subprocess
 from time import sleep
 from threading import Thread
+import serial
 from timevortex.models import get_site_by_slug, get_variable_by_slug
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
 from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE
@@ -378,6 +378,8 @@ class SocatMessager(Thread):
 
 
 def launch_currentcost_command(out, context, setting_type):
+    """Launch CurrentCost command
+    """
     commands = "%s PTY,link=%s PTY,link=%s" % (SOCAT, TEST_CC_CORRECT_TTY_PORT, TEST_CC_CORRECT_TTY_PORT_WRITER)
     context.socat = subprocess.Popen(shlex.split(commands), stdout=subprocess.PIPE, preexec_fn=os.setsid)
     tty_port = TEST_CC_CORRECT_TTY_PORT
@@ -468,7 +470,8 @@ def launch_currentcost_command(out, context, setting_type):
 
 
 def verify_currentcost_data_update(site_id, data_type):
-
+    """Verify currentcost data update
+    """
     site = get_site_by_slug(slug=site_id)
     if site is None:
         assertEqual("Site %s does not exist" % site_id, False)
@@ -488,6 +491,8 @@ def verify_currentcost_data_update(site_id, data_type):
 
 
 def verify_currentcost_tsv_update(site_id, data_type):
+    """Verify currentcost TSV update
+    """
     for variable_id in DICT_CC_INSTANT_CONSO[data_type]:
         last_series = FILE_STORAGE_SPACE.get_last_series(site_id, variable_id)
         if data_type in CC_INSTANT_CONSO_1_TS_0:

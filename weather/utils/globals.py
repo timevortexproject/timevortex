@@ -4,8 +4,8 @@
 
 """Globals for weather app"""
 
-from django.conf import settings
 from datetime import date, timedelta
+from django.conf import settings
 
 KEY_METEAR_NO_SITE_ID = "metear_no_site_id"
 KEY_METEAR_BAD_URL = "metear_bad_url"

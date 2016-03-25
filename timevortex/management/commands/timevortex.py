@@ -25,7 +25,8 @@ ARGUMENTS = {
         KEY_HELP_TEXT: "Lint code using flake8 and configuration in setup.cfg",
     },
     OPTION_QA: {
-        KEY_COMMAND: ["pylint *.py */*.py */*/*.py */*/*/*.py -f html --rcfile=.pylintrc > qa.html"],
+        # KEY_COMMAND: ["pylint *.py */*.py */*/*.py */*/*/*.py -f html --rcfile=.pylintrc > qa.html"],
+        KEY_COMMAND: ["prospector -0 -F"],
         KEY_HELP_TEXT: "Validate qualilty of code using pylint and configuration .pylintrc",
     },
     OPTION_VALIDATE: {
@@ -33,7 +34,7 @@ ARGUMENTS = {
         KEY_HELP_TEXT: "Validate code using lint, test and qa verification",
     },
     OPTION_PREPARE: {
-        KEY_COMMAND: ["pip install flake8 pylint django_nose behave_django pylint-django coverage"],
+        KEY_COMMAND: ["pip install flake8 pylint django_nose behave_django pylint-django coverage prospector"],
         KEY_HELP_TEXT: "Install dependencies for development mode"
     },
     OPTION_BEHAVE: {

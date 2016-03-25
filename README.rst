@@ -11,7 +11,7 @@
 
 ## Dev
     * sudo apt-get install socat
-    * pip install flake8 pylint django_nose behave_django pylint-django coverage
+    * pip install flake8 pylint django_nose behave_django pylint-django coverage prospector
     * [BLOCKED] pip install clonedigger django-fluent-dashboard django-admin-tools-stats
 
 # Create application
@@ -60,5 +60,4 @@
         |       |  var1  | var2   |
         | time1 | value1 | value2 |
         | time2 | value3 | value4 |
-    * Use django François tools to lint code
     * Use vagrant David config

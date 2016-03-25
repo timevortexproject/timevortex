@@ -13,11 +13,11 @@ from django.conf import settings
 from django.utils import timezone
 from timevortex.utils.commands import HTMLCrawlerCommand, AbstractCommand
 from timevortex.utils.globals import timeseries_json, KEY_DATE
+from timevortex.models import Site, get_site_by_slug_and_type, get_sites_by_type, update_or_create_variable
+from timevortex.models import get_variable_by_slug
 from weather.utils.globals import ERROR_METEAR, KEY_METEAR_NO_SITE_ID, SETTINGS_METEAR_URL, SETTINGS_DEFAULT_METEAR_URL
 from weather.utils.globals import KEY_METEAR_BAD_URL, KEY_METEAR_PROBLEM_WS, KEY_METEAR_BAD_CONTENT
 from weather.utils.globals import SETTINGS_METEAR_START_DATE, SETTINGS_DEFAULT_METEAR_START_DATE
-from timevortex.models import Site, get_site_by_slug_and_type, get_sites_by_type, update_or_create_variable
-from timevortex.models import get_variable_by_slug
 
 LOGGER = logging.getLogger("weather")
 SLUG_METEAR_TEMPERATURE_CELSIUS = "metear_temperature_celsius"
@@ -38,12 +38,11 @@ ARRAY_VARIABLE_ID = [
 TODAY = timezone.now()
 
 
-class MyMETEARCrawler(HTMLCrawlerCommand):
+class MyMETEARCrawler(HTMLCrawlerCommand):  # pylint: disable=I0011,R0902
     """Command class
     """
 
     help = 'Retrieve metear data from weather underground website'
-
     reverse = False
     multi_rows = True
     multi_variables_per_row = True
@@ -53,6 +52,8 @@ class MyMETEARCrawler(HTMLCrawlerCommand):
     variables = ARRAY_VARIABLE_ID
 
     def url_generator(self, *args, **options):
+        """Generate METEAR url according to site_id and date
+        """
         from_date = "%s/%s/%s" % (TODAY.year, TODAY.month, TODAY.day)
         if "site_id" not in options:
             self.out.write("%s\n" % ERROR_METEAR[KEY_METEAR_NO_SITE_ID])
@@ -65,12 +66,16 @@ class MyMETEARCrawler(HTMLCrawlerCommand):
         self.url = metear_url % (self.site_id, from_date)
 
     def clean_data(self):
+        """Clean data receive form METEAR API, remove <br/> and \n
+        """
         self.html = self.html.replace("<br/>", "").replace("<br />", "").split("\n")[2:]
         if self.reverse:
             self.html = self.remove_html_duplication()
             self.html = self.html[::-1]
 
     def remove_html_duplication(self):
+        """Remove duplicate line into METAER data API
+        """
         elements = []
         for item in self.html:
             key = item.split(",")[0]
@@ -81,6 +86,8 @@ class MyMETEARCrawler(HTMLCrawlerCommand):
         return self.html
 
     def prepare_row(self):
+        """Prepare HTML row to contain clear value
+        """
         self.transformed_row = None
         transformed_row = {}
         self.row = self.row.split(",")[1:]
@@ -96,6 +103,8 @@ class MyMETEARCrawler(HTMLCrawlerCommand):
                 pass
 
     def prepare_timeseries(self):
+        """Transform row into timeseries
+        """
         self.timeseries = None
         value = self.transformed_row[self.variable_id]
         row_date = self.transformed_row[KEY_DATE]

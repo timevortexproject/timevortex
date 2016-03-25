@@ -47,7 +47,9 @@ def validate_message(message):
 
 
 @receiver(SIGNAL_TIMESERIES)
-def timeseries_receiver(sender, **kwargs):
+def timeseries_receiver(sender, **kwargs):  # pylint: disable=I0011,W0613
+    """Receiver method for timeseries signal
+    """
     timeseries = ""
     if KEY_TIMESERIES in kwargs:
         timeseries = kwargs[KEY_TIMESERIES]
