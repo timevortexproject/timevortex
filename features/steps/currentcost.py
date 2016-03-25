@@ -7,6 +7,7 @@
 import os
 import shlex
 import signal
+import logging
 import subprocess
 from time import sleep
 from threading import Thread
@@ -18,9 +19,9 @@ from features.steps.test_globals import SOCAT, assertEqual, assertGTE, assertLTE
 from energy.management.commands.retrieve_currentcost_data import Command as CurrentCostCommand
 from energy.utils.globals import ERROR_CC_BAD_PORT, ERROR_CC_DISCONNECTED, ERROR_CC_NO_MESSAGE
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE, ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR
-from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS
+from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS, KEY_ENERGY
 
-
+LOGGER = logging.getLogger(KEY_ENERGY)
 TIMEVORTEX_CURRENTCOST_LOG_FILE = "/tmp/timevortex_energy.log"
 TEST_CC_SITE_ID = "test_site"
 TEST_CC_LABEL = "My home"
@@ -355,6 +356,7 @@ class SocatMessager(Thread):
 
     def __init__(self, context, port, message=None):
         """Constructor"""
+        LOGGER.info("SocatMessager::run => Thread init")
         Thread.__init__(self)
         self.context = context
         self.port = port
@@ -388,7 +390,7 @@ def launch_currentcost_command(out, context, setting_type):
     context.socat = subprocess.Popen(shlex.split(commands), stdout=subprocess.PIPE, preexec_fn=os.setsid)
     tty_port = TEST_CC_CORRECT_TTY_PORT
     timeout = 10
-    usb_retry = 9
+    usb_retry = 5
     ch1 = None
     ch2 = None
     ch3 = None
