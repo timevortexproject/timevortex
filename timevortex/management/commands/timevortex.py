@@ -48,6 +48,12 @@ ARGUMENTS = {
 }
 
 
+def call_and_exit(command):
+    code = call(command)
+    if code != 0:
+        exit(1)
+
+
 class Command(BaseCommand):
     """Command class
     """
@@ -65,14 +71,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options[OPTION_LINT] or options[OPTION_VALIDATE]:
-            call(ARGUMENTS[OPTION_LINT][KEY_COMMAND])
+            call_and_exit(ARGUMENTS[OPTION_LINT][KEY_COMMAND])
         if options[OPTION_VALIDATE]:
-            call(ARGUMENTS[OPTION_VALIDATE][KEY_COMMAND], shell=True)
+            call_and_exit(ARGUMENTS[OPTION_VALIDATE][KEY_COMMAND], shell=True)
         if options[OPTION_BEHAVE]:
-            call(ARGUMENTS[OPTION_BEHAVE][KEY_COMMAND], shell=True)
+            call_and_exit(ARGUMENTS[OPTION_BEHAVE][KEY_COMMAND], shell=True)
         if options[OPTION_BEHAVE_ALL] or options[OPTION_VALIDATE]:
-            call(ARGUMENTS[OPTION_BEHAVE_ALL][KEY_COMMAND], shell=True)
+            call_and_exit(ARGUMENTS[OPTION_BEHAVE_ALL][KEY_COMMAND], shell=True)
         if options[OPTION_QA] or options[OPTION_VALIDATE]:
-            call(ARGUMENTS[OPTION_QA][KEY_COMMAND], shell=True)
+            call_and_exit(ARGUMENTS[OPTION_QA][KEY_COMMAND], shell=True)
         if options[OPTION_PREPARE]:
-            call(ARGUMENTS[OPTION_PREPARE][KEY_COMMAND], shell=True)
+            call_and_exit(ARGUMENTS[OPTION_PREPARE][KEY_COMMAND], shell=True)
