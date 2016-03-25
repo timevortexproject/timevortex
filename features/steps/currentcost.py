@@ -13,7 +13,7 @@ from threading import Thread
 import serial
 from timevortex.models import get_site_by_slug, get_variable_by_slug
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
-from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE
+from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE, LOGGER
 from features.steps.test_globals import SOCAT, assertEqual, assertGTE, assertLTE
 from energy.management.commands.retrieve_currentcost_data import Command as CurrentCostCommand
 from energy.utils.globals import ERROR_CC_BAD_PORT, ERROR_CC_DISCONNECTED, ERROR_CC_NO_MESSAGE
@@ -363,17 +363,21 @@ class SocatMessager(Thread):
     def run(self):
         """Main method."""
         sleep(1)
-
+        LOGGER.debug("SocatMessager::run => Inside run method")
         if self.message is not None:
             ser = serial.Serial(self.port)
+            LOGGER.debug("SocatMessager::run => Connected to port %s", self.port)
             ser.write(bytes("%s\n" % self.message, "utf-8"))
+            LOGGER.debug("SocatMessager::run => Sended message %s", self.message)
             sleep(1)
             ser.close()
         else:
             try:
+                LOGGER.debug("SocatMessager::run => No message")
                 os.killpg(self.context.socat.pid, signal.SIGTERM)
                 sleep(1)
             except AttributeError:
+                LOGGER.debug("SocatMessager::run => AttributeError")
                 pass
 
 
