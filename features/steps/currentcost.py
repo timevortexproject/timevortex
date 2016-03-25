@@ -388,7 +388,7 @@ def launch_currentcost_command(out, context, setting_type):
     context.socat = subprocess.Popen(shlex.split(commands), stdout=subprocess.PIPE, preexec_fn=os.setsid)
     tty_port = TEST_CC_CORRECT_TTY_PORT
     timeout = 10
-    usb_retry = 5
+    usb_retry = 9
     ch1 = None
     ch2 = None
     ch3 = None
