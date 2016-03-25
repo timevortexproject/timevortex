@@ -48,8 +48,8 @@ ARGUMENTS = {
 }
 
 
-def call_and_exit(command):
-    code = call(command)
+def call_and_exit(command, shell=False):
+    code = call(command, shell=shell)
     if code != 0:
         exit(1)
 
