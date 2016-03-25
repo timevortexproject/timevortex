@@ -1,0 +1,15 @@
+language: python
+python:
+  - "3.2"
+  - "3.4"
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install socat
+install:
+  - pip install flake8 pylint django_nose behave_django pylint-django coverage prospector
+  - pip install django requests python-dateutil pytz django-admin-tools psutil pyserial==2.5
+script:
+  - python --version
+  - python manage.py timevortex --lint
+  - python manage.py timevortex --behave_all
+  - python manage.py timevortex --qa
