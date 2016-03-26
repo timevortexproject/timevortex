@@ -356,7 +356,6 @@ class SocatMessager(Thread):
 
     def __init__(self, context, port, message=None):
         """Constructor"""
-        LOGGER.info("SocatMessager::run => Thread init")
         Thread.__init__(self)
         self.context = context
         self.port = port
@@ -365,21 +364,16 @@ class SocatMessager(Thread):
     def run(self):
         """Main method."""
         sleep(1)
-        LOGGER.info("SocatMessager::run => Inside run method")
         if self.message is not None:
             ser = serial.Serial(self.port)
-            LOGGER.info("SocatMessager::run => Connected to port %s", self.port)
             ser.write(bytes("%s\n" % self.message, "utf-8"))
-            LOGGER.info("SocatMessager::run => Sended message %s", self.message)
             sleep(1)
             ser.close()
         else:
             try:
-                LOGGER.info("SocatMessager::run => No message")
                 os.killpg(self.context.socat.pid, signal.SIGTERM)
                 sleep(1)
             except AttributeError:
-                LOGGER.info("SocatMessager::run => AttributeError")
                 pass
 
 
