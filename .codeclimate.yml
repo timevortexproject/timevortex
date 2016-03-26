@@ -21,3 +21,5 @@ ratings:
 exclude_paths:
 - static/admin/js/vendor/**/*
 - "*/migrations/*.py"
+- static/admin/js/*.js
+- static/admin/js/admin/*.js
