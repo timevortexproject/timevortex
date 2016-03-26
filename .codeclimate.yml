@@ -15,5 +15,9 @@ engines:
       languages:
       - python
       - javascript
+ratings:
+   paths:
+   - "**.py"
 exclude_paths:
 - static/admin/js/vendor/**/*
+- */migrations/*.py
