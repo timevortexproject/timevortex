@@ -20,7 +20,6 @@ Feature: Current Cost data collection
    | currentcost_incorrect_message_missing_tmpr  |
    | currentcost_incorrect_message_missing_watts |
 
-
     @wipa
     Scenario: 2.Nominal case instant_consumption_1_timeseries_0
         Given I created a testing Site 'test_site'  
