@@ -1,11 +1,12 @@
 .. image:: https://travis-ci.org/timevortexproject/timevortex.svg?branch=develop
     :target: https://travis-ci.org/timevortexproject/timevortex
 
-.. image:: https://coveralls.io/repos/github/timevortexproject/timevortex/badge.svg?branch=develop :target: https://coveralls.io/github/timevortexproject/timevortex?branch=develop 
+.. image:: https://coveralls.io/repos/github/timevortexproject/timevortex/badge.svg?branch=develop
+    :target: https://coveralls.io/github/timevortexproject/timevortex?branch=develop 
 
 .. image:: https://codeclimate.com/github/timevortexproject/timevortex/badges/gpa.svg
-   :target: https://codeclimate.com/github/timevortexproject/timevortex
-   :alt: Code Climate
+    :target: https://codeclimate.com/github/timevortexproject/timevortex
+    :alt: Code Climate
 
 Setup
 =====
