@@ -15,3 +15,5 @@ engines:
       languages:
       - python
       - javascript
+exclude_paths:
+- static/admin/js/vendor/**/*
