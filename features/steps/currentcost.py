@@ -363,7 +363,7 @@ class SocatMessager(Thread):
 
     def run(self):
         """Main method."""
-        sleep(1)
+        sleep(3)
         if self.message is not None:
             ser = serial.Serial(self.port)
             ser.write(bytes("%s\n" % self.message, "utf-8"))

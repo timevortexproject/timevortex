@@ -181,8 +181,6 @@ def run_script(context, script_name, setting_type):
     if script_name in KEY_CURRENTCOST:
         launch_currentcost_command(out, context, setting_type)
 
-    sleep(2)
-
     context.commands_response = [out.getvalue().strip()]
 
     try:
