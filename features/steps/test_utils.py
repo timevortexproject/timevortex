@@ -15,7 +15,7 @@ from io import StringIO
 from behave import given, when, then
 from timevortex.models import Site, create_site
 from timevortex.utils.globals import LOGGER
-from features.steps.test_globals import KEY_LABEL, KEY_SITE_TYPE, WITH_STUBS, DICT_JSON_REQUEST_HEADER, assertEqual
+from features.steps.test_globals import KEY_LABEL, KEY_SITE_TYPE, WITH_STUBS, DICT_JSON_REQUEST_HEADER, assert_equal
 from features.steps.test_globals import read_log, TIMEVORTEX_LOG_FILE, STUBS_COMMAND, reset_testing_environment
 from features.steps.currentcost import TIMEVORTEX_CURRENTCOST_LOG_FILE
 from features.steps.currentcost import CC_INSTANT_CONSO_1_TS_0, CC_INSTANT_CONSO_1_TS_3, CC_INSTANT_CONSO_2_TS_7
@@ -78,7 +78,7 @@ def verify_json_message(json_message, expected_message):
         message = json_message
     validation = [KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE, KEY_DATE, KEY_DST_TIMEZONE, KEY_NON_DST_TIMEZONE]
     for key in validation:
-        assertEqual(message[key], expected_message[key])
+        assert_equal(message[key], expected_message[key])
 
 
 def extract_from_log(expected_message, log_file_path, line):
@@ -91,7 +91,7 @@ def extract_from_log(expected_message, log_file_path, line):
     try:
         verify_json_message(body, expected_message)
     except ValueError:
-        assertEqual(expected_message, body)
+        assert_equal(expected_message, body)
 
 
 def check_response_script(commands_response, error):
@@ -103,7 +103,7 @@ def check_response_script(commands_response, error):
         cmdr = cmdr.replace("\n", "")
         assert cmdr is not None, "%s should not equal to %s" % (cmdr, None)
         assert cmdr is not "", "%s should not equal to %s" % (cmdr, "")
-        assertEqual(error, cmdr)
+        assert_equal(error, cmdr)
 
 
 @given("I shutdown the metear web service")
@@ -147,7 +147,7 @@ def verify_error_message_on_system_tsv_file(context, error_type, tsv_file_type):
         last_error = FILE_STORAGE_SPACE.get_last_error(tsv_file_type)
     else:
         last_error = FILE_STORAGE_SPACE.get_last_error(context.site_id)
-    assertEqual(error, last_error[KEY_VALUE])
+    assert_equal(error, last_error[KEY_VALUE])
 
 
 @then("I should see an error message '{error_type}' on the screen")
@@ -208,7 +208,7 @@ def verify_data_update_db(context, data_type, site_id):
     elif data_type in DICT_CC_INSTANT_CONSO:
         verify_currentcost_data_update(site_id, data_type)
     else:
-        assertEqual("Unknown datatype %s error" % data_type, False)
+        assert_equal("Unknown datatype %s error" % data_type, False)
 
 
 @then("I should see '{data_type}' data update in TSV file for '{site_id}'")

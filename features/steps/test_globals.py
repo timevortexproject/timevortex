@@ -28,18 +28,18 @@ def reset_testing_environment():
     setattr(settings, SETTINGS_METEAR_START_DATE, SETTINGS_STUBS_METEAR_START_DATE)
 
 
-def assertEqual(element1, element2):
+def assert_equal(element1, element2):
     try:
         assert element1 in element2, "%s should equal to %s" % (element1, element2)
     except TypeError:
         assert element1 == element2, "%s should equal to %s" % (element1, element2)
 
 
-def assertGTE(element1, element2):
+def assert_gte(element1, element2):
     assert element1 >= element2, "%s should be gte to %s" % (element1, element2)
 
 
-def assertLTE(element1, element2):
+def assert_lte(element1, element2):
     assert element1 <= element2, "%s should be lte to %s" % (element1, element2)
 
 
@@ -68,4 +68,4 @@ def counter_from_log(word, expected_occurency, log_file_path, line):
         assert word not in c, "%s should not be in %s" % (word, c)
     else:
         assert word in c, "%s should be in %s" % (word, c)
-        assertEqual(c[word], expected_occurency)
+        assert_equal(c[word], expected_occurency)

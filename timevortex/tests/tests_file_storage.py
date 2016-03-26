@@ -83,34 +83,34 @@ class TestFileStorage(TestCase):
             result = FILE_STORAGE_SPACE.get_last_series(TEST_CC_SITE_ID, variable)
             series[KEY_VALUE] = VARIABLES[variable][KEY_VALUE] - 1
             series[KEY_VARIABLE_ID] = variable
-            self.assertEqual(series[KEY_VALUE], int(result[KEY_VALUE]))
-            self.assertEqual(series[KEY_SITE_ID], result[KEY_SITE_ID])
-            self.assertEqual(series[KEY_VARIABLE_ID], result[KEY_VARIABLE_ID])
-            self.assertEqual(series[KEY_DST_TIMEZONE], result[KEY_DST_TIMEZONE])
-            self.assertEqual(
+            self.assert_equal(series[KEY_VALUE], int(result[KEY_VALUE]))
+            self.assert_equal(series[KEY_SITE_ID], result[KEY_SITE_ID])
+            self.assert_equal(series[KEY_VARIABLE_ID], result[KEY_VARIABLE_ID])
+            self.assert_equal(series[KEY_DST_TIMEZONE], result[KEY_DST_TIMEZONE])
+            self.assert_equal(
                 series[KEY_NON_DST_TIMEZONE], result[KEY_NON_DST_TIMEZONE])
-            self.assertEqual(series[KEY_DATE], result[KEY_DATE])
+            self.assert_equal(series[KEY_DATE], result[KEY_DATE])
 
         today = date.today().isoformat()
         series_number = FILE_STORAGE_SPACE.get_number_of_series(
             TEST_CC_SITE_ID, today)
         LOGGER.error(series_number)
-        self.assertEqual(len(series_number), len(VARIABLES))
+        self.assert_equal(len(series_number), len(VARIABLES))
         for variable in VARIABLES:
-            self.assertEqual(variable in series_number, True)
-            self.assertEqual(
+            self.assert_equal(variable in series_number, True)
+            self.assert_equal(
                 series_number[variable][KEY_VALUE], VARIABLES[variable][KEY_VALUE])
 
         series_number = FILE_STORAGE_SPACE.get_number_of_series(
             TEST_CC_SITE_ID, FAKE_DATE)
-        self.assertEqual(len(series_number), 0)
+        self.assert_equal(len(series_number), 0)
 
         series_number = FILE_STORAGE_SPACE.get_number_of_series(
             TEST_CC_SITE_ID, SECOND_FAKE_DATE)
-        self.assertEqual(len(series_number), 1)
+        self.assert_equal(len(series_number), 1)
         variable = TEST_VARIABLE
-        self.assertEqual(variable in series_number, True)
-        self.assertEqual(
+        self.assert_equal(variable in series_number, True)
+        self.assert_equal(
             series_number[variable][KEY_VALUE], 1)
 
     def test_error_creation(self):
@@ -130,17 +130,17 @@ class TestFileStorage(TestCase):
             FILE_STORAGE_SPACE.insert_error(error)
 
         result = FILE_STORAGE_SPACE.get_last_error(TEST_CC_SITE_ID)
-        self.assertEqual(error[KEY_VALUE], int(result[KEY_VALUE]))
-        self.assertEqual(error[KEY_SITE_ID], result[KEY_SITE_ID])
-        self.assertEqual(error[KEY_VARIABLE_ID], result[KEY_VARIABLE_ID])
-        self.assertEqual(error[KEY_DST_TIMEZONE], result[KEY_DST_TIMEZONE])
-        self.assertEqual(error[KEY_NON_DST_TIMEZONE], result[KEY_NON_DST_TIMEZONE])
-        self.assertEqual(error[KEY_DATE], result[KEY_DATE])
+        self.assert_equal(error[KEY_VALUE], int(result[KEY_VALUE]))
+        self.assert_equal(error[KEY_SITE_ID], result[KEY_SITE_ID])
+        self.assert_equal(error[KEY_VARIABLE_ID], result[KEY_VARIABLE_ID])
+        self.assert_equal(error[KEY_DST_TIMEZONE], result[KEY_DST_TIMEZONE])
+        self.assert_equal(error[KEY_NON_DST_TIMEZONE], result[KEY_NON_DST_TIMEZONE])
+        self.assert_equal(error[KEY_DATE], result[KEY_DATE])
 
         today = date.today().isoformat()
         result_number = FILE_STORAGE_SPACE.get_number_of_error(TEST_CC_SITE_ID, today)
         LOGGER.error(result_number)
-        self.assertEqual(result_number, ERROR_NUMBER)
+        self.assert_equal(result_number, ERROR_NUMBER)
 
         result_number_2 = FILE_STORAGE_SPACE.get_number_of_error(TEST_CC_SITE_ID, FAKE_DATE)
-        self.assertEqual(result_number_2, 0)
+        self.assert_equal(result_number_2, 0)

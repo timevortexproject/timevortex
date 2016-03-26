@@ -7,21 +7,19 @@
 import os
 import shlex
 import signal
-import logging
 import subprocess
 from time import sleep
 from threading import Thread
 import serial
 from timevortex.models import get_site_by_slug, get_variable_by_slug
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
-from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE, LOGGER
-from features.steps.test_globals import SOCAT, assertEqual, assertGTE, assertLTE
+from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE
+from features.steps.test_globals import SOCAT, assert_equal, assert_gte, assert_lte
 from energy.management.commands.retrieve_currentcost_data import Command as CurrentCostCommand
 from energy.utils.globals import ERROR_CC_BAD_PORT, ERROR_CC_DISCONNECTED, ERROR_CC_NO_MESSAGE
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE, ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR
-from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS, KEY_ENERGY
+from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS
 
-LOGGER = logging.getLogger(KEY_ENERGY)
 TIMEVORTEX_CURRENTCOST_LOG_FILE = "/tmp/timevortex_energy.log"
 TEST_CC_SITE_ID = "test_site"
 TEST_CC_LABEL = "My home"
@@ -476,20 +474,20 @@ def verify_currentcost_data_update(site_id, data_type):
     """
     site = get_site_by_slug(slug=site_id)
     if site is None:
-        assertEqual("Site %s does not exist" % site_id, False)
+        assert_equal("Site %s does not exist" % site_id, False)
 
     for variable_id in DICT_CC_INSTANT_CONSO[data_type]:
         variable = get_variable_by_slug(site=site, slug=variable_id)
         if variable is not None:
-            assertEqual(variable.start_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_START_VALUE])
+            assert_equal(variable.start_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_START_VALUE])
             if KEY_END_VALUE_2 in DICT_CC_INSTANT_CONSO[data_type][variable_id]:
-                assertGTE(variable.end_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
-                assertLTE(variable.end_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE_2])
+                assert_gte(variable.end_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
+                assert_lte(variable.end_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE_2])
             else:
-                assertEqual(variable.end_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
+                assert_equal(variable.end_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
         else:
             if data_type not in CC_INSTANT_CONSO_1_TS_0:
-                assertEqual("Variable %s does not exist" % variable_id, False)
+                assert_equal("Variable %s does not exist" % variable_id, False)
 
 
 def verify_currentcost_tsv_update(site_id, data_type):
@@ -498,12 +496,12 @@ def verify_currentcost_tsv_update(site_id, data_type):
     for variable_id in DICT_CC_INSTANT_CONSO[data_type]:
         last_series = FILE_STORAGE_SPACE.get_last_series(site_id, variable_id)
         if data_type in CC_INSTANT_CONSO_1_TS_0:
-            assertEqual(last_series, None)
+            assert_equal(last_series, None)
         else:
             if KEY_END_VALUE_2 in DICT_CC_INSTANT_CONSO[data_type][variable_id]:
-                assertGTE(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
-                assertLTE(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE_2])
+                assert_gte(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
+                assert_lte(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE_2])
             else:
-                assertEqual(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
-            assertEqual(last_series[KEY_SITE_ID], site_id)
-            assertEqual(last_series[KEY_VARIABLE_ID], variable_id)
+                assert_equal(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
+            assert_equal(last_series[KEY_SITE_ID], site_id)
+            assert_equal(last_series[KEY_VARIABLE_ID], variable_id)

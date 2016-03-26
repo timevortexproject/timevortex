@@ -49,6 +49,8 @@ ARGUMENTS = {
 
 
 def call_and_exit(command, shell=False):
+    """Call a shell command and exit if error
+    """
     code = call(command, shell=shell)
     if code != 0:
         exit(1)

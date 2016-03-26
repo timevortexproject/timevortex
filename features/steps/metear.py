@@ -12,7 +12,7 @@ from timevortex.models import get_site_by_slug, get_site_variables
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
 from weather.utils.globals import SETTINGS_METEAR_URL, SETTINGS_STUBS_NEW_METEAR_URL
 from weather.management.commands.retrieve_metear_data import Command as MetearCommand
-from features.steps.test_globals import assertEqual, counter_from_log
+from features.steps.test_globals import assert_equal, counter_from_log
 
 
 TEST_METEAR_SITE_ID = "LFMN"
@@ -225,12 +225,12 @@ def verify_metear_data_update(site_id, data_type):
         fixtures[start_array_index][KEY_METEAR_FAKE_DATA_ELEMENTS])
     expected_end_value = transform_metear_array2dict(
         fixtures[end_array_index][KEY_METEAR_FAKE_DATA_ELEMENTS])
-    assertEqual(len(variables), expected_variables_len)
+    assert_equal(len(variables), expected_variables_len)
     for variable in variables:
-        assertEqual(variable.start_date.isoformat(" "), expected_start_date)
-        assertEqual(variable.end_date.isoformat(" "), expected_end_date)
-        assertEqual(variable.start_value, expected_start_value[variable.slug])
-        assertEqual(variable.end_value, expected_end_value[variable.slug])
+        assert_equal(variable.start_date.isoformat(" "), expected_start_date)
+        assert_equal(variable.end_date.isoformat(" "), expected_end_date)
+        assert_equal(variable.start_value, expected_start_value[variable.slug])
+        assert_equal(variable.end_value, expected_end_value[variable.slug])
 
 
 def verify_metear_tsv_update(site_id, data_type):
@@ -253,4 +253,4 @@ def verify_metear_tsv_update(site_id, data_type):
     for variable in fixtures_data:
         for date in fixtures_data[variable]:
             iso_date = "%s+00:00" % date.replace(" ", "T")
-            assertEqual(fixtures_data[variable][date], folder_data[variable][iso_date])
+            assert_equal(fixtures_data[variable][date], folder_data[variable][iso_date])

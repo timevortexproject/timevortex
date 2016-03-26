@@ -4,7 +4,7 @@
 
 """Hardware command"""
 
-import psutil
+# import psutil
 from timevortex.utils.commands import AbstractCommand
 
 
@@ -15,9 +15,12 @@ class Command(AbstractCommand):
     name = "Hardware crawler"
 
     def handle(self, *args, **options):
+        """Main function
+        """
         # LOGGER.info("Command %s started", self.name)
-        print(psutil.cpu_times())
-        print(psutil.cpu_count())
-        print(psutil.cpu_count(logical=False))
-        print(psutil.cpu_percent(interval=1, percpu=True))
+        # print(psutil.cpu_times())
+        # print(psutil.cpu_count())
+        # print(psutil.cpu_count(logical=False))
+        # print(psutil.cpu_percent(interval=1, percpu=True))
         # LOGGER.info("Command %s stopped", self.name)
+        pass
