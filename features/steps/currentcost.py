@@ -133,8 +133,8 @@ DICT_CC_INSTANT_CONSO = {
         },
         TEST_CC_VARIABLE_ID_KWH_CH1: {
             KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0003",
-            KEY_END_VALUE_2: "0.0004",
+            KEY_END_VALUE: "0.0004",
+            KEY_END_VALUE_2: "0.0005",
         },
         TEST_CC_VARIABLE_ID_WATTS_CH2: {
             KEY_START_VALUE: "14405.0",
@@ -164,8 +164,8 @@ DICT_CC_INSTANT_CONSO = {
         },
         TEST_CC_VARIABLE_ID_KWH_CH1: {
             KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.00065",
-            KEY_END_VALUE_2: "0.00075"
+            KEY_END_VALUE: "0.0008",
+            KEY_END_VALUE_2: "0.001"
         },
         TEST_CC_VARIABLE_ID_WATTS_CH2: {
             KEY_START_VALUE: "14405.0",
@@ -195,8 +195,8 @@ DICT_CC_INSTANT_CONSO = {
         },
         TEST_CC_VARIABLE_ID_KWH_CH1: {
             KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.00065",
-            KEY_END_VALUE_2: "0.00075"
+            KEY_END_VALUE: "0.0008",
+            KEY_END_VALUE_2: "0.001"
         },
         TEST_CC_VARIABLE_ID_WATTS_CH2: {
             KEY_START_VALUE: "14405.0",
@@ -226,8 +226,8 @@ DICT_CC_INSTANT_CONSO = {
         },
         TEST_CC_VARIABLE_ID_KWH_CH1: {
             KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0013",
-            KEY_END_VALUE_2: "0.0014"
+            KEY_END_VALUE: "0.0017",
+            KEY_END_VALUE_2: "0.0019"
         },
         TEST_CC_VARIABLE_ID_WATTS_CH2: {
             KEY_START_VALUE: "14405.0",
