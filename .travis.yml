@@ -6,7 +6,7 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install socat
 install:
-  - pip install flake8 django_nose behave_django coverage prospector coveralls
+  - pip install flake8 django_nose behave_django coverage prospector coveralls nose-exclude
   - pip install django requests python-dateutil pytz django-admin-tools psutil pyserial==2.5
 script:
   - python --version

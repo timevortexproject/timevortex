@@ -26,7 +26,7 @@ ARGUMENTS = {
     },
     OPTION_QA: {
         # KEY_COMMAND: ["pylint *.py */*.py */*/*.py */*/*/*.py -f html --rcfile=.pylintrc > qa.html"],
-        KEY_COMMAND: ["prospector -F"],
+        KEY_COMMAND: ["prospector -F -0"],
         KEY_HELP_TEXT: "Validate qualilty of code using pylint and configuration .pylintrc",
     },
     OPTION_VALIDATE: {
