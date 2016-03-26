@@ -7,6 +7,10 @@ engines:
     enabled: true
   csslint:
     enabled: true
+  radon:
+    enabled: true
+    config:
+      python_version: 3
   pep8:
     enabled: true
   duplication:
