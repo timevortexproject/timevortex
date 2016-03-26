@@ -17,7 +17,7 @@ OPTION_LINT = "lint"
 OPTION_QA = "qa"
 OPTION_VALIDATE = "validate"
 OPTION_BEHAVE = "behave"
-OPTION_BEHAVE_ALL = "behave_all"
+OPTION_BEHAVE_ALL = "behave-all"
 # Arguments
 ARGUMENTS = {
     OPTION_LINT: {
@@ -38,11 +38,15 @@ ARGUMENTS = {
         KEY_HELP_TEXT: "Install dependencies for development mode"
     },
     OPTION_BEHAVE: {
-        KEY_COMMAND: ["coverage run --source='.' manage.py behave --tags=wip --no-skipped && coverage report -m"],
+        KEY_COMMAND: [
+            "python manage.py migrate && "\
+            "coverage run --source='.' manage.py behave --tags=wip --no-skipped && "\
+            "coverage report -m"
+        ],
         KEY_HELP_TEXT: "Launch behave test and coverage"
     },
     OPTION_BEHAVE_ALL: {
-        KEY_COMMAND: ["coverage run --source='.' manage.py behave && coverage report -m"],
+        KEY_COMMAND: ["python manage.py migrate && coverage run --source='.' manage.py behave && coverage report -m"],
         KEY_HELP_TEXT: "Launch all behave test and coverage"
     },
 }

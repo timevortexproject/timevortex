@@ -11,7 +11,7 @@
 
 ## Dev
     * sudo apt-get install socat
-    * pip install flake8 pylint django_nose behave_django pylint-django coverage prospector
+    * pip install flake8 pylint django_nose behave_django pylint-django coverage prospector nose-exclude
     * [BLOCKED] pip install clonedigger django-fluent-dashboard django-admin-tools-stats
 
 # Create application

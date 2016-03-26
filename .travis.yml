@@ -6,10 +6,12 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install socat
 install:
-  - pip install flake8 django_nose behave_django coverage prospector
+  - pip install flake8 django_nose behave_django coverage prospector coveralls
   - pip install django requests python-dateutil pytz django-admin-tools psutil pyserial==2.5
 script:
   - python --version
   - python manage.py timevortex --lint
-  - python manage.py timevortex --behave_all
+  - python manage.py test
+  - python manage.py timevortex --behave-all
   - python manage.py timevortex --qa
+after_success: coveralls
