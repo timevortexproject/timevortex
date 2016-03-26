@@ -7,23 +7,30 @@
    :target: https://codeclimate.com/github/timevortexproject/timevortex
    :alt: Code Climate
 
-# Setup
+Setup
+=====
 
 * mkdir timevortex_v2
 * mkvirtualenv timevortex_v2 --python=/usr/bin/python3
 * sudo apt-get install python3 python3-dev
 
-# Install
+Install
+=======
 
-## Prod
-    * pip install django requests python-dateutil pytz django-admin-tools psutil pyserial==2.5
+Prod
+----
 
-## Dev
-    * sudo apt-get install socat
-    * pip install flake8 pylint django_nose behave_django pylint-django coverage prospector nose-exclude
-    * [BLOCKED] pip install clonedigger django-fluent-dashboard django-admin-tools-stats
+* pip install django requests python-dateutil pytz django-admin-tools psutil pyserial==2.5
 
-# Create application
+Dev
+---
+    
+* sudo apt-get install socat
+* pip install flake8 pylint django_nose behave_django pylint-django coverage prospector nose-exclude
+* [BLOCKED] pip install clonedigger django-fluent-dashboard django-admin-tools-stats
+
+Create application
+==================
 
 * django-admin startproject timevortex
 * python manage.py startapp weather
@@ -35,7 +42,8 @@
 * python manage.py collectstatic
 
 
-## TimeVortex backlog
+TimeVortex backlog
+------------------
 
 * [BLOCKED]
     * [BLOCKED] Install and setup clonedigger (not python 3 compatible. Work in progress)
@@ -59,7 +67,8 @@
     * Retrieve Memory data
     * Retrieve HDD data
 
-## Timevortex idea
+Timevortex idea
+---------------
 
 * Global
     * Split command into several celery job
