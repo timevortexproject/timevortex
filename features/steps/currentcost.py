@@ -363,7 +363,7 @@ class SocatMessager(Thread):
 
     def run(self):
         """Main method."""
-        sleep(3)
+        sleep(1)
         if self.message is not None:
             ser = serial.Serial(self.port)
             ser.write(bytes("%s\n" % self.message, "utf-8"))
@@ -453,6 +453,7 @@ def launch_currentcost_command(out, context, setting_type):
     elif setting_type in CC_HISTORY:
         context.thread = SocatMessager(context, tty_port, HISTORY_1)
         context.thread.start()
+    sleep(2)
     command.handle(
         site_id=context.site_id,
         variable_id=TEST_CC_VARIABLE_ID,
