@@ -21,7 +21,7 @@ from features.steps.currentcost import TIMEVORTEX_CURRENTCOST_LOG_FILE
 from features.steps.currentcost import CC_INSTANT_CONSO_1_TS_0, CC_INSTANT_CONSO_1_TS_3, CC_INSTANT_CONSO_2_TS_7
 from features.steps.currentcost import CC_INSTANT_CONSO_2_TS_3, CC_INSTANT_CONSO_2_TS_0, CC_INSTANT_CONSO_3_TS_3
 from features.steps.currentcost import CURRENTCOST_MESSAGE, CURRENTCOST_MESSAGE_2, CURRENTCOST_MESSAGE_3
-from features.steps.currentcost import launch_currentcost_command, DICT_CC_INSTANT_CONSO, verify_currentcost_tsv_update
+from features.steps.currentcost import launch_currentcost_command, DICT_CC_DATA_TYPE, verify_currentcost_tsv_update
 from features.steps.currentcost import verify_currentcost_data_update, CC_HISTORY, HISTORY_1
 from features.steps.metear import KEY_WEATHER_LOG_FILE, TIMEVORTEX_WEATHER_LOG_FILE, launch_metear_command
 from features.steps.metear import verify_metear_data_update, verify_metear_tsv_update, KEY_METEAR
@@ -205,7 +205,7 @@ def run_script(context, script_name, setting_type):
 def verify_data_update_db(context, data_type, site_id):
     if data_type in ["new", "historical"]:
         verify_metear_data_update(site_id, data_type)
-    elif data_type in DICT_CC_INSTANT_CONSO:
+    elif data_type in DICT_CC_DATA_TYPE:
         verify_currentcost_data_update(site_id, data_type)
     else:
         assert_equal("Unknown datatype %s error" % data_type, False)
@@ -213,7 +213,7 @@ def verify_data_update_db(context, data_type, site_id):
 
 @then("I should see '{data_type}' data update in TSV file for '{site_id}'")
 def verify_data_update_tsv_file(context, data_type, site_id):
-    if data_type in DICT_CC_INSTANT_CONSO:
+    if data_type in DICT_CC_DATA_TYPE:
         verify_currentcost_tsv_update(site_id, data_type)
     else:
         try:

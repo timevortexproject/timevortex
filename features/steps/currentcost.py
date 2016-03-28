@@ -63,191 +63,59 @@ CC_INSTANT_CONSO_3_TS_3 = "instant_consumption_3_timeseries_3"
 KEY_START_VALUE = "start_value"
 KEY_END_VALUE = "end_value"
 KEY_END_VALUE_2 = "end_value_2"
+
+DICT_CC_DATA_TYPE = [
+    CC_INSTANT_CONSO_1_TS_0,
+    CC_INSTANT_CONSO_2_TS_7,
+    CC_INSTANT_CONSO_1_TS_3,
+    CC_INSTANT_CONSO_2_TS_3,
+    CC_INSTANT_CONSO_2_TS_0,
+    CC_INSTANT_CONSO_3_TS_3,
+]
+
+
+def create_json_cc_value(start_value):
+    """Create a json for testing purpose
+    """
+    return {
+        CC_INSTANT_CONSO_1_TS_0: {KEY_START_VALUE: None, KEY_END_VALUE: None},
+        CC_INSTANT_CONSO_2_TS_7: {KEY_START_VALUE: start_value, KEY_END_VALUE: start_value},
+        CC_INSTANT_CONSO_1_TS_3: {KEY_START_VALUE: start_value, KEY_END_VALUE: start_value},
+        CC_INSTANT_CONSO_2_TS_3: {KEY_START_VALUE: start_value, KEY_END_VALUE: start_value},
+        CC_INSTANT_CONSO_2_TS_0: {KEY_START_VALUE: start_value, KEY_END_VALUE: start_value},
+        CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: start_value, KEY_END_VALUE: start_value},
+    }
+
+
 DICT_CC_INSTANT_CONSO = {
-    CC_INSTANT_CONSO_1_TS_0: {
-        TEST_CC_VARIABLE_ID_WATTS_CH1: {
-            KEY_START_VALUE: None,
-            KEY_END_VALUE: None
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH1: {
-            KEY_START_VALUE: None,
-            KEY_END_VALUE: None
-        },
-        TEST_CC_VARIABLE_ID_WATTS_CH2: {
-            KEY_START_VALUE: None,
-            KEY_END_VALUE: None
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH2: {
-            KEY_START_VALUE: None,
-            KEY_END_VALUE: None
-        },
-        TEST_CC_VARIABLE_ID_WATTS_CH3: {
-            KEY_START_VALUE: None,
-            KEY_END_VALUE: None
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH3: {
-            KEY_START_VALUE: None,
-            KEY_END_VALUE: None
-        },
-        TEST_CC_VARIABLE_ID_TMPR: {
-            KEY_START_VALUE: None,
-            KEY_END_VALUE: None
-        }
+    TEST_CC_VARIABLE_ID_WATTS_CH1: {
+        CC_INSTANT_CONSO_1_TS_0: {KEY_START_VALUE: None, KEY_END_VALUE: None},
+        CC_INSTANT_CONSO_2_TS_7: {KEY_START_VALUE: "406.0", KEY_END_VALUE: "406.0"},
+        CC_INSTANT_CONSO_1_TS_3: {KEY_START_VALUE: "406.0", KEY_END_VALUE: "405.0"},
+        CC_INSTANT_CONSO_2_TS_3: {KEY_START_VALUE: "406.0", KEY_END_VALUE: "406.0"},
+        CC_INSTANT_CONSO_2_TS_0: {KEY_START_VALUE: "406.0", KEY_END_VALUE: "406.0"},
+        CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: "406.0", KEY_END_VALUE: "0.0"},
     },
-    CC_INSTANT_CONSO_2_TS_7: {
-        TEST_CC_VARIABLE_ID_WATTS_CH1: {
-            KEY_START_VALUE: "406.0",
-            KEY_END_VALUE: "406.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH1: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0"
-        },
-        TEST_CC_VARIABLE_ID_WATTS_CH2: {
-            KEY_START_VALUE: "14405.0",
-            KEY_END_VALUE: "14405.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH2: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0"
-        },
-        TEST_CC_VARIABLE_ID_WATTS_CH3: {
-            KEY_START_VALUE: "10405.0",
-            KEY_END_VALUE: "10405.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH3: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0"
-        },
-        TEST_CC_VARIABLE_ID_TMPR: {
-            KEY_START_VALUE: "20.3",
-            KEY_END_VALUE: "20.3"
-        }
+    TEST_CC_VARIABLE_ID_KWH_CH1: {
+        CC_INSTANT_CONSO_1_TS_0: {KEY_START_VALUE: None, KEY_END_VALUE: None},
+        CC_INSTANT_CONSO_2_TS_7: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0"},
+        CC_INSTANT_CONSO_1_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0004", KEY_END_VALUE_2: "0.0005"},
+        CC_INSTANT_CONSO_2_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0008", KEY_END_VALUE_2: "0.001"},
+        CC_INSTANT_CONSO_2_TS_0: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0008", KEY_END_VALUE_2: "0.001"},
+        CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0017", KEY_END_VALUE_2: "0.0019"},
     },
-    CC_INSTANT_CONSO_1_TS_3: {
-        TEST_CC_VARIABLE_ID_WATTS_CH1: {
-            KEY_START_VALUE: "406.0",
-            KEY_END_VALUE: "405.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH1: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0004",
-            KEY_END_VALUE_2: "0.0005",
-        },
-        TEST_CC_VARIABLE_ID_WATTS_CH2: {
-            KEY_START_VALUE: "14405.0",
-            KEY_END_VALUE: "14405.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH2: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0"
-        },
-        TEST_CC_VARIABLE_ID_WATTS_CH3: {
-            KEY_START_VALUE: "10405.0",
-            KEY_END_VALUE: "10405.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH3: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0"
-        },
-        TEST_CC_VARIABLE_ID_TMPR: {
-            KEY_START_VALUE: "20.3",
-            KEY_END_VALUE: "19.3"
-        }
-    },
-    CC_INSTANT_CONSO_2_TS_3: {
-        TEST_CC_VARIABLE_ID_WATTS_CH1: {
-            KEY_START_VALUE: "406.0",
-            KEY_END_VALUE: "406.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH1: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0008",
-            KEY_END_VALUE_2: "0.001"
-        },
-        TEST_CC_VARIABLE_ID_WATTS_CH2: {
-            KEY_START_VALUE: "14405.0",
-            KEY_END_VALUE: "14405.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH2: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0"
-        },
-        TEST_CC_VARIABLE_ID_WATTS_CH3: {
-            KEY_START_VALUE: "10405.0",
-            KEY_END_VALUE: "10405.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH3: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0"
-        },
-        TEST_CC_VARIABLE_ID_TMPR: {
-            KEY_START_VALUE: "20.3",
-            KEY_END_VALUE: "20.3"
-        }
-    },
-    CC_INSTANT_CONSO_2_TS_0: {
-        TEST_CC_VARIABLE_ID_WATTS_CH1: {
-            KEY_START_VALUE: "406.0",
-            KEY_END_VALUE: "406.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH1: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0008",
-            KEY_END_VALUE_2: "0.001"
-        },
-        TEST_CC_VARIABLE_ID_WATTS_CH2: {
-            KEY_START_VALUE: "14405.0",
-            KEY_END_VALUE: "14405.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH2: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0"
-        },
-        TEST_CC_VARIABLE_ID_WATTS_CH3: {
-            KEY_START_VALUE: "10405.0",
-            KEY_END_VALUE: "10405.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH3: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0"
-        },
-        TEST_CC_VARIABLE_ID_TMPR: {
-            KEY_START_VALUE: "20.3",
-            KEY_END_VALUE: "20.3"
-        }
-    },
-    CC_INSTANT_CONSO_3_TS_3: {
-        TEST_CC_VARIABLE_ID_WATTS_CH1: {
-            KEY_START_VALUE: "406.0",
-            KEY_END_VALUE: "0.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH1: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0017",
-            KEY_END_VALUE_2: "0.0019"
-        },
-        TEST_CC_VARIABLE_ID_WATTS_CH2: {
-            KEY_START_VALUE: "14405.0",
-            KEY_END_VALUE: "14405.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH2: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0"
-        },
-        TEST_CC_VARIABLE_ID_WATTS_CH3: {
-            KEY_START_VALUE: "10405.0",
-            KEY_END_VALUE: "10405.0"
-        },
-        TEST_CC_VARIABLE_ID_KWH_CH3: {
-            KEY_START_VALUE: "0.0",
-            KEY_END_VALUE: "0.0"
-        },
-        TEST_CC_VARIABLE_ID_TMPR: {
-            KEY_START_VALUE: "20.3",
-            KEY_END_VALUE: "21.3"
-        }
-    },
+    TEST_CC_VARIABLE_ID_WATTS_CH2: create_json_cc_value("14405.0"),
+    TEST_CC_VARIABLE_ID_KWH_CH2: create_json_cc_value("0.0"),
+    TEST_CC_VARIABLE_ID_WATTS_CH3: create_json_cc_value("10405.0"),
+    TEST_CC_VARIABLE_ID_KWH_CH3: create_json_cc_value("0.0"),
+    TEST_CC_VARIABLE_ID_TMPR: {
+        CC_INSTANT_CONSO_1_TS_0: {KEY_START_VALUE: None, KEY_END_VALUE: None},
+        CC_INSTANT_CONSO_2_TS_7: {KEY_START_VALUE: "20.3", KEY_END_VALUE: "20.3"},
+        CC_INSTANT_CONSO_1_TS_3: {KEY_START_VALUE: "20.3", KEY_END_VALUE: "19.3"},
+        CC_INSTANT_CONSO_2_TS_3: {KEY_START_VALUE: "20.3", KEY_END_VALUE: "20.3"},
+        CC_INSTANT_CONSO_2_TS_0: {KEY_START_VALUE: "20.3", KEY_END_VALUE: "20.3"},
+        CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: "20.3", KEY_END_VALUE: "21.3"},
+    }
 }
 ARRAY_CC_VARIABLE = [
     TEST_CC_VARIABLE_ID_WATTS_CH1,
@@ -476,15 +344,15 @@ def verify_currentcost_data_update(site_id, data_type):
     if site is None:
         assert_equal("Site %s does not exist" % site_id, False)
 
-    for variable_id in DICT_CC_INSTANT_CONSO[data_type]:
+    for variable_id in DICT_CC_INSTANT_CONSO:
         variable = get_variable_by_slug(site=site, slug=variable_id)
         if variable is not None:
-            assert_equal(variable.start_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_START_VALUE])
-            if KEY_END_VALUE_2 in DICT_CC_INSTANT_CONSO[data_type][variable_id]:
-                assert_gte(variable.end_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
-                assert_lte(variable.end_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE_2])
+            assert_equal(variable.start_value, DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_START_VALUE])
+            if KEY_END_VALUE_2 in DICT_CC_INSTANT_CONSO[variable_id][data_type]:
+                assert_gte(variable.end_value, DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE])
+                assert_lte(variable.end_value, DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE_2])
             else:
-                assert_equal(variable.end_value, DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
+                assert_equal(variable.end_value, DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE])
         else:
             if data_type not in CC_INSTANT_CONSO_1_TS_0:
                 assert_equal("Variable %s does not exist" % variable_id, False)
@@ -493,15 +361,15 @@ def verify_currentcost_data_update(site_id, data_type):
 def verify_currentcost_tsv_update(site_id, data_type):
     """Verify currentcost TSV update
     """
-    for variable_id in DICT_CC_INSTANT_CONSO[data_type]:
+    for variable_id in DICT_CC_INSTANT_CONSO:
         last_series = FILE_STORAGE_SPACE.get_last_series(site_id, variable_id)
         if data_type in CC_INSTANT_CONSO_1_TS_0:
             assert_equal(last_series, None)
         else:
-            if KEY_END_VALUE_2 in DICT_CC_INSTANT_CONSO[data_type][variable_id]:
-                assert_gte(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
-                assert_lte(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE_2])
+            if KEY_END_VALUE_2 in DICT_CC_INSTANT_CONSO[variable_id][data_type]:
+                assert_gte(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE])
+                assert_lte(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE_2])
             else:
-                assert_equal(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[data_type][variable_id][KEY_END_VALUE])
+                assert_equal(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE])
             assert_equal(last_series[KEY_SITE_ID], site_id)
             assert_equal(last_series[KEY_VARIABLE_ID], variable_id)
