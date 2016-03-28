@@ -68,15 +68,21 @@ def generate_metear_csv(fixtures, day):
     return csv
 
 
+def metear_data(data, day):
+    """Return a CSV for METEAR test
+    """
+    if not is_metear_api_open():
+        return HttpResponseBadRequest()
+    csv = generate_metear_csv(data, day)
+    return HttpResponse(csv)
+
+
 @require_GET
 def retrieve_metear_new_data(request, airport, year, month, day):  # pylint: disable=I0011,W0613
     """Retrieve METEAR new data
     """
     # curl -i -XGET 'http://127.0.0.1:8000/stubs/history/airport/LFMN/2015/12/23/DailyHistory.html' && printf "\n"
-    if not is_metear_api_open():
-        return HttpResponseBadRequest()
-    csv = generate_metear_csv(DICT_METEAR_FAKE_NEWS_DATA, day)
-    return HttpResponse(csv)
+    return metear_data(DICT_METEAR_FAKE_NEWS_DATA, day)
 
 
 @require_GET
@@ -84,10 +90,7 @@ def retrieve_metear_data(request, airport, year, month, day):  # pylint: disable
     """Retrieve METEAR data
     """
     # curl -i -XGET 'http://127.0.0.1:8000/stubs/history/airport/LFMN/2015/12/23/DailyHistory.html' && printf "\n"
-    if not is_metear_api_open():
-        return HttpResponseBadRequest()
-    csv = generate_metear_csv(DICT_METEAR_FAKE_DATA, day)
-    return HttpResponse(csv)
+    return metear_data(DICT_METEAR_FAKE_DATA, day)
 
 
 @require_GET

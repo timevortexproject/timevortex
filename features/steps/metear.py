@@ -82,7 +82,6 @@ DICT_METEAR_FAKE_NEWS_DATA = [
     }]
 
 
-
 @given("I add a bad metear url in settings")
 def define_wrong_metear_url(context):  # pylint: disable=I0011,W0613
     """Define wrong metear URL
