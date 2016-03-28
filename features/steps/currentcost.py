@@ -74,28 +74,21 @@ DICT_CC_DATA_TYPE = [
 ]
 
 
-def create_json_cc_value(start_value):
+def create_json_cc_value(start_value, second_value, third_value):
     """Create a json for testing purpose
     """
     return {
         CC_INSTANT_CONSO_1_TS_0: {KEY_START_VALUE: None, KEY_END_VALUE: None},
         CC_INSTANT_CONSO_2_TS_7: {KEY_START_VALUE: start_value, KEY_END_VALUE: start_value},
-        CC_INSTANT_CONSO_1_TS_3: {KEY_START_VALUE: start_value, KEY_END_VALUE: start_value},
+        CC_INSTANT_CONSO_1_TS_3: {KEY_START_VALUE: start_value, KEY_END_VALUE: second_value},
         CC_INSTANT_CONSO_2_TS_3: {KEY_START_VALUE: start_value, KEY_END_VALUE: start_value},
         CC_INSTANT_CONSO_2_TS_0: {KEY_START_VALUE: start_value, KEY_END_VALUE: start_value},
-        CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: start_value, KEY_END_VALUE: start_value},
+        CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: start_value, KEY_END_VALUE: third_value},
     }
 
 
 DICT_CC_INSTANT_CONSO = {
-    TEST_CC_VARIABLE_ID_WATTS_CH1: {
-        CC_INSTANT_CONSO_1_TS_0: {KEY_START_VALUE: None, KEY_END_VALUE: None},
-        CC_INSTANT_CONSO_2_TS_7: {KEY_START_VALUE: "406.0", KEY_END_VALUE: "406.0"},
-        CC_INSTANT_CONSO_1_TS_3: {KEY_START_VALUE: "406.0", KEY_END_VALUE: "405.0"},
-        CC_INSTANT_CONSO_2_TS_3: {KEY_START_VALUE: "406.0", KEY_END_VALUE: "406.0"},
-        CC_INSTANT_CONSO_2_TS_0: {KEY_START_VALUE: "406.0", KEY_END_VALUE: "406.0"},
-        CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: "406.0", KEY_END_VALUE: "0.0"},
-    },
+    TEST_CC_VARIABLE_ID_WATTS_CH1: create_json_cc_value("406.0", "405.0", "0.0"),
     TEST_CC_VARIABLE_ID_KWH_CH1: {
         CC_INSTANT_CONSO_1_TS_0: {KEY_START_VALUE: None, KEY_END_VALUE: None},
         CC_INSTANT_CONSO_2_TS_7: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0"},
@@ -104,18 +97,11 @@ DICT_CC_INSTANT_CONSO = {
         CC_INSTANT_CONSO_2_TS_0: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0008", KEY_END_VALUE_2: "0.001"},
         CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0017", KEY_END_VALUE_2: "0.0019"},
     },
-    TEST_CC_VARIABLE_ID_WATTS_CH2: create_json_cc_value("14405.0"),
-    TEST_CC_VARIABLE_ID_KWH_CH2: create_json_cc_value("0.0"),
-    TEST_CC_VARIABLE_ID_WATTS_CH3: create_json_cc_value("10405.0"),
-    TEST_CC_VARIABLE_ID_KWH_CH3: create_json_cc_value("0.0"),
-    TEST_CC_VARIABLE_ID_TMPR: {
-        CC_INSTANT_CONSO_1_TS_0: {KEY_START_VALUE: None, KEY_END_VALUE: None},
-        CC_INSTANT_CONSO_2_TS_7: {KEY_START_VALUE: "20.3", KEY_END_VALUE: "20.3"},
-        CC_INSTANT_CONSO_1_TS_3: {KEY_START_VALUE: "20.3", KEY_END_VALUE: "19.3"},
-        CC_INSTANT_CONSO_2_TS_3: {KEY_START_VALUE: "20.3", KEY_END_VALUE: "20.3"},
-        CC_INSTANT_CONSO_2_TS_0: {KEY_START_VALUE: "20.3", KEY_END_VALUE: "20.3"},
-        CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: "20.3", KEY_END_VALUE: "21.3"},
-    }
+    TEST_CC_VARIABLE_ID_WATTS_CH2: create_json_cc_value("14405.0", "14405.0", "14405.0"),
+    TEST_CC_VARIABLE_ID_KWH_CH2: create_json_cc_value("0.0", "0.0", "0.0"),
+    TEST_CC_VARIABLE_ID_WATTS_CH3: create_json_cc_value("10405.0", "10405.0", "10405.0"),
+    TEST_CC_VARIABLE_ID_KWH_CH3: create_json_cc_value("0.0", "0.0", "0.0"),
+    TEST_CC_VARIABLE_ID_TMPR: create_json_cc_value("20.3", "19.3", "21.3"),
 }
 ARRAY_CC_VARIABLE = [
     TEST_CC_VARIABLE_ID_WATTS_CH1,

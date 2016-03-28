@@ -153,72 +153,88 @@ class Command(AbstractCommand):
             '--ch3_kwh', action='store', dest="ch3_kwh", default=None, type=str, help='Affect name to ch3_kwh')
         parser.add_argument('--tmpr', action='store', dest="tmpr", default=None, type=str, help='Affect name to tmpr')
 
+    def update_and_publish(self, site, slug, date, value):
+        """Update variable value and publish on network
+        """
+        update_or_create_variable(site=site, slug=slug, date=date, value=value)
+        self.send_timeseries(timeseries_json(self.site_id, slug, value, date.isoformat()))
+
+    def create_kwh_timeseries(self, site, kwh_channel, variable_watts, date_readline):
+        """Create kWh timeseries
+        """
+        variable_kwh = get_variable_by_slug(site=site, slug=kwh_channel)
+        new_kwh_value = get_kwh_value(variable_kwh, variable_watts, date_readline)
+        update_or_create_variable(site=site, slug=kwh_channel, date=date_readline, value=new_kwh_value)
+        self.send_timeseries(timeseries_json(self.site_id, kwh_channel, new_kwh_value, date_readline.isoformat()))
+
+    def currentcost_timeseries_creation(self, options, values, date_readline):
+        """Update variable and publish timeseries from XML message
+        """
+        tmpr = options["tmpr"]
+        ch1_w = values[0]
+        ch2_w = values[1]
+        ch3_w = values[2]
+        temperature = values[3]
+        # For each channel, we update value in DB and send timeseries signal
+        site = get_site_by_slug(self.site_id)
+        if site is None:
+            site = create_site(slug=self.site_id, site_type=Site.HOME_TYPE)
+
+        channels = [
+            [options["ch1"], ch1_w, options["ch1_kwh"]],
+            [options["ch2"], ch2_w, options["ch2_kwh"]],
+            [options["ch3"], ch3_w, options["ch3_kwh"]],
+        ]
+
+        for channel, watts_value, kwh_channel in channels:
+            if channel is not None and watts_value is not None:
+                variable_watts = get_variable_by_slug(site=site, slug=channel)
+                if kwh_channel:
+                    self.create_kwh_timeseries(site, kwh_channel, variable_watts, date_readline)
+                self.update_and_publish(site, channel, date_readline, watts_value)
+        if tmpr is not None and temperature is not None:
+            self.update_and_publish(site, tmpr, date_readline, temperature)
+
+    def ser_connection_none(self, ser_connection, tty_port, timeout, variable_id):
+        """Behavior when ser_connection is None
+        """
+        ser_connection = serial.Serial(tty_port, BAUDS, timeout=timeout)
+        self.send_error(TTY_CONNECTION_SUCCESS % (variable_id, self.site_id, tty_port))
+        return ser_connection
+
+    def ser_connection_not_none(self, ser_connection, options):
+        """Behavior when ser_connection is not None
+        """
+        # We wait for a new message on this socket
+        cc_xml = ser_connection.readline()
+        date_readline = timezone.now()
+        # We get a clean xml and channel values
+        cc_xml, ch1_w, ch2_w, ch3_w, temperature, hist = convert_cc_xml_to_dict(cc_xml)
+        values = [ch1_w, ch2_w, ch3_w, temperature]
+        # We log current xml message for hard recovery
+        self.log_error(timeseries_json(self.site_id, "cc_xml", cc_xml, date_readline.isoformat()))
+        if hist is False:
+            self.currentcost_timeseries_creation(options, values, date_readline)
+
     def run(self, *args, **options):
         """Run method
         """
         self.site_id = options["site_id"]
         variable_id = options["variable_id"]
         tty_port = options["tty_port"]
-        timeout = options["timeout"]
         usb_retry = options["usb_retry"]
-        break_loop = options["break_loop"]
-        ch1 = options["ch1"]
-        ch2 = options["ch2"]
-        ch3 = options["ch3"]
-        ch1_kwh = options["ch1_kwh"]
-        ch2_kwh = options["ch2_kwh"]
-        ch3_kwh = options["ch3_kwh"]
-        tmpr = options["tmpr"]
         ser_connection = None
         infinite_loop = True
         while infinite_loop:
-            if break_loop:
+            if options["break_loop"]:
                 infinite_loop = False
             try:
                 # If we are not connected to TTY port
                 if ser_connection is None:
-                    ser_connection = serial.Serial(tty_port, BAUDS, timeout=timeout)
-                    self.send_error(TTY_CONNECTION_SUCCESS % (variable_id, self.site_id, tty_port))
+                    ser_connection = self.ser_connection_none(ser_connection, tty_port, options["timeout"], variable_id)
                 # If we are connected to TTY port
                 if ser_connection is not None:
-                    # We wait for a new message on this socket
-                    cc_xml = ser_connection.readline()
-                    date_readline = timezone.now()
-                    # We get a clean xml and channel values
-                    cc_xml, ch1_w, ch2_w, ch3_w, temperature, hist = convert_cc_xml_to_dict(cc_xml)
-                    # We log current xml message for hard recovery
-                    self.log_error(timeseries_json(self.site_id, "cc_xml", cc_xml, date_readline.isoformat()))
-                    if hist is False:
-                        # For each channel, we update value in DB and send timeseries signal
-                        site = get_site_by_slug(self.site_id)
-                        if site is None:
-                            site = create_site(slug=self.site_id, site_type=Site.HOME_TYPE)
-
-                        channels = [
-                            [ch1, ch1_w, ch1_kwh],
-                            [ch2, ch2_w, ch2_kwh],
-                            [ch3, ch3_w, ch3_kwh],
-                        ]
-
-                        for channel, watts_value, kwh_channel in channels:
-                            if channel is not None and watts_value is not None:
-                                variable_watts = get_variable_by_slug(site=site, slug=channel)
-                                if kwh_channel:
-                                    variable_kwh = get_variable_by_slug(site=site, slug=kwh_channel)
-                                    new_kwh_value = get_kwh_value(variable_kwh, variable_watts, date_readline)
-                                    update_or_create_variable(
-                                        site=site, slug=kwh_channel, date=date_readline, value=new_kwh_value)
-                                    self.send_timeseries(
-                                        timeseries_json(
-                                            self.site_id, kwh_channel, new_kwh_value, date_readline.isoformat()))
-                                update_or_create_variable(
-                                    site=site, slug=channel, date=date_readline, value=watts_value)
-                                self.send_timeseries(
-                                    timeseries_json(self.site_id, channel, watts_value, date_readline.isoformat()))
-                        if tmpr is not None and temperature is not None:
-                            update_or_create_variable(site=site, slug=tmpr, date=date_readline, value=temperature)
-                            self.send_timeseries(
-                                timeseries_json(self.site_id, tmpr, temperature, date_readline.isoformat()))
+                    self.ser_connection_not_none(ser_connection, options)
             except CCNoMessage:
                 error = ERROR_CURRENTCOST[ERROR_CC_NO_MESSAGE] % (variable_id, self.site_id)
                 self.send_error(error)
