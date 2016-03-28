@@ -10,8 +10,5 @@ install:
   - pip install django requests python-dateutil pytz django-admin-tools psutil pyserial==2.5
 script:
   - python --version
-  - python manage.py timevortex --lint
-  - python manage.py test
-  - python manage.py timevortex --behave-all
-  - python manage.py timevortex --qa
+  - python manage.py timevortex --validate
 after_success: coveralls
