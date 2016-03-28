@@ -27,3 +27,4 @@ exclude_paths:
 - "*/migrations/*.py"
 - static/admin/js/*.js
 - static/admin/js/admin/*.js
+- static/admin/css/*

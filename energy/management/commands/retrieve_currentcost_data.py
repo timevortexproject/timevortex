@@ -78,8 +78,8 @@ def get_kwh_value(variable_kwh, variable_watts, actual_date):
 def convert_cc_xml_to_dict(cc_xml):
     """Analyse data from currentcost and return according TOPIC and MESSAGE.
 
-    :param data: XML string that contain data.
-    :type variable_id: str.
+    :param cc_xml: XML string that contain data.
+    :type cc_xml: str.
 
     :returns:  str -- Topic of the message (error or success) and
         Message containing error description or data sent by CC.
