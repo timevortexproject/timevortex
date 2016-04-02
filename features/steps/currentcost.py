@@ -284,14 +284,37 @@ def command_currencost_errors(setting_type, context, cc_params):
     elif setting_type in ERROR_CC_NO_MESSAGE:
         error = (TEST_CC_VARIABLE_ID, context.site_id)
     elif setting_type in ERROR_CC_DISCONNECTED:
-        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, cc_params["tty_port"])
+        error = (TEST_CC_VARIABLE_ID, context.site_id, cc_params["tty_port"])
     elif setting_type in ERROR_CC_INCORRECT_MESSAGE:
-        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, WRONG_CURRENTCOST_MESSAGE)
+        error = (TEST_CC_VARIABLE_ID, context.site_id, WRONG_CURRENTCOST_MESSAGE)
     elif setting_type in ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR:
-        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, INCORRECT_TMPR_CURRENTCOST_MESSAGE)
+        error = (TEST_CC_VARIABLE_ID, context.site_id, INCORRECT_TMPR_CURRENTCOST_MESSAGE)
     elif setting_type in ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS:
-        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, INCORRECT_WATTS_CURRENTCOST_MESSAGE)
+        error = (TEST_CC_VARIABLE_ID, context.site_id, INCORRECT_WATTS_CURRENTCOST_MESSAGE)
     return error
+
+
+def command_currencost_thread(setting_type, context, tty_port):
+    """Returning according thread
+    """
+    thread = None
+    if setting_type in ERROR_CC_DISCONNECTED:
+        thread = SocatMessager(context, tty_port)
+    elif setting_type in ERROR_CC_INCORRECT_MESSAGE:
+        thread = SocatMessager(context, tty_port, WRONG_CURRENTCOST_MESSAGE)
+    elif setting_type in ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR:
+        thread = SocatMessager(context, tty_port, INCORRECT_TMPR_CURRENTCOST_MESSAGE)
+    elif setting_type in ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS:
+        thread = SocatMessager(context, tty_port, INCORRECT_WATTS_CURRENTCOST_MESSAGE)
+    elif setting_type in [CC_INSTANT_CONSO_1_TS_0, CC_INSTANT_CONSO_1_TS_3]:
+        thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE)
+    elif setting_type in [CC_INSTANT_CONSO_2_TS_3, CC_INSTANT_CONSO_2_TS_0, CC_INSTANT_CONSO_2_TS_7]:
+        thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE_2)
+    elif setting_type in CC_INSTANT_CONSO_3_TS_3:
+        thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE_3)
+    elif setting_type in CC_HISTORY:
+        thread = SocatMessager(context, tty_port, HISTORY_1)
+    return thread
 
 
 def launch_currentcost_command(out, context, setting_type):
@@ -303,41 +326,12 @@ def launch_currentcost_command(out, context, setting_type):
     error = command_currencost_errors(setting_type, context, cc_params)
     if error is not None:
         context.specific_error = error
+    thread = command_currencost_thread(setting_type, context, cc_params["tty_port"])
+    if thread is not None:
+        context.thread = thread
+        context.thread.start()
     command = CurrentCostCommand()
     command.out = out
-    if setting_type in ERROR_CC_DISCONNECTED:
-        context.thread = SocatMessager(context, cc_params["tty_port"])
-        context.thread.start()
-    elif setting_type in ERROR_CC_INCORRECT_MESSAGE:
-        context.thread = SocatMessager(context, cc_params["tty_port"], WRONG_CURRENTCOST_MESSAGE)
-        context.thread.start()
-    elif setting_type in ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR:
-        context.thread = SocatMessager(context, cc_params["tty_port"], INCORRECT_TMPR_CURRENTCOST_MESSAGE)
-        context.thread.start()
-    elif setting_type in ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS:
-        context.thread = SocatMessager(context, cc_params["tty_port"], INCORRECT_WATTS_CURRENTCOST_MESSAGE)
-        context.thread.start()
-    elif setting_type in CC_INSTANT_CONSO_1_TS_0:
-        context.thread = SocatMessager(context, cc_params["tty_port"], CURRENTCOST_MESSAGE)
-        context.thread.start()
-    elif setting_type in CC_INSTANT_CONSO_1_TS_3:
-        context.thread = SocatMessager(context, cc_params["tty_port"], CURRENTCOST_MESSAGE)
-        context.thread.start()
-    elif setting_type in CC_INSTANT_CONSO_2_TS_3:
-        context.thread = SocatMessager(context, cc_params["tty_port"], CURRENTCOST_MESSAGE_2)
-        context.thread.start()
-    elif setting_type in CC_INSTANT_CONSO_2_TS_0:
-        context.thread = SocatMessager(context, cc_params["tty_port"], CURRENTCOST_MESSAGE_2)
-        context.thread.start()
-    elif setting_type in CC_INSTANT_CONSO_2_TS_7:
-        context.thread = SocatMessager(context, cc_params["tty_port"], CURRENTCOST_MESSAGE_2)
-        context.thread.start()
-    elif setting_type in CC_INSTANT_CONSO_3_TS_3:
-        context.thread = SocatMessager(context, cc_params["tty_port"], CURRENTCOST_MESSAGE_3)
-        context.thread.start()
-    elif setting_type in CC_HISTORY:
-        context.thread = SocatMessager(context, cc_params["tty_port"], HISTORY_1)
-        context.thread.start()
     sleep(3)
     command.handle(
         site_id=context.site_id,
@@ -355,6 +349,17 @@ def launch_currentcost_command(out, context, setting_type):
         tmpr=cc_params["tmpr"])
 
 
+def verify_currentcost_data(variable, variable_id, data_type):
+    """Verify currentcost data
+    """
+    assert_equal(variable.start_value, DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_START_VALUE])
+    if KEY_END_VALUE_2 in DICT_CC_INSTANT_CONSO[variable_id][data_type]:
+        assert_gte(variable.end_value, DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE])
+        assert_lte(variable.end_value, DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE_2])
+    else:
+        assert_equal(variable.end_value, DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE])
+
+
 def verify_currentcost_data_update(site_id, data_type):
     """Verify currentcost data update
     """
@@ -365,12 +370,7 @@ def verify_currentcost_data_update(site_id, data_type):
     for variable_id in DICT_CC_INSTANT_CONSO:
         variable = get_variable_by_slug(site=site, slug=variable_id)
         if variable is not None:
-            assert_equal(variable.start_value, DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_START_VALUE])
-            if KEY_END_VALUE_2 in DICT_CC_INSTANT_CONSO[variable_id][data_type]:
-                assert_gte(variable.end_value, DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE])
-                assert_lte(variable.end_value, DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE_2])
-            else:
-                assert_equal(variable.end_value, DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE])
+            verify_currentcost_data(variable, variable_id, data_type)
         else:
             if data_type not in CC_INSTANT_CONSO_1_TS_0:
                 assert_equal("Variable %s does not exist" % variable_id, False)
