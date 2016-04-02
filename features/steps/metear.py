@@ -30,38 +30,41 @@ KEY_METEAR_FAKE_DATA_DATE = "date"
 KEY_METEAR_FAKE_DATA_OK = "ok"
 KEY_METEAR_FAKE_DATA_KO = "ko"
 DATE_METEAR_FAKE_DATA_TODAY = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+ARRAY_METEAR_ELEMENT_1 = [
+    "12:00 AM", "12", "6", "59", "1032", "15", "NNO", "11.1", "", "", "", "Assez nuageux", "330"]
+ARRAY_METEAR_ELEMENT_2 = [
+    "12:00 AM", "13.0", "7.0", "67", "1031", "10.0", "NO", "12.1", "-", "N/A", "", "Peu nuageux", "340"]
+ARRAY_METEAR_ELEMENT_3 = [
+    "13:00 AM", "12.5", "7.5", "67.5", "1031.5", "10.5", "N", "11.5", "-", "N/A", "", "Peu peu nuageux", "335"]
+ARRAY_METEAR_ELEMENT_4 = [
+    "12:30 AM", "14.0", "8.0", "68", "1030", "9.0", "O", "14.8", "-", "N/A", "", "Pas nuageux", "350"]
+ARRAY_METEAR_ELEMENT_5 = [
+    "1:00 AM", "15", "9", "57", "1033", "14", "S", "16.7", "", "", "", "Très nuageux", "320"]
+ARRAY_METEAR_ELEMENT_6 = [
+    "1:00 AM", "16", "10", "58", "1034", "13", "SO", "17.7", "", "", "", "Nuageux", "310"]
+ARRAY_METEAR_ELEMENT_7 = [
+    "3:00 AM", "17", "11", "43", "1024", "9", "SSO", "8.3", "", "", "", "Ensoleillé", "180"]
+ARRAY_METEAR_ELEMENT_8 = [
+    "3:00 AM", "18.0", "12.0", "45", "1023", "12.0", "SSE", "8.5", "-", "N/A", "", "Bien ensoleillé", "150"]
+
+
+def create_json_metear_object(time_difference, metear_element_status, metear_element_value):
+    """Return metear object
+    """
+    return {
+        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY + time_difference).isoformat(" "),
+        KEY_METEAR_FAKE_DATA_STATUS: metear_element_status,
+        KEY_METEAR_FAKE_DATA_ELEMENTS: metear_element_value
+    }
+
+
 DICT_METEAR_FAKE_DATA = [
-    {
-        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY - timedelta(days=2, hours=8)).isoformat(" "),
-        KEY_METEAR_FAKE_DATA_STATUS: KEY_METEAR_FAKE_DATA_OK,
-        KEY_METEAR_FAKE_DATA_ELEMENTS: [
-            "12:00 AM", "12", "6", "59", "1032", "15", "NNO", "11.1", "", "", "", "Assez nuageux", "330"]
-    }, {
-        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY - timedelta(days=2, hours=8)).isoformat(" "),
-        KEY_METEAR_FAKE_DATA_STATUS: KEY_METEAR_FAKE_DATA_KO,
-        KEY_METEAR_FAKE_DATA_ELEMENTS: [
-            "12:00 AM", "13.0", "7.0", "67", "1031", "10.0", "NO", "12.1", "-", "N/A", "", "Peu nuageux", "340"]
-    }, {
-        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY - timedelta(days=2, hours=7)).isoformat(" "),
-        KEY_METEAR_FAKE_DATA_STATUS: KEY_METEAR_FAKE_DATA_OK,
-        KEY_METEAR_FAKE_DATA_ELEMENTS: [
-            "13:00 AM", "12.5", "7.5", "67.5", "1031.5", "10.5", "N", "11.5", "-", "N/A", "", "Peu peu nuageux", "335"]
-    }, {
-        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY + timedelta(hours=15)).isoformat(" "),
-        KEY_METEAR_FAKE_DATA_STATUS: KEY_METEAR_FAKE_DATA_OK,
-        KEY_METEAR_FAKE_DATA_ELEMENTS: [
-            "12:30 AM", "14.0", "8.0", "68", "1030", "9.0", "O", "14.8", "-", "N/A", "", "Pas nuageux", "350"]
-    }, {
-        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY + timedelta(hours=17)).isoformat(" "),
-        KEY_METEAR_FAKE_DATA_STATUS: KEY_METEAR_FAKE_DATA_OK,
-        KEY_METEAR_FAKE_DATA_ELEMENTS: [
-            "1:00 AM", "15", "9", "57", "1033", "14", "S", "16.7", "", "", "", "Très nuageux", "320"]
-    }, {
-        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY + timedelta(hours=17)).isoformat(" "),
-        KEY_METEAR_FAKE_DATA_STATUS: KEY_METEAR_FAKE_DATA_KO,
-        KEY_METEAR_FAKE_DATA_ELEMENTS: [
-            "1:00 AM", "16", "10", "58", "1034", "13", "SO", "17.7", "", "", "", "Nuageux", "310"]
-    }]
+    create_json_metear_object(timedelta(days=-2, hours=-8), KEY_METEAR_FAKE_DATA_OK, ARRAY_METEAR_ELEMENT_1),
+    create_json_metear_object(timedelta(days=-2, hours=-8), KEY_METEAR_FAKE_DATA_KO, ARRAY_METEAR_ELEMENT_2),
+    create_json_metear_object(timedelta(days=-2, hours=-7), KEY_METEAR_FAKE_DATA_OK, ARRAY_METEAR_ELEMENT_3),
+    create_json_metear_object(timedelta(hours=15), KEY_METEAR_FAKE_DATA_OK, ARRAY_METEAR_ELEMENT_4),
+    create_json_metear_object(timedelta(hours=17), KEY_METEAR_FAKE_DATA_OK, ARRAY_METEAR_ELEMENT_5),
+    create_json_metear_object(timedelta(hours=17), KEY_METEAR_FAKE_DATA_KO, ARRAY_METEAR_ELEMENT_6)]
 
 DICT_METEAR_FAKE_NEWS_DATA = [
     DICT_METEAR_FAKE_DATA[0],
@@ -69,17 +72,8 @@ DICT_METEAR_FAKE_NEWS_DATA = [
     DICT_METEAR_FAKE_DATA[2],
     DICT_METEAR_FAKE_DATA[3],
     DICT_METEAR_FAKE_DATA[4],
-    {
-        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY + timedelta(hours=19)).isoformat(" "),
-        KEY_METEAR_FAKE_DATA_STATUS: KEY_METEAR_FAKE_DATA_OK,
-        KEY_METEAR_FAKE_DATA_ELEMENTS: [
-            "3:00 AM", "17", "11", "43", "1024", "9", "SSO", "8.3", "", "", "", "Ensoleillé", "180"]
-    }, {
-        KEY_METEAR_FAKE_DATA_DATE: (DATE_METEAR_FAKE_DATA_TODAY + timedelta(hours=19)).isoformat(" "),
-        KEY_METEAR_FAKE_DATA_STATUS: KEY_METEAR_FAKE_DATA_KO,
-        KEY_METEAR_FAKE_DATA_ELEMENTS: [
-            "3:00 AM", "18.0", "12.0", "45", "1023", "12.0", "SSE", "8.5", "-", "N/A", "", "Bien ensoleillé", "150"]
-    }]
+    create_json_metear_object(timedelta(hours=19), KEY_METEAR_FAKE_DATA_OK, ARRAY_METEAR_ELEMENT_7),
+    create_json_metear_object(timedelta(hours=19), KEY_METEAR_FAKE_DATA_KO, ARRAY_METEAR_ELEMENT_8)]
 
 
 @given("I add a bad metear url in settings")
