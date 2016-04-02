@@ -80,27 +80,9 @@ def get_kwh_value(variable_kwh, variable_watts, actual_date):
         return 0.0
 
 
-def convert_cc_xml_to_dict(cc_xml):
-    """Analyse data from currentcost and return according TOPIC and MESSAGE.
-
-    :param cc_xml: XML string that contain data.
-    :type cc_xml: str.
-
-    :returns:  str -- Topic of the message (error or success) and
-        Message containing error description or data sent by CC.
-
+def extract_xml_data(cc_xml, cc_xml_parsed):
+    """Read XML and extract data
     """
-    if len(cc_xml) == 0:
-        raise CCNoMessage
-
-    try:
-        cc_xml = cc_xml.decode("utf-8").replace("\n", "").replace("\r", "")
-        cc_xml_parsed = ElementTree.fromstring(cc_xml)
-    except UnicodeDecodeError:
-        raise CCIncorrectData(CURRENTCOST_UNICODE_ERROR)
-    except ElementTree.ParseError:
-        raise CCIncorrectData(cc_xml)
-
     xml_value = {
         KEY_CH1: None,
         KEY_CH2: None,
@@ -125,6 +107,30 @@ def convert_cc_xml_to_dict(cc_xml):
     return cc_xml, xml_value, hist
 
 
+def convert_cc_xml_to_dict(cc_xml):
+    """Analyse data from currentcost and return according TOPIC and MESSAGE.
+
+    :param cc_xml: XML string that contain data.
+    :type cc_xml: str.
+
+    :returns:  str -- Topic of the message (error or success) and
+        Message containing error description or data sent by CC.
+
+    """
+    if len(cc_xml) == 0:
+        raise CCNoMessage
+
+    try:
+        cc_xml = cc_xml.decode("utf-8").replace("\n", "").replace("\r", "")
+        cc_xml_parsed = ElementTree.fromstring(cc_xml)
+    except UnicodeDecodeError:
+        raise CCIncorrectData(CURRENTCOST_UNICODE_ERROR)
+    except ElementTree.ParseError:
+        raise CCIncorrectData(cc_xml)
+
+    return extract_xml_data(cc_xml, cc_xml_parsed)
+
+
 class Command(AbstractCommand):
     """Command class
     """
@@ -133,6 +139,7 @@ class Command(AbstractCommand):
     name = "Currentcost connector"
     logger = LOGGER
     site_id = None
+    ser_connection = None
 
     def add_arguments(self, parser):
         # Positional arguments
@@ -199,18 +206,17 @@ class Command(AbstractCommand):
         if tmpr is not None and temperature is not None:
             self.update_and_publish(site, tmpr, date_readline, temperature)
 
-    def ser_connection_none(self, ser_connection, tty_port, timeout, variable_id):
+    def ser_connection_none(self, tty_port, timeout, variable_id):
         """Behavior when ser_connection is None
         """
-        ser_connection = serial.Serial(tty_port, BAUDS, timeout=timeout)
+        self.ser_connection = serial.Serial(tty_port, BAUDS, timeout=timeout)
         self.send_error(TTY_CONNECTION_SUCCESS % (variable_id, self.site_id, tty_port))
-        return ser_connection
 
-    def ser_connection_not_none(self, ser_connection, options):
+    def ser_connection_not_none(self, options):
         """Behavior when ser_connection is not None
         """
         # We wait for a new message on this socket
-        cc_xml = ser_connection.readline()
+        cc_xml = self.ser_connection.readline()
         date_readline = timezone.now()
         # We get a clean xml and channel values
         cc_xml, values, hist = convert_cc_xml_to_dict(cc_xml)
@@ -230,6 +236,32 @@ class Command(AbstractCommand):
             error = ERROR_CURRENTCOST[error_type] % (variable_id, self.site_id, error_params, error_params_2)
         self.send_error(error)
 
+    def serial_exception(self, variable_id, tty_port, usb_retry):
+        """Send correct error when serial_exception occurs
+        """
+        # if we are connected
+        if self.ser_connection is not None:
+            # We reinit serial connection
+            self.ser_connection.close()
+            self.ser_connection = None
+            # And we log this error
+            self.send_currentcost_error(ERROR_CC_DISCONNECTED, variable_id, tty_port)
+        # Else
+        else:
+            # We send this error
+            self.send_currentcost_error(ERROR_CC_BAD_PORT, variable_id, tty_port, usb_retry)
+            sleep(usb_retry)
+
+    def retrieve_data(self, options, tty_port, variable_id):
+        """Connect to currentcost and retrieve data
+        """
+        # If we are not connected to TTY port
+        if self.ser_connection is None:
+            self.ser_connection_none(tty_port, options["timeout"], variable_id)
+        # If we are connected to TTY port
+        if self.ser_connection is not None:
+            self.ser_connection_not_none(options)
+
     def run(self, *args, **options):
         """Run method
         """
@@ -237,18 +269,12 @@ class Command(AbstractCommand):
         variable_id = options["variable_id"]
         tty_port = options["tty_port"]
         usb_retry = options["usb_retry"]
-        ser_connection = None
         infinite_loop = True
         while infinite_loop:
             if options["break_loop"]:
                 infinite_loop = False
             try:
-                # If we are not connected to TTY port
-                if ser_connection is None:
-                    ser_connection = self.ser_connection_none(ser_connection, tty_port, options["timeout"], variable_id)
-                # If we are connected to TTY port
-                if ser_connection is not None:
-                    self.ser_connection_not_none(ser_connection, options)
+                self.retrieve_data(options, tty_port, variable_id)
             except CCNoMessage:
                 self.send_currentcost_error(ERROR_CC_NO_MESSAGE, variable_id)
             except CCIncorrectData as err:
@@ -258,15 +284,4 @@ class Command(AbstractCommand):
             except CCNoWatts as err:
                 self.send_currentcost_error(ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS, variable_id, err.value)
             except (OSError, serial.serialutil.SerialException):
-                # if we are connected
-                if ser_connection is not None:
-                    # We reinit serial connection
-                    ser_connection.close()
-                    ser_connection = None
-                    # And we log this error
-                    self.send_currentcost_error(ERROR_CC_DISCONNECTED, variable_id, tty_port)
-                # Else
-                else:
-                    # We send this error
-                    self.send_currentcost_error(ERROR_CC_BAD_PORT, variable_id, tty_port, usb_retry)
-                    sleep(usb_retry)
+                self.serial_exception(variable_id, tty_port, usb_retry)
