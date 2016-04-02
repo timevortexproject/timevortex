@@ -80,14 +80,10 @@ def get_kwh_value(variable_kwh, variable_watts, actual_date):
         return 0.0
 
 
-def extract_value(cc_xml, cc_xml_parsed, temperature):
+def extract_value(cc_xml, cc_xml_parsed, temperature, xml_value):
     """Extract watts and celsius values
     """
-    xml_value = {
-        KEY_CH1: None,
-        KEY_CH2: None,
-        KEY_CH3: None
-    }
+
     if temperature is None:
         raise CCNoTmpr(cc_xml)
     else:
@@ -104,11 +100,16 @@ def extract_value(cc_xml, cc_xml_parsed, temperature):
 def extract_xml_data(cc_xml, cc_xml_parsed):
     """Read XML and extract data
     """
+    xml_value = {
+        KEY_CH1: None,
+        KEY_CH2: None,
+        KEY_CH3: None
+    }
     temperature = cc_xml_parsed.findtext(KEY_TMPR)
     hist = cc_xml_parsed.findtext(KEY_HIST)
     if hist is None:
         hist = False
-        xml_value = extract_value(cc_xml, cc_xml_parsed, temperature)
+        xml_value = extract_value(cc_xml, cc_xml_parsed, temperature, xml_value)
     else:
         hist = True
 
