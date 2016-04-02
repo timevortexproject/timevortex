@@ -80,27 +80,35 @@ def get_kwh_value(variable_kwh, variable_watts, actual_date):
         return 0.0
 
 
-def extract_xml_data(cc_xml, cc_xml_parsed):
-    """Read XML and extract data
+def extract_value(cc_xml, cc_xml_parsed, temperature):
+    """Extract watts and celsius values
     """
     xml_value = {
         KEY_CH1: None,
         KEY_CH2: None,
         KEY_CH3: None
     }
+    if temperature is None:
+        raise CCNoTmpr(cc_xml)
+    else:
+        for channel in xml_value:
+            if cc_xml_parsed.find(channel) is not None:
+                xml_value[channel] = float(cc_xml_parsed.find(channel).findtext("watts"))
+        xml_value[KEY_TMPR] = float(temperature)
+        if xml_value[KEY_CH1] is None and xml_value[KEY_CH2] is None and xml_value[KEY_CH3] is None:
+            raise CCNoWatts(cc_xml)
+
+    return xml_value
+
+
+def extract_xml_data(cc_xml, cc_xml_parsed):
+    """Read XML and extract data
+    """
     temperature = cc_xml_parsed.findtext(KEY_TMPR)
     hist = cc_xml_parsed.findtext(KEY_HIST)
     if hist is None:
         hist = False
-        if temperature is None:
-            raise CCNoTmpr(cc_xml)
-        else:
-            for channel in xml_value:
-                if cc_xml_parsed.find(channel) is not None:
-                    xml_value[channel] = float(cc_xml_parsed.find(channel).findtext("watts"))
-            xml_value[KEY_TMPR] = float(temperature)
-            if xml_value[KEY_CH1] is None and xml_value[KEY_CH2] is None and xml_value[KEY_CH3] is None:
-                raise CCNoWatts(cc_xml)
+        xml_value = extract_value(cc_xml, cc_xml_parsed, temperature)
     else:
         hist = True
 
@@ -186,6 +194,22 @@ class Command(AbstractCommand):
             site = create_site(slug=self.site_id, site_type=Site.HOME_TYPE)
         return site
 
+    def send_watts_timeseries(self, site, channels, date_readline):
+        """Send watts timeseries
+        """
+        for channel, watts_value, kwh_channel in channels:
+            if channel is not None and watts_value is not None:
+                variable_watts = get_variable_by_slug(site=site, slug=channel)
+                if kwh_channel:
+                    self.create_kwh_timeseries(site, kwh_channel, variable_watts, date_readline)
+                self.update_and_publish(site, channel, date_readline, watts_value)
+
+    def send_temperature_timeseries(self, site, tmpr, temperature, date_readline):
+        """Send temperature timeseries
+        """
+        if tmpr is not None and temperature is not None:
+            self.update_and_publish(site, tmpr, date_readline, temperature)
+
     def currentcost_timeseries_creation(self, options, values, date_readline):
         """Update variable and publish timeseries from XML message
         """
@@ -203,14 +227,8 @@ class Command(AbstractCommand):
             [options[KEY_CH3], ch3_w, options["ch3_kwh"]],
         ]
 
-        for channel, watts_value, kwh_channel in channels:
-            if channel is not None and watts_value is not None:
-                variable_watts = get_variable_by_slug(site=site, slug=channel)
-                if kwh_channel:
-                    self.create_kwh_timeseries(site, kwh_channel, variable_watts, date_readline)
-                self.update_and_publish(site, channel, date_readline, watts_value)
-        if tmpr is not None and temperature is not None:
-            self.update_and_publish(site, tmpr, date_readline, temperature)
+        self.send_watts_timeseries(site, channels, date_readline)
+        self.send_temperature_timeseries(site, tmpr, temperature, date_readline)
 
     def ser_connection_none(self, tty_port, timeout, variable_id):
         """Behavior when ser_connection is None
@@ -268,6 +286,22 @@ class Command(AbstractCommand):
         if self.ser_connection is not None:
             self.ser_connection_not_none(options)
 
+    def currentcost_error_management(self, options, variable_id, tty_port, usb_retry):
+        """Catch currentcost potential error
+        """
+        try:
+            self.retrieve_data(options, tty_port, variable_id)
+        except CCNoMessage:
+            self.send_currentcost_error(ERROR_CC_NO_MESSAGE, variable_id)
+        except CCIncorrectData as err:
+            self.send_currentcost_error(ERROR_CC_INCORRECT_MESSAGE, variable_id, err.value)
+        except CCNoTmpr as err:
+            self.send_currentcost_error(ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR, variable_id, err.value)
+        except CCNoWatts as err:
+            self.send_currentcost_error(ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS, variable_id, err.value)
+        except (OSError, serial.serialutil.SerialException):
+            self.serial_exception(variable_id, tty_port, usb_retry)
+
     def run(self, *args, **options):
         """Run method
         """
@@ -279,15 +313,4 @@ class Command(AbstractCommand):
         while infinite_loop:
             if options["break_loop"]:
                 infinite_loop = False
-            try:
-                self.retrieve_data(options, tty_port, variable_id)
-            except CCNoMessage:
-                self.send_currentcost_error(ERROR_CC_NO_MESSAGE, variable_id)
-            except CCIncorrectData as err:
-                self.send_currentcost_error(ERROR_CC_INCORRECT_MESSAGE, variable_id, err.value)
-            except CCNoTmpr as err:
-                self.send_currentcost_error(ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR, variable_id, err.value)
-            except CCNoWatts as err:
-                self.send_currentcost_error(ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS, variable_id, err.value)
-            except (OSError, serial.serialutil.SerialException):
-                self.serial_exception(variable_id, tty_port, usb_retry)
+            self.currentcost_error_management(options, variable_id, tty_port, usb_retry)
