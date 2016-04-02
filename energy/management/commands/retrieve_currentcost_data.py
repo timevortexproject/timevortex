@@ -178,6 +178,14 @@ class Command(AbstractCommand):
         update_or_create_variable(site=site, slug=kwh_channel, date=date_readline, value=new_kwh_value)
         self.send_timeseries(timeseries_json(self.site_id, kwh_channel, new_kwh_value, date_readline.isoformat()))
 
+    def get_site(self):
+        """Get site for currentcost or create it
+        """
+        site = get_site_by_slug(self.site_id)
+        if site is None:
+            site = create_site(slug=self.site_id, site_type=Site.HOME_TYPE)
+        return site
+
     def currentcost_timeseries_creation(self, options, values, date_readline):
         """Update variable and publish timeseries from XML message
         """
@@ -187,9 +195,7 @@ class Command(AbstractCommand):
         ch3_w = values[KEY_CH3]
         temperature = values[KEY_TMPR]
         # For each channel, we update value in DB and send timeseries signal
-        site = get_site_by_slug(self.site_id)
-        if site is None:
-            site = create_site(slug=self.site_id, site_type=Site.HOME_TYPE)
+        site = self.get_site()
 
         channels = [
             [options[KEY_CH1], ch1_w, options["ch1_kwh"]],
