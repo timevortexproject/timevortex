@@ -52,7 +52,7 @@ ARGUMENTS = {
 }
 
 
-def call_and_exit(command, shell=False):
+def call_and_exit(command, shell=True):
     """Call a shell command and exit if error
     """
     code = call(command, shell=shell)
@@ -76,15 +76,24 @@ class Command(BaseCommand):
                 help=ARGUMENTS[argument][KEY_HELP_TEXT])
 
     def handle(self, *args, **options):
-        if options[OPTION_LINT] or options[OPTION_VALIDATE]:
-            call_and_exit(ARGUMENTS[OPTION_LINT][KEY_COMMAND])
+        # if options[OPTION_LINT] or options[OPTION_VALIDATE]:
+        #     call_and_exit(ARGUMENTS[OPTION_LINT][KEY_COMMAND])
+        # if options[OPTION_VALIDATE]:
+        #     call_and_exit(ARGUMENTS[OPTION_VALIDATE][KEY_COMMAND], shell=True)
+        # if options[OPTION_BEHAVE]:
+        #     call_and_exit(ARGUMENTS[OPTION_BEHAVE][KEY_COMMAND], shell=True)
+        # if options[OPTION_BEHAVE_ALL] or options[OPTION_VALIDATE]:
+        #     call_and_exit(ARGUMENTS[OPTION_BEHAVE_ALL][KEY_COMMAND], shell=True)
+        # if options[OPTION_QA] or options[OPTION_VALIDATE]:
+        #     call_and_exit(ARGUMENTS[OPTION_QA][KEY_COMMAND], shell=True)
+        # if options[OPTION_PREPARE]:
+        #     call_and_exit(ARGUMENTS[OPTION_PREPARE][KEY_COMMAND], shell=True)
+
         if options[OPTION_VALIDATE]:
-            call_and_exit(ARGUMENTS[OPTION_VALIDATE][KEY_COMMAND], shell=True)
-        if options[OPTION_BEHAVE]:
-            call_and_exit(ARGUMENTS[OPTION_BEHAVE][KEY_COMMAND], shell=True)
-        if options[OPTION_BEHAVE_ALL] or options[OPTION_VALIDATE]:
-            call_and_exit(ARGUMENTS[OPTION_BEHAVE_ALL][KEY_COMMAND], shell=True)
-        if options[OPTION_QA] or options[OPTION_VALIDATE]:
-            call_and_exit(ARGUMENTS[OPTION_QA][KEY_COMMAND], shell=True)
-        if options[OPTION_PREPARE]:
-            call_and_exit(ARGUMENTS[OPTION_PREPARE][KEY_COMMAND], shell=True)
+            options[OPTION_LINT] = True
+            options[OPTION_BEHAVE_ALL] = True
+            options[OPTION_QA] = True
+
+        for command in ARGUMENTS:
+            if options[command]:
+                call_and_exit(ARGUMENTS[command][KEY_COMMAND])
