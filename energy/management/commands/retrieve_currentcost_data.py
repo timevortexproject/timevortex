@@ -80,19 +80,25 @@ def get_kwh_value(variable_kwh, variable_watts, actual_date):
         return 0.0
 
 
+def raise_watts_error(cc_xml, xml_value):
+    """Raise error if no watts values
+    """
+    if xml_value[KEY_CH1] is None and xml_value[KEY_CH2] is None and xml_value[KEY_CH3] is None:
+        raise CCNoWatts(cc_xml)
+
+
 def extract_value(cc_xml, cc_xml_parsed, temperature, xml_value):
     """Extract watts and celsius values
     """
-
     if temperature is None:
         raise CCNoTmpr(cc_xml)
-    else:
-        for channel in xml_value:
-            if cc_xml_parsed.find(channel) is not None:
-                xml_value[channel] = float(cc_xml_parsed.find(channel).findtext("watts"))
-        xml_value[KEY_TMPR] = float(temperature)
-        if xml_value[KEY_CH1] is None and xml_value[KEY_CH2] is None and xml_value[KEY_CH3] is None:
-            raise CCNoWatts(cc_xml)
+
+    for channel in xml_value:
+        if cc_xml_parsed.find(channel) is not None:
+            xml_value[channel] = float(cc_xml_parsed.find(channel).findtext("watts"))
+    xml_value[KEY_TMPR] = float(temperature)
+
+    raise_watts_error(cc_xml, xml_value)
 
     return xml_value
 
