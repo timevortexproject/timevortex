@@ -161,12 +161,9 @@ def verify_metear_data_update(site_id, data_type):
         assert_equal(variable.end_value, expected_end_value[variable.slug])
 
 
-def verify_metear_tsv_update(site_id, data_type):
-    """Verify METEAR TSV update
+def create_fixtures_folder_data(site_id, fixtures):
+    """Extract fixtures and folder data in order to comparing it
     """
-    fixtures = DICT_METEAR_FAKE_DATA
-    if data_type in "new":
-        fixtures = DICT_METEAR_FAKE_NEWS_DATA
     fixtures_data = {}
     folder_data = {}
     for fix in fixtures:
@@ -177,6 +174,16 @@ def verify_metear_tsv_update(site_id, data_type):
                     fixtures_data[key] = {}
                     folder_data[key] = FILE_STORAGE_SPACE.get_series(site_id, key)
                 fixtures_data[key][fix[KEY_METEAR_FAKE_DATA_DATE]] = variables[key]
+    return fixtures_data, folder_data
+
+
+def verify_metear_tsv_update(site_id, data_type):
+    """Verify METEAR TSV update
+    """
+    fixtures = DICT_METEAR_FAKE_DATA
+    if data_type in "new":
+        fixtures = DICT_METEAR_FAKE_NEWS_DATA
+    fixtures_data, folder_data = create_fixtures_folder_data(site_id, fixtures)
 
     for variable in fixtures_data:
         for date in fixtures_data[variable]:
