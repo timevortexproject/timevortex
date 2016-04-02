@@ -111,6 +111,21 @@ def shutdown_metear_ws(context):
     stubs_change_api_configuration({KEY_STUBS_OPEN_METEAR_API: False})
 
 
+def define_cc_error_message(error_type):
+    """Define currentcost error
+    """
+    error = None
+    if error_type in [CC_INSTANT_CONSO_1_TS_0, CC_INSTANT_CONSO_1_TS_3]:
+        error = CURRENTCOST_MESSAGE
+    elif error_type in [CC_INSTANT_CONSO_2_TS_7, CC_INSTANT_CONSO_2_TS_3, CC_INSTANT_CONSO_2_TS_0]:
+        error = CURRENTCOST_MESSAGE_2
+    elif error_type in CC_INSTANT_CONSO_3_TS_3:
+        error = CURRENTCOST_MESSAGE_3
+    elif error_type in CC_HISTORY:
+        error = HISTORY_1
+    return error
+
+
 @then("I should see an error message '{error_type}' in the '{log_file}' log")
 def verify_error_message_on_log(context, error_type, log_file):
     error = error_in_list(error_type)
@@ -124,14 +139,9 @@ def verify_error_message_on_log(context, error_type, log_file):
     elif log_file == KEY_CURRENTCOST:
         log_file_path = TIMEVORTEX_CURRENTCOST_LOG_FILE
 
-    if error_type in [CC_INSTANT_CONSO_1_TS_0, CC_INSTANT_CONSO_1_TS_3]:
-        error = CURRENTCOST_MESSAGE
-    elif error_type in [CC_INSTANT_CONSO_2_TS_7, CC_INSTANT_CONSO_2_TS_3, CC_INSTANT_CONSO_2_TS_0]:
-        error = CURRENTCOST_MESSAGE_2
-    elif error_type in CC_INSTANT_CONSO_3_TS_3:
-        error = CURRENTCOST_MESSAGE_3
-    elif error_type in CC_HISTORY:
-        error = HISTORY_1
+    cc_error = define_cc_error_message(error_type)
+    if cc_error is not None:
+        error = cc_error
 
     extract_from_log(error, log_file_path, -2)
 
@@ -173,14 +183,19 @@ def create_testing_site(context, site_id):
         stubs_change_api_configuration({KEY_STUBS_OPEN_METEAR_API: True})
 
 
-@when("I run the '{script_name}' script with '{setting_type}' settings")
-def run_script(context, script_name, setting_type):
-    out = StringIO()
+def launch_correct_script(script_name, out, context, setting_type):
+    """Launch correct script
+    """
     if script_name in KEY_METEAR:
         launch_metear_command(out)
     if script_name in KEY_CURRENTCOST:
         launch_currentcost_command(out, context, setting_type)
 
+
+@when("I run the '{script_name}' script with '{setting_type}' settings")
+def run_script(context, script_name, setting_type):
+    out = StringIO()
+    launch_correct_script(script_name, out, context, setting_type)
     context.commands_response = [out.getvalue().strip()]
 
     try:
