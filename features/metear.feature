@@ -36,14 +36,14 @@ Feature: Retrieve METEAR data
         And I should see an error message 'metear_bad_content' on the screen
         And I should see an error message 'metear_bad_content' on 'error' TSV file
 
-    @wip
+    @wipa
     Scenario: 5.Retrieve historical data
         Given I created a testing Site 'LFMN'
         When I run the 'metear' script with 'correct' settings
         Then I should see 'historical' data update in DB for 'LFMN'
         And I should see 'historical' data update in TSV file for 'LFMN'
 
-    @wip
+    @wipa
     Scenario: 6.Retrieve new data
         Given I created a testing Site 'LFMN'
         And I run for the first time the metear script
@@ -52,7 +52,7 @@ Feature: Retrieve METEAR data
         Then I should see 'new' data update in DB for 'LFMN'
         And I should see 'new' data update in TSV file for 'LFMN'
 
-    @wip
+    @wipa
     Scenario: 7.Retrieve other airport data
         Given I created a testing Site 'LFBP'
         When I run the 'metear' script with 'correct' settings

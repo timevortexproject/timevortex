@@ -230,97 +230,129 @@ class SocatMessager(Thread):
                 pass
 
 
+def command_currentcost_parameters(setting_type):
+    """Return accordign parameter
+    """
+    ch1 = None
+    ch1_kwh = None
+    ch2 = None
+    ch2_kwh = None
+    ch3 = None
+    ch3_kwh = None
+    tmpr = None
+    tty_port = TEST_CC_CORRECT_TTY_PORT
+    timeout = 10
+    array_instant_conso = [
+        CC_INSTANT_CONSO_1_TS_3,
+        CC_INSTANT_CONSO_2_TS_3,
+        CC_INSTANT_CONSO_2_TS_7,
+        CC_INSTANT_CONSO_3_TS_3]
+    if setting_type in ERROR_CC_BAD_PORT:
+        tty_port = TEST_CC_BAD_TTY_PORT
+    if setting_type in ERROR_CC_NO_MESSAGE:
+        timeout = 1
+    if setting_type in array_instant_conso:
+        ch1 = TEST_CC_VARIABLE_ID_WATTS_CH1
+        ch1_kwh = TEST_CC_VARIABLE_ID_KWH_CH1
+        tmpr = TEST_CC_VARIABLE_ID_TMPR
+    if setting_type in CC_INSTANT_CONSO_2_TS_7:
+        ch2 = TEST_CC_VARIABLE_ID_WATTS_CH2
+        ch2_kwh = TEST_CC_VARIABLE_ID_KWH_CH2
+        ch3 = TEST_CC_VARIABLE_ID_WATTS_CH3
+        ch3_kwh = TEST_CC_VARIABLE_ID_KWH_CH3
+
+    return {
+        "tty_port": tty_port,
+        "timeout": timeout,
+        "usb_retry": 5,
+        "ch1": ch1,
+        "ch2": ch2,
+        "ch3": ch3,
+        "ch1_kwh": ch1_kwh,
+        "ch2_kwh": ch2_kwh,
+        "ch3_kwh": ch3_kwh,
+        "tmpr": tmpr
+    }
+
+
+def command_currencost_errors(setting_type, context, cc_params):
+    """Return according errors
+    """
+    error = Nonegt
+    if setting_type in ERROR_CC_BAD_PORT:
+        error = (TEST_CC_VARIABLE_ID, context.site_id, cc_params["tty_port"], cc_params["usb_retry"])
+    elif setting_type in ERROR_CC_NO_MESSAGE:
+        error = (TEST_CC_VARIABLE_ID, context.site_id)
+    elif setting_type in ERROR_CC_DISCONNECTED:
+        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, cc_params["tty_port"])
+    elif setting_type in ERROR_CC_INCORRECT_MESSAGE:
+        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, WRONG_CURRENTCOST_MESSAGE)
+    elif setting_type in ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR:
+        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, INCORRECT_TMPR_CURRENTCOST_MESSAGE)
+    elif setting_type in ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS:
+        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, INCORRECT_WATTS_CURRENTCOST_MESSAGE)
+    return error
+
+
 def launch_currentcost_command(out, context, setting_type):
     """Launch CurrentCost command
     """
     commands = "%s PTY,link=%s PTY,link=%s" % (SOCAT, TEST_CC_CORRECT_TTY_PORT, TEST_CC_CORRECT_TTY_PORT_WRITER)
     context.socat = subprocess.Popen(shlex.split(commands), stdout=subprocess.PIPE, preexec_fn=os.setsid)
-    tty_port = TEST_CC_CORRECT_TTY_PORT
-    timeout = 10
-    usb_retry = 5
-    ch1 = None
-    ch2 = None
-    ch3 = None
-    ch1_kwh = None
-    ch2_kwh = None
-    ch3_kwh = None
-    tmpr = None
+    cc_params = command_currentcost_parameters(setting_type)
+    error = command_currencost_errors(setting_type, context, cc_params)
+    if error is not None:
+        context.specific_error = error
     command = CurrentCostCommand()
     command.out = out
-    if setting_type in ERROR_CC_BAD_PORT:
-        tty_port = TEST_CC_BAD_TTY_PORT
-        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, tty_port, usb_retry)
-    elif setting_type in ERROR_CC_NO_MESSAGE:
-        timeout = 1
-        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id)
-    elif setting_type in ERROR_CC_DISCONNECTED:
-        context.thread = SocatMessager(context, tty_port)
+    if setting_type in ERROR_CC_DISCONNECTED:
+        context.thread = SocatMessager(context, cc_params["tty_port"])
         context.thread.start()
-        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, tty_port)
     elif setting_type in ERROR_CC_INCORRECT_MESSAGE:
-        context.thread = SocatMessager(context, tty_port, WRONG_CURRENTCOST_MESSAGE)
+        context.thread = SocatMessager(context, cc_params["tty_port"], WRONG_CURRENTCOST_MESSAGE)
         context.thread.start()
-        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, WRONG_CURRENTCOST_MESSAGE)
     elif setting_type in ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR:
-        context.thread = SocatMessager(context, tty_port, INCORRECT_TMPR_CURRENTCOST_MESSAGE)
+        context.thread = SocatMessager(context, cc_params["tty_port"], INCORRECT_TMPR_CURRENTCOST_MESSAGE)
         context.thread.start()
-        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, INCORRECT_TMPR_CURRENTCOST_MESSAGE)
     elif setting_type in ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS:
-        context.thread = SocatMessager(context, tty_port, INCORRECT_WATTS_CURRENTCOST_MESSAGE)
+        context.thread = SocatMessager(context, cc_params["tty_port"], INCORRECT_WATTS_CURRENTCOST_MESSAGE)
         context.thread.start()
-        context.specific_error = (TEST_CC_VARIABLE_ID, context.site_id, INCORRECT_WATTS_CURRENTCOST_MESSAGE)
     elif setting_type in CC_INSTANT_CONSO_1_TS_0:
-        context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE)
+        context.thread = SocatMessager(context, cc_params["tty_port"], CURRENTCOST_MESSAGE)
         context.thread.start()
     elif setting_type in CC_INSTANT_CONSO_1_TS_3:
-        ch1 = TEST_CC_VARIABLE_ID_WATTS_CH1
-        ch1_kwh = TEST_CC_VARIABLE_ID_KWH_CH1
-        tmpr = TEST_CC_VARIABLE_ID_TMPR
-        context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE)
+        context.thread = SocatMessager(context, cc_params["tty_port"], CURRENTCOST_MESSAGE)
         context.thread.start()
     elif setting_type in CC_INSTANT_CONSO_2_TS_3:
-        ch1 = TEST_CC_VARIABLE_ID_WATTS_CH1
-        ch1_kwh = TEST_CC_VARIABLE_ID_KWH_CH1
-        tmpr = TEST_CC_VARIABLE_ID_TMPR
-        context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE_2)
+        context.thread = SocatMessager(context, cc_params["tty_port"], CURRENTCOST_MESSAGE_2)
         context.thread.start()
     elif setting_type in CC_INSTANT_CONSO_2_TS_0:
-        context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE_2)
+        context.thread = SocatMessager(context, cc_params["tty_port"], CURRENTCOST_MESSAGE_2)
         context.thread.start()
     elif setting_type in CC_INSTANT_CONSO_2_TS_7:
-        ch1 = TEST_CC_VARIABLE_ID_WATTS_CH1
-        ch1_kwh = TEST_CC_VARIABLE_ID_KWH_CH1
-        ch2 = TEST_CC_VARIABLE_ID_WATTS_CH2
-        ch2_kwh = TEST_CC_VARIABLE_ID_KWH_CH2
-        ch3 = TEST_CC_VARIABLE_ID_WATTS_CH3
-        ch3_kwh = TEST_CC_VARIABLE_ID_KWH_CH3
-        tmpr = TEST_CC_VARIABLE_ID_TMPR
-        context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE_2)
+        context.thread = SocatMessager(context, cc_params["tty_port"], CURRENTCOST_MESSAGE_2)
         context.thread.start()
     elif setting_type in CC_INSTANT_CONSO_3_TS_3:
-        ch1 = TEST_CC_VARIABLE_ID_WATTS_CH1
-        ch1_kwh = TEST_CC_VARIABLE_ID_KWH_CH1
-        tmpr = TEST_CC_VARIABLE_ID_TMPR
-        context.thread = SocatMessager(context, tty_port, CURRENTCOST_MESSAGE_3)
+        context.thread = SocatMessager(context, cc_params["tty_port"], CURRENTCOST_MESSAGE_3)
         context.thread.start()
     elif setting_type in CC_HISTORY:
-        context.thread = SocatMessager(context, tty_port, HISTORY_1)
+        context.thread = SocatMessager(context, cc_params["tty_port"], HISTORY_1)
         context.thread.start()
     sleep(3)
     command.handle(
         site_id=context.site_id,
         variable_id=TEST_CC_VARIABLE_ID,
-        tty_port=tty_port,
-        timeout=timeout,
-        usb_retry=usb_retry,
+        tty_port=cc_params["tty_port"],
+        timeout=cc_params["timeout"],
+        usb_retry=cc_params["usb_retry"],
         break_loop=True,
-        ch1=ch1,
-        ch1_kwh=ch1_kwh,
-        ch2=ch2,
-        ch2_kwh=ch2_kwh,
-        ch3=ch3,
-        ch3_kwh=ch3_kwh,
-        tmpr=tmpr)
+        ch1=cc_params["ch1"],
+        ch1_kwh=cc_params["ch1_kwh"],
+        ch2=cc_params["ch2"],
+        ch2_kwh=cc_params["ch2_kwh"],
+        ch3=cc_params["ch3"],
+        ch3_kwh=cc_params["ch3_kwh"],
+        tmpr=cc_params["tmpr"])
 
 
 def verify_currentcost_data_update(site_id, data_type):
@@ -352,10 +384,13 @@ def verify_currentcost_tsv_update(site_id, data_type):
         if data_type in CC_INSTANT_CONSO_1_TS_0:
             assert_equal(last_series, None)
         else:
+            last_series_value = last_series[KEY_VALUE]
+            expected_value_1 = DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE]
             if KEY_END_VALUE_2 in DICT_CC_INSTANT_CONSO[variable_id][data_type]:
-                assert_gte(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE])
-                assert_lte(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE_2])
+                expected_value_2 = DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE_2]
+                assert_gte(last_series_value, expected_value_1)
+                assert_lte(last_series_value, expected_value_2)
             else:
-                assert_equal(last_series[KEY_VALUE], DICT_CC_INSTANT_CONSO[variable_id][data_type][KEY_END_VALUE])
+                assert_equal(last_series_value, expected_value_1)
             assert_equal(last_series[KEY_SITE_ID], site_id)
             assert_equal(last_series[KEY_VARIABLE_ID], variable_id)
