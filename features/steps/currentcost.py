@@ -278,7 +278,7 @@ def command_currentcost_parameters(setting_type):
 def command_currencost_errors(setting_type, context, cc_params):
     """Return according errors
     """
-    error = Nonegt
+    error = None
     if setting_type in ERROR_CC_BAD_PORT:
         error = (TEST_CC_VARIABLE_ID, context.site_id, cc_params["tty_port"], cc_params["usb_retry"])
     elif setting_type in ERROR_CC_NO_MESSAGE:
