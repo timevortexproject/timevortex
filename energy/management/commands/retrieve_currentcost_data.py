@@ -20,6 +20,11 @@ from timevortex.models import get_site_by_slug, create_site, Site, update_or_cre
 
 LOGGER = logging.getLogger(KEY_ENERGY)
 BAUDS = 57600
+KEY_CH1 = "ch1"
+KEY_CH2 = "ch2"
+KEY_CH3 = "ch3"
+KEY_TMPR = "tmpr"
+KEY_HIST = "hist"
 
 
 class ExceptionWithValue(Exception):
@@ -96,29 +101,28 @@ def convert_cc_xml_to_dict(cc_xml):
     except ElementTree.ParseError:
         raise CCIncorrectData(cc_xml)
 
-    ch1_w = None
-    ch2_w = None
-    ch3_w = None
-    temperature = cc_xml_parsed.findtext("tmpr")
-    hist = cc_xml_parsed.findtext("hist")
+    xml_value = {
+        KEY_CH1: None,
+        KEY_CH2: None,
+        KEY_CH3: None
+    }
+    temperature = cc_xml_parsed.findtext(KEY_TMPR)
+    hist = cc_xml_parsed.findtext(KEY_HIST)
     if hist is None:
         hist = False
         if temperature is None:
             raise CCNoTmpr(cc_xml)
         else:
-            temperature = float(temperature)
-            if cc_xml_parsed.find("ch1") is not None:
-                ch1_w = float(cc_xml_parsed.find("ch1").findtext("watts"))
-            if cc_xml_parsed.find("ch2") is not None:
-                ch2_w = float(cc_xml_parsed.find("ch2").findtext("watts"))
-            if cc_xml_parsed.find("ch3") is not None:
-                ch3_w = float(cc_xml_parsed.find("ch3").findtext("watts"))
-            if ch1_w is None and ch2_w is None and ch3_w is None:
+            for channel in xml_value:
+                if cc_xml_parsed.find(channel) is not None:
+                    xml_value[channel] = float(cc_xml_parsed.find(channel).findtext("watts"))
+            xml_value[KEY_TMPR] = float(temperature)
+            if xml_value[KEY_CH1] is None and xml_value[KEY_CH2] is None and xml_value[KEY_CH3] is None:
                 raise CCNoWatts(cc_xml)
     else:
         hist = True
 
-    return cc_xml, ch1_w, ch2_w, ch3_w, temperature, hist
+    return cc_xml, xml_value, hist
 
 
 class Command(AbstractCommand):
@@ -145,13 +149,13 @@ class Command(AbstractCommand):
         parser.add_argument('--ch1', action='store', dest="ch1", default=None, type=str, help='Affect name to ch1')
         parser.add_argument(
             '--ch1_kwh', action='store', dest="ch1_kwh", default=None, type=str, help='Affect name to ch1_kwh')
-        parser.add_argument('--ch2', action='store', dest="ch2", default=None, type=str, help='Affect name to ch2')
+        parser.add_argument('--ch2', action='store', dest=KEY_CH2, default=None, type=str, help='Affect name to ch2')
         parser.add_argument(
             '--ch2_kwh', action='store', dest="ch2_kwh", default=None, type=str, help='Affect name to ch2_kwh')
-        parser.add_argument('--ch3', action='store', dest="ch3", default=None, type=str, help='Affect name to ch3')
+        parser.add_argument('--ch3', action='store', dest=KEY_CH3, default=None, type=str, help='Affect name to ch3')
         parser.add_argument(
             '--ch3_kwh', action='store', dest="ch3_kwh", default=None, type=str, help='Affect name to ch3_kwh')
-        parser.add_argument('--tmpr', action='store', dest="tmpr", default=None, type=str, help='Affect name to tmpr')
+        parser.add_argument('--tmpr', action='store', dest=KEY_TMPR, default=None, type=str, help='Affect name to tmpr')
 
     def update_and_publish(self, site, slug, date, value):
         """Update variable value and publish on network
@@ -170,20 +174,20 @@ class Command(AbstractCommand):
     def currentcost_timeseries_creation(self, options, values, date_readline):
         """Update variable and publish timeseries from XML message
         """
-        tmpr = options["tmpr"]
-        ch1_w = values[0]
-        ch2_w = values[1]
-        ch3_w = values[2]
-        temperature = values[3]
+        tmpr = options[KEY_TMPR]
+        ch1_w = values[KEY_CH1]
+        ch2_w = values[KEY_CH2]
+        ch3_w = values[KEY_CH3]
+        temperature = values[KEY_TMPR]
         # For each channel, we update value in DB and send timeseries signal
         site = get_site_by_slug(self.site_id)
         if site is None:
             site = create_site(slug=self.site_id, site_type=Site.HOME_TYPE)
 
         channels = [
-            [options["ch1"], ch1_w, options["ch1_kwh"]],
-            [options["ch2"], ch2_w, options["ch2_kwh"]],
-            [options["ch3"], ch3_w, options["ch3_kwh"]],
+            [options[KEY_CH1], ch1_w, options["ch1_kwh"]],
+            [options[KEY_CH2], ch2_w, options["ch2_kwh"]],
+            [options[KEY_CH3], ch3_w, options["ch3_kwh"]],
         ]
 
         for channel, watts_value, kwh_channel in channels:
@@ -209,12 +213,22 @@ class Command(AbstractCommand):
         cc_xml = ser_connection.readline()
         date_readline = timezone.now()
         # We get a clean xml and channel values
-        cc_xml, ch1_w, ch2_w, ch3_w, temperature, hist = convert_cc_xml_to_dict(cc_xml)
-        values = [ch1_w, ch2_w, ch3_w, temperature]
+        cc_xml, values, hist = convert_cc_xml_to_dict(cc_xml)
         # We log current xml message for hard recovery
         self.log_error(timeseries_json(self.site_id, "cc_xml", cc_xml, date_readline.isoformat()))
         if hist is False:
             self.currentcost_timeseries_creation(options, values, date_readline)
+
+    def send_currentcost_error(self, error_type, variable_id, error_params=None, error_params_2=None):
+        """Send currentcost error
+        """
+        if error_params is None:
+            error = ERROR_CURRENTCOST[error_type] % (variable_id, self.site_id)
+        elif error_params_2 is None:
+            error = ERROR_CURRENTCOST[error_type] % (variable_id, self.site_id, error_params)
+        else:
+            error = ERROR_CURRENTCOST[error_type] % (variable_id, self.site_id, error_params, error_params_2)
+        self.send_error(error)
 
     def run(self, *args, **options):
         """Run method
@@ -236,19 +250,13 @@ class Command(AbstractCommand):
                 if ser_connection is not None:
                     self.ser_connection_not_none(ser_connection, options)
             except CCNoMessage:
-                error = ERROR_CURRENTCOST[ERROR_CC_NO_MESSAGE] % (variable_id, self.site_id)
-                self.send_error(error)
+                self.send_currentcost_error(ERROR_CC_NO_MESSAGE, variable_id)
             except CCIncorrectData as err:
-                error = ERROR_CURRENTCOST[ERROR_CC_INCORRECT_MESSAGE] % (variable_id, self.site_id, err.value)
-                self.send_error(error)
+                self.send_currentcost_error(ERROR_CC_INCORRECT_MESSAGE, variable_id, err.value)
             except CCNoTmpr as err:
-                error = ERROR_CURRENTCOST[ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR] % (
-                    variable_id, self.site_id, err.value)
-                self.send_error(error)
+                self.send_currentcost_error(ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR, variable_id, err.value)
             except CCNoWatts as err:
-                error = ERROR_CURRENTCOST[ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS] % (
-                    variable_id, self.site_id, err.value)
-                self.send_error(error)
+                self.send_currentcost_error(ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS, variable_id, err.value)
             except (OSError, serial.serialutil.SerialException):
                 # if we are connected
                 if ser_connection is not None:
@@ -256,11 +264,9 @@ class Command(AbstractCommand):
                     ser_connection.close()
                     ser_connection = None
                     # And we log this error
-                    error = ERROR_CURRENTCOST[ERROR_CC_DISCONNECTED] % (variable_id, self.site_id, tty_port)
-                    self.send_error(error)
+                    self.send_currentcost_error(ERROR_CC_DISCONNECTED, variable_id, tty_port)
                 # Else
                 else:
                     # We send this error
-                    error = ERROR_CURRENTCOST[ERROR_CC_BAD_PORT] % (variable_id, self.site_id, tty_port, usb_retry)
-                    self.send_error(error)
+                    self.send_currentcost_error(ERROR_CC_BAD_PORT, variable_id, tty_port, usb_retry)
                     sleep(usb_retry)
