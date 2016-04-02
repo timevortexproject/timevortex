@@ -122,29 +122,36 @@ class Command(AbstractCommand):
     name = "METEAR crawler"
     logger = LOGGER
 
+    def launch_crawler(self, metear_sites):
+        """Launch METEAR crawler
+        """
+        crawler = MyMETEARCrawler()
+        crawler.set_logger(LOGGER)
+        crawler.out = self.out
+        crawler.reverse = False
+        settings_start_date = getattr(settings, SETTINGS_METEAR_START_DATE, SETTINGS_DEFAULT_METEAR_START_DATE)
+        bound_start_date = dateutil.parser.parse(settings_start_date).replace(tzinfo=pytz.UTC)
+        bound_end_date = TODAY
+        for site in metear_sites:
+            variable_start_date = bound_end_date
+            variable_end_date = bound_end_date
+            variable = get_variable_by_slug(site=site, slug=SLUG_METEAR_TEMPERATURE_CELSIUS)
+            if variable is not None:
+                variable_start_date = variable.start_date
+                variable_end_date = variable.end_date
+            ending_date = bound_end_date.date()
+            while variable_end_date.date() <= ending_date:
+                crawler.handle(site_id=site.slug, from_date=variable_end_date)
+                variable_end_date += timedelta(days=1)
+            crawler.reverse = True
+            ending_date = bound_start_date.date()
+            while variable_start_date.date() >= ending_date:
+                crawler.handle(site_id=site.slug, from_date=variable_start_date)
+                variable_start_date += timedelta(days=-1)
+
     def run(self, *args, **options):
         metear_sites = get_sites_by_type(site_type=Site.METEAR_TYPE)
         if len(metear_sites) > 0:
-            crawler = MyMETEARCrawler()
-            crawler.set_logger(LOGGER)
-            crawler.out = self.out
-            settings_start_date = getattr(settings, SETTINGS_METEAR_START_DATE, SETTINGS_DEFAULT_METEAR_START_DATE)
-            bound_start_date = dateutil.parser.parse(settings_start_date).replace(tzinfo=pytz.UTC)
-            bound_end_date = TODAY
-            for site in metear_sites:
-                variable_start_date = bound_end_date
-                variable_end_date = bound_end_date
-                variable = get_variable_by_slug(site=site, slug=SLUG_METEAR_TEMPERATURE_CELSIUS)
-                if variable is not None:
-                    variable_start_date = variable.start_date
-                    variable_end_date = variable.end_date
-                while variable_end_date.date() <= bound_end_date.date():
-                    crawler.reverse = False
-                    crawler.handle(site_id=site.slug, from_date=variable_end_date)
-                    variable_end_date += timedelta(days=1)
-                while variable_start_date.date() >= bound_start_date.date():
-                    crawler.reverse = True
-                    crawler.handle(site_id=site.slug, from_date=variable_start_date)
-                    variable_start_date += timedelta(days=-1)
+            self.launch_crawler(metear_sites)
         else:
             self.send_error(ERROR_METEAR[KEY_METEAR_NO_SITE_ID])
