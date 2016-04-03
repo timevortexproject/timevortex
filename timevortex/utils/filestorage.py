@@ -47,18 +47,24 @@ def get_last_file_name(site_folder, file_prefix):
     """
     old_date = None
     last_filename = ""
-    for filename in listdir(site_folder):
-        is_file = isfile(join(site_folder, filename))
-        if is_file and file_prefix in filename:
-            date = filename.replace(file_prefix, "")
-            try:
-                date = datetime.strptime(date, "%Y-%m-%d")
-                if old_date is None or date > old_date:
-                    old_date = date
-                    last_filename = filename
-            except ValueError:
-                LOGGER.error("Not right file")
+    for new_filename in listdir(site_folder):
+        is_file = isfile(join(site_folder, new_filename))
+        if is_file and file_prefix in new_filename:
+            old_date, last_filename = update_last_file_name(file_prefix, old_date, last_filename, new_filename)
     return last_filename
+
+
+def update_last_file_name(file_prefix, old_date, last_filename, new_filename):
+    """Update last file name
+    """
+    try:
+        new_date = new_filename.replace(file_prefix, "")
+        new_date = datetime.strptime(new_date, "%Y-%m-%d")
+        if old_date is None or new_date > old_date:
+            return new_date, new_filename
+    except ValueError:
+        LOGGER.error("Not right file")
+    return old_date, last_filename
 
 
 class FileStorage(object):
