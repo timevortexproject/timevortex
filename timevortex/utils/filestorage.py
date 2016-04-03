@@ -19,6 +19,48 @@ SETTINGS_FILE_STORAGE_FOLDER = "SETTINGS_FILE_STORAGE_FOLDER"
 SETTINGS_DEFAULT_FILE_STORAGE_FOLDER = "/tmp/data/"
 
 
+def get_lines_number(file_path):
+    """Get lines number
+    """
+    return sum(1 for line in open(file_path))
+
+
+def get_series_per_file(site_folder, file_prefix):
+    """Get series per file
+    """
+    series = {}
+    for filename in listdir(site_folder):
+        is_file = isfile(join(site_folder, filename))
+        if is_file and file_prefix in filename:
+            complete_filename = "%s/%s" % (site_folder, filename)
+            with open(complete_filename, "r") as filed:
+                temp_series = filed.readlines()
+                for line in temp_series:
+                    array_line = line.split("\t")
+                    if len(array_line) >= 2:
+                        series[array_line[1]] = array_line[0]
+    return series
+
+
+def get_last_file_name(site_folder, file_prefix):
+    """Get last filename
+    """
+    old_date = None
+    last_filename = ""
+    for filename in listdir(site_folder):
+        is_file = isfile(join(site_folder, filename))
+        if is_file and file_prefix in filename:
+            date = filename.replace(file_prefix, "")
+            try:
+                date = datetime.strptime(date, "%Y-%m-%d")
+                if old_date is None or date > old_date:
+                    old_date = date
+                    last_filename = filename
+            except ValueError:
+                LOGGER.error("Not right file")
+    return last_filename
+
+
 class FileStorage(object):
     """Class that help us to store and load data over several file"""
 
@@ -89,19 +131,10 @@ class FileStorage(object):
         element = variable_id
         file_prefix = "%s.tsv." % element
         site_folder = "%s/%s" % (self.folder_path, site_id)
-        series = {}
         if exists(site_folder):
-            for filename in listdir(site_folder):
-                is_file = isfile(join(site_folder, filename))
-                if is_file and file_prefix in filename:
-                    completete_filename = "%s/%s" % (site_folder, filename)
-                    temp_series = []
-                    with open(completete_filename, "r") as filed:
-                        temp_series = filed.readlines()
-                        for line in temp_series:
-                            array_line = line.split("\t")
-                            if len(array_line) >= 2:
-                                series[array_line[1]] = array_line[0]
+            series = get_series_per_file(site_folder, file_prefix)
+        else:
+            series = {}
         return series
 
     def get_last_series(self, site_id, variable_id):
@@ -111,20 +144,7 @@ class FileStorage(object):
         file_prefix = "%s.tsv." % element
         site_folder = "%s/%s" % (self.folder_path, site_id)
         if exists(site_folder):
-            old_date = None
-            last_filename = ""
-            for filename in listdir(site_folder):
-                is_file = isfile(join(site_folder, filename))
-                if is_file and file_prefix in filename:
-                    date = filename.replace(file_prefix, "")
-                    try:
-                        date = datetime.strptime(date, "%Y-%m-%d")
-                        if old_date is None or date > old_date:
-                            old_date = date
-                            last_filename = filename
-                    except ValueError:
-                        LOGGER.error("Not right file")
-
+            last_filename = get_last_file_name(site_folder, file_prefix)
             last_filename = "%s/%s" % (site_folder, last_filename)
             try:
                 with open(last_filename, "rb") as filed2:
@@ -160,7 +180,7 @@ class FileStorage(object):
         filename = "%s.tsv.%s" % (element, day_date)
         file_path = "%s/%s" % (site_folder, filename)
         if exists(site_folder) and exists(file_path):
-            return sum(1 for line in open(file_path))
+            return get_lines_number(file_path)
         return 0
 
     def get_number_of_series(self, site_id, day_date):
@@ -174,7 +194,7 @@ class FileStorage(object):
                 if "%s.tsv" % KEY_ERROR not in filename and day_date in filename:
                     file_path = "%s/%s" % (site_folder, filename)
                     var_id = filename.replace(".tsv.%s" % day_date, "")
-                    series_numbers = sum(1 for line in open(file_path))
+                    series_numbers = get_lines_number(file_path)
                     series[var_id] = {KEY_VALUE: series_numbers}
 
         return series
