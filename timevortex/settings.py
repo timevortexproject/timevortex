@@ -76,6 +76,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'timevortex', 'templates'),
         ],
         # 'APP_DIRS': True,
         'OPTIONS': {
@@ -234,6 +235,17 @@ LOGGING = {
 # ADMIN_TOOLS_INDEX_DASHBOARD = 'fluent_dashboard.dashboard.FluentIndexDashboard'
 # ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'fluent_dashboard.dashboard.FluentAppIndexDashboard'
 # ADMIN_TOOLS_MENU = 'fluent_dashboard.menu.FluentMenu'
+
+#####
+# Email configuration
+#
+
+DEFAULT_FROM_EMAIL = 'Timevortex <phase.test.email@gmail.com>'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'phase.test.email'
+EMAIL_HOST_PASSWORD = 'phaseTEST2014'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 #####
 # TIMEVORTEX CONFIGURATION

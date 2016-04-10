@@ -1,0 +1,24 @@
+<p>Hello,</p>
+
+<p>Here is your TimeVortex daily report for {{ yesterday_date }}.</p>
+
+{% for site in sites %}
+<p>Site <b>{{ site.name }}</b>:
+    <ul>
+    {% if "errorNumbers" in site %}
+        <li>Error numbers: <b>{{ site.errorNumbers }}</b></li>
+    {% endif %}
+    {% if "seriesNumbers" in site %}
+        {% for variable, value in site.seriesNumbers %}
+            <li>Series numbers for <b>{{ variable }}</b>: <b> {{ value }}</b></li>
+        {% endfor %}
+    {% endif %}
+    </ul>
+{% endfor %}
+</p>
+
+<p>{{ free_space | safe }}</p>
+
+<p>Thank you for your time.</p>
+
+<p>TimeVortex</p>

@@ -1,0 +1,21 @@
+Hello,
+
+Here is your TimeVortex daily report for {{ yesterday_date }}.
+
+{% for site in sites %}
+Site {{ site.name }}:
+    {% if "errorNumbers" in site %}
+    Error numbers: {{ site.errorNumbers }}
+    {% endif %}
+    {% if "seriesNumbers" in site %}
+        {% for variable, value in site.seriesNumbers %}
+    Series numbers for {{ variable }}: {{ value }}
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+{{ free_space }}
+
+Thank you for your time.
+
+TimeVortex

@@ -1,0 +1,1 @@
+[TimeVortex] Daily report of {{ yesterday_date }}
