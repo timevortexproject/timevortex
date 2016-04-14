@@ -4,6 +4,7 @@
 
 """File storage adapter for timevortex project"""
 
+import os
 from time import tzname
 from datetime import datetime
 from os import listdir, makedirs
@@ -208,5 +209,9 @@ class FileStorage(object):
     def set_data_location(self, folder_path):
         """Set data folder space"""
         self.folder_path = folder_path
+
+    def get_sites_list(self):
+        """Get sites list"""
+        return os.listdir(self.folder_path)
 
 FILE_STORAGE_SPACE = FileStorage(getattr(settings, SETTINGS_FILE_STORAGE_FOLDER, SETTINGS_DEFAULT_FILE_STORAGE_FOLDER))

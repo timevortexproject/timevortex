@@ -9,13 +9,13 @@
         <li>Error numbers: <b>{{ site.errorNumbers }}</b></li>
     {% endif %}
     {% if "seriesNumbers" in site %}
-        {% for variable, value in site.seriesNumbers %}
+        {% for variable in site.seriesNumbers %}
             <li>Series numbers for <b>{{ variable }}</b>: <b> {{ value }}</b></li>
         {% endfor %}
     {% endif %}
     </ul>
-{% endfor %}
 </p>
+{% endfor %}
 
 <p>{{ free_space | safe }}</p>
 
