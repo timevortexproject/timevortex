@@ -93,10 +93,10 @@ class TestFileStorage(TestCase):
             TEST_CC_SITE_ID, today)
         LOGGER.error(series_number)
         self.assertEqual(len(series_number), len(VARIABLES))
-        for variable in VARIABLES:
-            self.assertEqual(variable in series_number, True)
+        for variable, value in series_number:
+            self.assertEqual(variable in VARIABLES, True)
             self.assertEqual(
-                series_number[variable][KEY_VALUE], VARIABLES[variable][KEY_VALUE])
+                value, VARIABLES[variable][KEY_VALUE])
 
         series_number = FILE_STORAGE_SPACE.get_number_of_series(
             TEST_CC_SITE_ID, FAKE_DATE)
@@ -105,10 +105,10 @@ class TestFileStorage(TestCase):
         series_number = FILE_STORAGE_SPACE.get_number_of_series(
             TEST_CC_SITE_ID, SECOND_FAKE_DATE)
         self.assertEqual(len(series_number), 1)
-        variable = TEST_VARIABLE
-        self.assertEqual(variable in series_number, True)
-        self.assertEqual(
-            series_number[variable][KEY_VALUE], 1)
+        for variable, value in series_number:
+            self.assertEqual(variable in TEST_VARIABLE, True)
+            self.assertEqual(
+                value, 1)
 
     def test_error_creation(self):
         """

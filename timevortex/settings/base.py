@@ -190,20 +190,26 @@ LOGGING = {
     'handlers': {
         'file': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': '/tmp/timevortex.log',
+            'when': 'd',
+            'backupCount': 0,
             'formatter': 'verbose'
         },
         'file_weather': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': '/tmp/timevortex_weather.log',
+            'when': 'd',
+            'backupCount': 0,
             'formatter': 'verbose'
         },
         'file_energy': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': '/tmp/timevortex_energy.log',
+            'when': 'd',
+            'backupCount': 0,
             'formatter': 'verbose'
         },
     },
@@ -226,6 +232,7 @@ LOGGING = {
     },
 }
 
+
 #####
 # ADMIN CONFIGURATION
 #
@@ -235,17 +242,6 @@ LOGGING = {
 # ADMIN_TOOLS_INDEX_DASHBOARD = 'fluent_dashboard.dashboard.FluentIndexDashboard'
 # ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'fluent_dashboard.dashboard.FluentAppIndexDashboard'
 # ADMIN_TOOLS_MENU = 'fluent_dashboard.menu.FluentMenu'
-
-#####
-# Email configuration
-#
-
-DEFAULT_FROM_EMAIL = 'Timevortex <phase.test.email@gmail.com>'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'phase.test.email'
-EMAIL_HOST_PASSWORD = 'phaseTEST2014'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
 
 #####
 # TIMEVORTEX CONFIGURATION

@@ -14,9 +14,9 @@ STORAGE_SPACE = getattr(settings, SETTINGS_FILE_STORAGE_FOLDER, SETTINGS_DEFAULT
 
 
 def clean_folder():
-    FOLDER_PATH = "%s/%s" % (STORAGE_SPACE, TEST_CC_SITE_ID)
-    if exists(FOLDER_PATH):
-        shutil.rmtree(FOLDER_PATH)
-    FOLDER_PATH = "%s/%s" % (STORAGE_SPACE, "system")
-    if exists(FOLDER_PATH):
-        shutil.rmtree(FOLDER_PATH)
+    folder_path = "%s/%s" % (STORAGE_SPACE, TEST_CC_SITE_ID)
+    if exists(folder_path):
+        shutil.rmtree(folder_path)
+        folder_path = "%s/%s" % (STORAGE_SPACE, "system")
+    if exists(folder_path):
+        shutil.rmtree(folder_path)

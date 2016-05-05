@@ -7,7 +7,7 @@
     Test file for FileStorage class.
 """
 
-from datetime import date, datetime
+from datetime import datetime
 from django.test import TestCase
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
 from timevortex.utils.globals import KEY_ERROR, KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE, KEY_DATE
@@ -21,26 +21,13 @@ from features.steps.test_utils import TEST_CC_SITE_ID
 
 ERROR_NUMBER = 5
 TEST_VARIABLE = "test"
-VARIABLES = {
-    TEST_VARIABLE: {
-        "value": 12
-    },
-    "not_a_test": {
-        "value": 23
-    },
-    "test_2": {
-        "value": 5
-    }
-}
+VARIABLES = sorted([[TEST_VARIABLE, 12], ["not_a_test", 23], ["test_2", 5]])
 FAKE_DATE = "2012-05-08"
 SECOND_FAKE_DATE = "2014-03-22"
 EXPECTED_SITES_INFO = {
     TEST_CC_SITE_ID: {
         KEY_REPORT_ERROR_NUMBERS: ERROR_NUMBER,
-        KEY_REPORT_SERIES_NUMBERS: {
-            TEST_VARIABLE: {"value": 12},
-            "not_a_test": {"value": 23},
-            "test_2": {"value": 5}}
+        KEY_REPORT_SERIES_NUMBERS: VARIABLES
     },
     "system": {
         KEY_REPORT_ERROR_NUMBERS: 1,
@@ -104,9 +91,9 @@ class TestDailyReport(TestCase):
         FILE_STORAGE_SPACE.insert_series(trap_series)
         FILE_STORAGE_SPACE.insert_error(error_2)
 
-        for variable in VARIABLES:
+        for variable, value in VARIABLES:
             series[KEY_VARIABLE_ID] = variable
-            for i in range(VARIABLES[variable][KEY_VALUE]):
+            for i in range(value):
                 series[KEY_VALUE] = i
                 FILE_STORAGE_SPACE.insert_series(series)
 
@@ -126,7 +113,7 @@ class TestDailyReport(TestCase):
         for index in range(len(result)):
             new_result[result[index][KEY_REPORT_NAME]] = {
                 KEY_REPORT_ERROR_NUMBERS: result[index][KEY_REPORT_ERROR_NUMBERS],
-                KEY_REPORT_SERIES_NUMBERS:result[index][KEY_REPORT_SERIES_NUMBERS]
+                KEY_REPORT_SERIES_NUMBERS: result[index][KEY_REPORT_SERIES_NUMBERS]
             }
 
         print(new_result)
@@ -136,4 +123,5 @@ class TestDailyReport(TestCase):
             self.assertEqual(
                 new_result[site][KEY_REPORT_ERROR_NUMBERS], EXPECTED_SITES_INFO[site][KEY_REPORT_ERROR_NUMBERS])
             self.assertEqual(
-                new_result[site][KEY_REPORT_SERIES_NUMBERS], EXPECTED_SITES_INFO[site][KEY_REPORT_SERIES_NUMBERS])
+                sorted(new_result[site][KEY_REPORT_SERIES_NUMBERS]),
+                sorted(EXPECTED_SITES_INFO[site][KEY_REPORT_SERIES_NUMBERS]))

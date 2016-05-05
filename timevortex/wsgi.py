@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "timevortex.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "timevortex.settings.production")
 
 application = get_wsgi_application()  # pylint: disable=I0011,C0103

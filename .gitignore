@@ -1,6 +1,7 @@
 .idea/
 qa.html
 db.sqlite3
+timevortex/settings/local.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

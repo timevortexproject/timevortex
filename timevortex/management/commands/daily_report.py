@@ -11,9 +11,9 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from timevortex.utils.filestorage import FileStorage, FILE_STORAGE_SPACE
+from timevortex.utils.filestorage import FILE_STORAGE_SPACE
 
-# Data storage
+# Data storage
 
 
 # Email sender
@@ -30,11 +30,6 @@ KEY_REPORT_NAME = "name"
 KEY_REPORT_ERROR_NUMBERS = "errorNumbers"
 KEY_REPORT_SERIES_NUMBERS = "seriesNumbers"
 
-# Expected params
-#   Active or not
-#   Email params
-#   email target
-#   site_id impacted
 
 def send_daily_report_email(emails, report):
     """Send daily report email
@@ -58,14 +53,16 @@ def collect_free_space():
     """
     temp_file = "/tmp/freespace.log"
     os.system('df -h / > %s' % temp_file)
-    f = open(temp_file, 'r')
-    free = f.readlines()
-    f.close()
+    file_desc = open(temp_file, 'r')
+    free = file_desc.readlines()
+    file_desc.close()
     free = ''.join(free)
     return free[:-1].replace("\n", "<br/>")
 
 
 def get_sites_information(day_date):
+    """Get site information
+    """
     sites = []
     sites_list = FILE_STORAGE_SPACE.get_sites_list()
     for site_id in sites_list:
@@ -75,9 +72,6 @@ def get_sites_information(day_date):
             KEY_REPORT_SERIES_NUMBERS: FILE_STORAGE_SPACE.get_number_of_series(site_id, day_date)
         }
         sites.append(site_info)
-
-    print(day_date)
-    print(sites)
 
     return sites
 
@@ -99,4 +93,3 @@ class Command(BaseCommand):
         emails = ['pierreleray64@gmail.com']
 
         send_daily_report_email(emails, report)
-

@@ -3,18 +3,18 @@ Hello,
 Here is your TimeVortex daily report for {{ yesterday_date }}.
 
 {% for site in sites %}
-Site {{ site.name }}:
+<Site {{ site.name }}:
     {% if "errorNumbers" in site %}
-    Error numbers: {{ site.errorNumbers }}
+        Error numbers: {{ site.errorNumbers }}
     {% endif %}
     {% if "seriesNumbers" in site %}
         {% for variable, value in site.seriesNumbers %}
-    Series numbers for {{ variable }}: {{ value }}
+            Series numbers for {{ variable }}: {{ value }}
         {% endfor %}
     {% endif %}
 {% endfor %}
 
-{{ free_space }}
+{{ free_space | safe }}
 
 Thank you for your time.
 
