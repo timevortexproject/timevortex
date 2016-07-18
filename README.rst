@@ -27,7 +27,7 @@ Prod
 Dev
 ---
     
-* sudo apt-get install socat
+* sudo apt-get install socat git-flow
 * pip install flake8 pylint django_nose behave_django pylint-django coverage prospector nose-exclude
 * [BLOCKED] pip install clonedigger django-fluent-dashboard django-admin-tools-stats
 * mkdir /tmp/timevortex
@@ -45,7 +45,7 @@ Create application
     * python manage.py migrate
     * python manage.py collectstatic
 * Create Changelog
-    * 
+    *
 
 
 TimeVortex backlog

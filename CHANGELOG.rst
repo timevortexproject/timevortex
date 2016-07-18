@@ -1,6 +1,5 @@
 TimeVortex (2.0.0) stable; urgency=low
 
-* micro
 * Migrate TimeVortex application to Django
 * Create timevortex app for utils and timeserieslogger
 * Create energy app for currentcost command

@@ -66,12 +66,12 @@ AUTHOR_EMAIL = "pierreleray64@gmail.com"
 def get_current_tag_version():
     """Return git tag version"""
     filename = "tmp.txt"
-    cmd = "git describe --tags `git rev-list --tags --max-count=1` > %s"
-    sh(cmd % filename)
+    cmd = "git describe --tags `git rev-list --tags --max-count=1` > %s" % filename
+    call_and_exit(cmd)
     fil = open(filename)
     tag_version = fil.readlines()
     fil.close()
-    sh("rm %s" % filename)
+    call_and_exit("rm %s" % filename)
     tag_version = tag_version[0].replace("\n", "")
     return  tag_version.replace("v", "").split(".")
 
@@ -101,7 +101,7 @@ def commit(message):
     call_and_exit("git push origin develop")
 
 
-def release():
+def release(release_type):
     """Release a new version"""
     current_version = get_current_tag_version()
     print(current_version)
@@ -139,4 +139,4 @@ class Command(BaseCommand):
             commit(options[KEY_COMMIT])
 
         if KEY_RELEASE in options and options[KEY_RELEASE] is not None:
-            commit(options[KEY_RELEASE])
+            release(options[KEY_RELEASE])
