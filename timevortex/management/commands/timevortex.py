@@ -116,8 +116,8 @@ def release(release_type):
     update_changelog("Start release v%s" % next_version, next_version)
     call_and_exit("git add . && git ci -a -m '%s' && git push origin develop" % commit_message)
     # Create release branch and close it
-    call_and_exit("git flow release start %s" % next_version)
-    call_and_exit("git flow release finish -m '%s' %s" % (commit_message, next_version))
+    call_and_exit("git flow release start %s" % str_current_version)
+    call_and_exit("git flow release finish -m '%s' %s" % (commit_message, str_current_version))
     # Push master branch to github and return on develop
     call_and_exit("git co master && git push origin master")
     call_and_exit("git co develop")
