@@ -31,6 +31,7 @@ from stubs.utils.globals import URL_STUBS_CHANGE_ROUTE_CONFIG, KEY_STUBS_OPEN_ME
 from energy.utils.globals import ERROR_CURRENTCOST, KEY_CURRENTCOST
 from weather.utils.globals import ERROR_METEAR
 from timevortex.utils.timeserieslogger import ERROR_TSL
+from timevortex.utils.globals import ERROR_TIMEVORTEX
 from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE, KEY_DATE, KEY_DST_TIMEZONE
 from timevortex.utils.globals import KEY_NON_DST_TIMEZONE, SYSTEM_SITE_ID
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
@@ -50,7 +51,7 @@ def error_list(array_dict):
     return error_list
 
 
-ERROR_LIST = error_list([ERROR_METEAR, ERROR_TSL, ERROR_CURRENTCOST])
+ERROR_LIST = error_list([ERROR_METEAR, ERROR_TSL, ERROR_CURRENTCOST, ERROR_TIMEVORTEX])
 
 
 def error_in_list(error_type, duplicate=False):
@@ -129,6 +130,7 @@ def define_cc_error_message(error_type):
 @then("I should see an error message '{error_type}' in the '{log_file}' log")
 def verify_error_message_on_log(context, error_type, log_file):
     error = error_in_list(error_type)
+    print(error)
     try:
         error = error % context.specific_error
     except AttributeError:

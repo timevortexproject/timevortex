@@ -22,25 +22,30 @@ Prod
 ----
 
 * pip install django requests python-dateutil pytz django-admin-tools psutil pyserial==2.5
+* mkdir /var/log/timevortex
 
 Dev
 ---
     
-* sudo apt-get install socat
+* sudo apt-get install socat git-flow
 * pip install flake8 pylint django_nose behave_django pylint-django coverage prospector nose-exclude
 * [BLOCKED] pip install clonedigger django-fluent-dashboard django-admin-tools-stats
+* mkdir /tmp/timevortex
 
 Create application
 ==================
 
-* django-admin startproject timevortex
-* python manage.py startapp weather
-* python manage.py startapp hardware
-* python manage.py startapp energy
-* python manage.py startapp stubs
-* python manage.py makemigrations weather
-* python manage.py migrate
-* python manage.py collectstatic
+* Create Django apps:
+    * django-admin startproject timevortex
+    * python manage.py startapp weather
+    * python manage.py startapp hardware
+    * python manage.py startapp energy
+    * python manage.py startapp stubs
+    * python manage.py makemigrations weather
+    * python manage.py migrate
+    * python manage.py collectstatic
+* Create Changelog
+    *
 
 
 TimeVortex backlog
@@ -80,3 +85,54 @@ Timevortex idea
         | time1 | value1 | value2 |
         | time2 | value3 | value4 |
     * Use vagrant David config
+* Technology
+    * Microservice with python and django, microservice django
+    * Docker, host docker image
+    * Host debian package
+
+* Idea:
+    * Force user to register with gmail account. Use this gmail account to send email for daily report. Email account should be sender and receiver
+    * Use google SSO to register a user and retrieve information about him
+    * Define a flow to register and configure an account into timevortex paltform and create functional tests based on this flow
+    * user should select a city where he actually leaves. City selection propose lang and unit that user want to use. By default lang is browser language, unit is metrics system
+
+* UI:
+    * Chart with aggregation to 3 months (temperature, kWh, split hp/hc)
+    * Chart with aggreggation to 1 month (temperature, kWh, split hp/hc)
+    * Chart per week
+    * Chart per day
+
+* Use cases:
+    * CRUD user into platform
+    * CRUD site information
+    * CRUD sensor (adding a sensor create several variables. User is free to add or not a variable)
+    * CRUD variables
+    * Link variable to a room or to a site
+    * Choose representation (timeline or site plan with top view and all variable all around)
+    * Optional : A variable is the combination of several variable
+
+* Adding a sensor :
+    * Choice by brand and model
+    * Define parameter for the sensor
+    * List of generated variable
+
+* Use django as plugin provider to reduce time to create a plugin and simplify deployment
+* Each django app should create a django command that use RBMQ and define a REST API to retrieve data
+* Create a Django app per thematics like weather, electricity, finance, health
+* Create a Djnago stubs app for stubs that could be activated by settings
+
+Consulting
+-----------------
+    * Être quelqu'un qui aide les gens à y voir plus clair dans leurs données
+    * Proposer un système automatique de collecte et d'analyse de différents types de données
+    * Proposer des simulations pour améliorer certains points
+    * Faire la liste des points qui pourraient être améliorer
+    * Proposer un blog autour des améliorations possibles
+    * Proposer des jeux afin de se connaitre mieux
+    * Ces jeux doivent être ouvert à tous sous excell par exemple
+    * Apprendre en s'amusant pour attirer les gens
+    * Ensuite rendre une solution packages pour automatiser tous ça
+    * Ouvrir un blog sur le quantified self est essayé de le démocratiser
+
+
+

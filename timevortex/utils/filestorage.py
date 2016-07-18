@@ -4,10 +4,11 @@
 
 """File storage adapter for timevortex project"""
 
-from time import tzname
-from datetime import datetime
+import os
 from os import listdir, makedirs
 from os.path import isfile, join, exists
+from time import tzname
+from datetime import datetime
 import pytz
 import dateutil.parser
 from django.conf import settings
@@ -73,6 +74,8 @@ class FileStorage(object):
     def __init__(self, folder_path):
         """Constructor"""
         self.folder_path = folder_path
+        if not exists(self.folder_path):
+            makedirs(self.folder_path)
 
     def insert_series(self, series):
         """Insert series in DB
@@ -87,9 +90,6 @@ class FileStorage(object):
         file_folder = "%s/%s" % (self.folder_path, message[KEY_SITE_ID])
         file_date = timezone.localtime(
             dateutil.parser.parse(message[KEY_DATE]).replace(tzinfo=pytz.UTC)).strftime("%Y-%m-%d")
-
-        if not exists(self.folder_path):
-            makedirs(self.folder_path)
 
         if not exists(file_folder):
             makedirs(file_folder)
@@ -193,7 +193,7 @@ class FileStorage(object):
         """This method retrieve number of series published for a day_date
         """
         site_folder = "%s/%s" % (self.folder_path, site_id)
-        series = {}
+        series = []
 
         if exists(site_folder):
             for filename in listdir(site_folder):
@@ -201,12 +201,16 @@ class FileStorage(object):
                     file_path = "%s/%s" % (site_folder, filename)
                     var_id = filename.replace(".tsv.%s" % day_date, "")
                     series_numbers = get_lines_number(file_path)
-                    series[var_id] = {KEY_VALUE: series_numbers}
+                    series.append([var_id, series_numbers])
 
         return series
 
     def set_data_location(self, folder_path):
         """Set data folder space"""
         self.folder_path = folder_path
+
+    def get_sites_list(self):
+        """Get sites list"""
+        return os.listdir(self.folder_path)
 
 FILE_STORAGE_SPACE = FileStorage(getattr(settings, SETTINGS_FILE_STORAGE_FOLDER, SETTINGS_DEFAULT_FILE_STORAGE_FOLDER))

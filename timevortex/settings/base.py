@@ -174,7 +174,7 @@ STATICFILES_FINDERS = (
 #####
 # LOGGING
 #
-
+LOG_BASE_FOLDER = "/var/log/timevortex"
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -189,42 +189,49 @@ LOGGING = {
     },
     'handlers': {
         'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': '/tmp/timevortex.log',
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': '%s/timevortex.log' % LOG_BASE_FOLDER,
+            'when': 'd',
+            'backupCount': 0,
             'formatter': 'verbose'
         },
         'file_weather': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': '/tmp/timevortex_weather.log',
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': '%s/timevortex_weather.log' % LOG_BASE_FOLDER,
+            'when': 'd',
+            'backupCount': 0,
             'formatter': 'verbose'
         },
         'file_energy': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': '/tmp/timevortex_energy.log',
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': '%s/timevortex_energy.log' % LOG_BASE_FOLDER,
+            'when': 'd',
+            'backupCount': 0,
             'formatter': 'verbose'
         },
     },
     'loggers': {
         'timevortex': {
             'handlers': ['file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
         'weather': {
             'handlers': ['file_weather'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
         'energy': {
             'handlers': ['file_energy'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
     },
 }
+
 
 #####
 # ADMIN CONFIGURATION
@@ -237,21 +244,10 @@ LOGGING = {
 # ADMIN_TOOLS_MENU = 'fluent_dashboard.menu.FluentMenu'
 
 #####
-# Email configuration
-#
-
-DEFAULT_FROM_EMAIL = 'Timevortex <phase.test.email@gmail.com>'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'phase.test.email'
-EMAIL_HOST_PASSWORD = 'phaseTEST2014'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
-#####
 # TIMEVORTEX CONFIGURATION
 #
 
-SETTINGS_FILE_STORAGE_FOLDER = "/tmp/data"
+SETTINGS_FILE_STORAGE_FOLDER = "/opt/timevortex/data"
 SITE_URL = "http://127.0.0.1:8000"
 
 #####
@@ -260,3 +256,9 @@ SITE_URL = "http://127.0.0.1:8000"
 
 METEAR_URL = "http://www.wunderground.com/history/airport/%s/%s/DailyHistory.html?format=1"
 SETTINGS_METEAR_START_DATE = "2010-01-01"
+
+#####
+# BACKUP CONFIGURATION
+#
+
+BACKUP_TARGET_FOLDER = ""

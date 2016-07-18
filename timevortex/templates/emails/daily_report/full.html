@@ -4,18 +4,25 @@
 
 {% for site in sites %}
 <p>Site <b>{{ site.name }}</b>:
-    <ul>
+    <table>
     {% if "errorNumbers" in site %}
-        <li>Error numbers: <b>{{ site.errorNumbers }}</b></li>
+        <tr>
+            <td>Error numbers</td>
+            <td>: <b>{{ site.errorNumbers }}</b></td>
+        </tr>
     {% endif %}
     {% if "seriesNumbers" in site %}
         {% for variable, value in site.seriesNumbers %}
-            <li>Series numbers for <b>{{ variable }}</b>: <b> {{ value }}</b></li>
+            <tr>
+
+                <td>Series numbers for <b>{{ variable }}</b></td>
+                <td>: <b>{{ value }}</b></td>
+            </tr>
         {% endfor %}
     {% endif %}
-    </ul>
-{% endfor %}
+    </table>
 </p>
+{% endfor %}
 
 <p>{{ free_space | safe }}</p>
 

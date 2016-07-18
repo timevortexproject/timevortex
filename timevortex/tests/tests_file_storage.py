@@ -7,18 +7,14 @@
     Test file for FileStorage class.
 """
 
-import shutil
-from os.path import exists
 from datetime import date, datetime
 from django.test import TestCase
-from django.conf import settings
-from timevortex.utils.filestorage import FILE_STORAGE_SPACE, SETTINGS_FILE_STORAGE_FOLDER
-from timevortex.utils.filestorage import SETTINGS_DEFAULT_FILE_STORAGE_FOLDER
+from timevortex.utils.filestorage import FILE_STORAGE_SPACE
 from timevortex.utils.globals import LOGGER, KEY_ERROR, KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE, KEY_DATE
 from timevortex.utils.globals import KEY_DST_TIMEZONE, KEY_NON_DST_TIMEZONE
+from timevortex.tests.utils import clean_folder
 from features.steps.test_utils import TEST_CC_SITE_ID
 
-STORAGE_SPACE = getattr(settings, SETTINGS_FILE_STORAGE_FOLDER, SETTINGS_DEFAULT_FILE_STORAGE_FOLDER)
 ERROR_NUMBER = 5
 TEST_VARIABLE = "test"
 VARIABLES = {
@@ -36,11 +32,6 @@ FAKE_DATE = "2012-05-08"
 SECOND_FAKE_DATE = "2014-03-22"
 
 
-FOLDER_PATH = "%s/%s" % (STORAGE_SPACE, TEST_CC_SITE_ID)
-if exists(FOLDER_PATH):
-    shutil.rmtree(FOLDER_PATH)
-
-
 class TestFileStorage(TestCase):
     """
         All test case for messaging method.
@@ -50,6 +41,12 @@ class TestFileStorage(TestCase):
         * Create a series and read it
         * Create an error and read it
     """
+
+    def setUp(self):
+        clean_folder()
+
+    # def tearDown(self):
+    #     clean_folder()
 
     def test_series_creation(self):
         """
@@ -96,10 +93,10 @@ class TestFileStorage(TestCase):
             TEST_CC_SITE_ID, today)
         LOGGER.error(series_number)
         self.assertEqual(len(series_number), len(VARIABLES))
-        for variable in VARIABLES:
-            self.assertEqual(variable in series_number, True)
+        for variable, value in series_number:
+            self.assertEqual(variable in VARIABLES, True)
             self.assertEqual(
-                series_number[variable][KEY_VALUE], VARIABLES[variable][KEY_VALUE])
+                value, VARIABLES[variable][KEY_VALUE])
 
         series_number = FILE_STORAGE_SPACE.get_number_of_series(
             TEST_CC_SITE_ID, FAKE_DATE)
@@ -108,10 +105,10 @@ class TestFileStorage(TestCase):
         series_number = FILE_STORAGE_SPACE.get_number_of_series(
             TEST_CC_SITE_ID, SECOND_FAKE_DATE)
         self.assertEqual(len(series_number), 1)
-        variable = TEST_VARIABLE
-        self.assertEqual(variable in series_number, True)
-        self.assertEqual(
-            series_number[variable][KEY_VALUE], 1)
+        for variable, value in series_number:
+            self.assertEqual(variable in TEST_VARIABLE, True)
+            self.assertEqual(
+                value, 1)
 
     def test_error_creation(self):
         """
