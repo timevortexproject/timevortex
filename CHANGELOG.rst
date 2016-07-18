@@ -1,19 +1,12 @@
-TimeVortex (2.0.2) stable; urgency=low
-
-* Start release v2.0.2
-
-Pierre Leray <pierreleray64@gmail.com>  2016-07-18 00:35:43
-
 TimeVortex (2.0.1) stable; urgency=low
 
-* Finish release v2.0.1 on 2016-07-18 00:35:43
 * Start release v2.0.1
 
-Pierre Leray <pierreleray64@gmail.com>  2016-07-18 00:34:38
+Pierre Leray <pierreleray64@gmail.com>  2016-07-18 00:36:18
 
 TimeVortex (2.0.0) stable; urgency=low
 
-* Finish release v2.0.0 on 2016-07-18 00:34:38
+* Finish release v2.0.0 on 2016-07-18 00:36:18
 * Migrate TimeVortex application to Django
 * Create timevortex app for utils and timeserieslogger
 * Create energy app for currentcost command
