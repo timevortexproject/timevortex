@@ -174,7 +174,7 @@ STATICFILES_FINDERS = (
 #####
 # LOGGING
 #
-
+LOG_BASE_FOLDER = "/var/log/timevortex"
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -189,25 +189,25 @@ LOGGING = {
     },
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '/tmp/timevortex.log',
+            'filename': '%s/timevortex.log' % LOG_BASE_FOLDER,
             'when': 'd',
             'backupCount': 0,
             'formatter': 'verbose'
         },
         'file_weather': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '/tmp/timevortex_weather.log',
+            'filename': '%s/timevortex_weather.log' % LOG_BASE_FOLDER,
             'when': 'd',
             'backupCount': 0,
             'formatter': 'verbose'
         },
         'file_energy': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '/tmp/timevortex_energy.log',
+            'filename': '%s/timevortex_energy.log' % LOG_BASE_FOLDER,
             'when': 'd',
             'backupCount': 0,
             'formatter': 'verbose'
@@ -216,17 +216,17 @@ LOGGING = {
     'loggers': {
         'timevortex': {
             'handlers': ['file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
         'weather': {
             'handlers': ['file_weather'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
         'energy': {
             'handlers': ['file_energy'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
     },
@@ -247,7 +247,7 @@ LOGGING = {
 # TIMEVORTEX CONFIGURATION
 #
 
-SETTINGS_FILE_STORAGE_FOLDER = "/tmp/data"
+SETTINGS_FILE_STORAGE_FOLDER = "/opt/timevortex/data"
 SITE_URL = "http://127.0.0.1:8000"
 
 #####
@@ -256,3 +256,9 @@ SITE_URL = "http://127.0.0.1:8000"
 
 METEAR_URL = "http://www.wunderground.com/history/airport/%s/%s/DailyHistory.html?format=1"
 SETTINGS_METEAR_START_DATE = "2010-01-01"
+
+#####
+# BACKUP CONFIGURATION
+#
+
+BACKUP_TARGET_FOLDER = ""

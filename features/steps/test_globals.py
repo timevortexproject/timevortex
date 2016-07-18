@@ -12,7 +12,7 @@ from weather.utils.globals import SETTINGS_STUBS_METEAR_URL, SETTINGS_METEAR_URL
 from weather.utils.globals import SETTINGS_METEAR_START_DATE, SETTINGS_STUBS_METEAR_START_DATE
 
 SOCAT = "socat"
-TIMEVORTEX_LOG_FILE = "/tmp/timevortex.log"
+TIMEVORTEX_LOG_FILE = "/tmp/timevortex/timevortex.log"
 DICT_JSON_REQUEST_HEADER = {'Content-type': 'application/json', 'Accept': '*/*'}
 STUBS_COMMAND = "python manage.py runserver 0.0.0.0:8000"
 KEY_LABEL = "label"

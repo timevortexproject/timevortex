@@ -5,16 +5,17 @@
 """Daily report command that send email"""
 
 import os
+import logging
 from datetime import timedelta
 from django.utils import timezone
 from django.conf import settings
-from django.core.management.base import BaseCommand
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from timevortex.utils.commands import AbstractCommand
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
 
 # Data storage
-
+LOGGER = logging.getLogger("timevortex")
 
 # Email sender
 KEY_DEFAULT_FROM_EMAIL = "DEFAULT_FROM_EMAIL"
@@ -76,13 +77,15 @@ def get_sites_information(day_date):
     return sites
 
 
-class Command(BaseCommand):
+class Command(AbstractCommand):
     """Command class
     """
 
     help = "Daily report command that send email"
+    name = "daily report command"
+    logger = LOGGER
 
-    def handle(self, *args, **options):
+    def run(self, *args, **options):
         day_date = (timezone.now() - timedelta(days=1))
         report = {
             "yesterday_date": day_date.strftime("%d-%m-%Y"),

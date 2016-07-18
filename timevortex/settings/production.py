@@ -7,20 +7,6 @@
 from timevortex.settings.base import *  # noqa
 
 #####
-# LOGGING
-#
-
-LOGGING['handlers']['file']['filename'] = '/var/log/timevortex/timevortex.log'
-LOGGING['handlers']['file_weather']['filename'] = '/var/log/timevortex/timevortex_weather.log'
-LOGGING['handlers']['file_energy']['filename'] = '/var/log/timevortex/timevortex_energy.log'
-
-#####
-# TIMEVORTEX CONFIGURATION
-#
-
-SETTINGS_FILE_STORAGE_FOLDER = "/opt/timevortex/data"
-
-#####
 # Email configuration
 #
 
@@ -30,3 +16,9 @@ EMAIL_HOST_USER = 'XXX'
 EMAIL_HOST_PASSWORD = 'XXX'  # noqa
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+#####
+# BACKUP CONFIGURATION
+#
+
+BACKUP_TARGET_FOLDER = None
