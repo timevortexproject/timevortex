@@ -63,6 +63,15 @@ AUTHOR_NAME = "Pierre Leray"
 AUTHOR_EMAIL = "pierreleray64@gmail.com"
 
 
+def get_next_version(current_version, release_type):
+    """Define next version according to current version and release type"""
+    if release_type == "micro":
+        return "%s.%s.%d" % (current_version[0], current_version[1], int(current_version[2]) + 1)
+    elif release_type == "minor": return "%s.%d.%d" % (current_version[0], int(current_version[1]) + 1, 0)
+    elif release_type == "major": return "%d.%d.%d" % (int(current_version[0]) + 1, 0, 0)
+    else: call_and_exit("exit(-1)")
+
+
 def get_current_tag_version():
     """Return git tag version"""
     filename = "tmp.txt"
@@ -104,7 +113,10 @@ def commit(message):
 def release(release_type):
     """Release a new version"""
     current_version = get_current_tag_version()
-    print(current_version)
+    next_version = get_next_version(current_version, release_type)
+    now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
+    commit("Finish release v%s on %s" % (current_version, now))
+
 
 
 class Command(BaseCommand):
