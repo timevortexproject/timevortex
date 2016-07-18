@@ -72,17 +72,12 @@ def get_next_version(current_version, release_type):
     else: call_and_exit("exit(-1)")
 
 
-def get_current_tag_version():
+def get_current_version():
     """Return git tag version"""
-    filename = "tmp.txt"
-    cmd = "git describe --tags `git rev-list --tags --max-count=1` > %s" % filename
-    call_and_exit(cmd)
-    fil = open(filename)
-    tag_version = fil.readlines()
-    fil.close()
-    call_and_exit("rm %s" % filename)
-    tag_version = tag_version[0].replace("\n", "")
-    return  tag_version.replace("v", "").split(".")
+    changelog = open(FILENAME_CHANGELOG, "r")
+    text = changelog.read().split("\n")[0]
+    changelog.close()
+    return text.split(" ")[1][1:-1].split(".")
 
 
 def update_changelog(message, version=KEY_CURRENT):
@@ -112,11 +107,20 @@ def commit(message):
 
 def release(release_type):
     """Release a new version"""
-    current_version = get_current_tag_version()
+    current_version = get_current_version()
+    str_current_version = ".".join(current_version)
     next_version = get_next_version(current_version, release_type)
     now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
-    commit("Finish release v%s on %s" % (current_version, now))
-
+    commit_message = "Finish release v%s on %s" % (str_current_version, now)
+    update_changelog(commit_message)
+    update_changelog("Start release v%s" % next_version, next_version)
+    call_and_exit("git add . && git ci -a -m '%s' && git push origin develop" % commit_message)
+    # Create release branch and close it
+    call_and_exit("git flow release start %s" % next_version)
+    call_and_exit("git flow release finish -m '%s' %s" % (commit_message, next_version))
+    # Push master branch to github and return on develop
+    call_and_exit("git co master && git push origin master")
+    call_and_exit("git co develop")
 
 
 class Command(BaseCommand):
