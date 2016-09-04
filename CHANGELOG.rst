@@ -1,5 +1,6 @@
 TimeVortex (2.0.1) stable; urgency=low
 
+* Fix Django version in requirements
 * Modifiy requirements to pass travis test, update test to fix path problem
 * Fix requirements in travis.yml
 * Fix requirements in travis.yml
