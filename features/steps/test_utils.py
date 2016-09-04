@@ -130,7 +130,7 @@ def define_cc_error_message(error_type):
 @then("I should see an error message '{error_type}' in the '{log_file}' log")
 def verify_error_message_on_log(context, error_type, log_file):
     error = error_in_list(error_type)
-    print(error)
+    # print(error)
     try:
         error = error % context.specific_error
     except AttributeError:

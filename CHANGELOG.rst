@@ -1,5 +1,6 @@
 TimeVortex (2.0.1) stable; urgency=low
 
+* Modifiy requirements to pass travis test, update test to fix path problem
 * Fix requirements in travis.yml
 * Fix requirements in travis.yml
 * Fix lint, test and directory on local branch

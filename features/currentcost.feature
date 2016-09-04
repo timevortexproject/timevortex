@@ -3,7 +3,7 @@ Feature: Current Cost data collection
     I want to see my current cost information about my consumption,
     in order to reduce my energy consumption
 
-    @wipa
+    @wip
     Scenario Outline: 1.Problem with current cost connexion
         Given I created a testing Site 'test_site'
         When I run the 'currentcost' script with '<setting_type>' settings

@@ -15,7 +15,7 @@ from timevortex.models import get_site_by_slug, get_variable_by_slug
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
 from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE
 from features.steps.test_globals import SOCAT, assert_equal, assert_gte, assert_lte
-from energy.management.commands.retrieve_currentcost_data import Command as CurrentCostCommand
+from energy.management.commands.retrieve_currentcost_data import Command as CurrentCostCommand, BAUDS
 from energy.utils.globals import ERROR_CC_BAD_PORT, ERROR_CC_DISCONNECTED, ERROR_CC_NO_MESSAGE
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE, ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS
@@ -202,6 +202,8 @@ HISTORY_1 = "<msg><src>CC128-v1.29</src><dsb>00786</dsb><time>00:08:23</time><hi
     "0.000</h662><h660>0.000</h660><h658>0.000</h658><h656>0.000</h656><h654>0.000</h654><h652>0.000</h652><h650>"\
     "0.000</h650><h648>0.000</h648></data></hist></msg>"
 
+import logging
+LOGGER = logging.getLogger("timevortex")
 
 class SocatMessager(Thread):
     """Thread that send message over Socat."""
@@ -217,7 +219,7 @@ class SocatMessager(Thread):
         """Main method."""
         sleep(1)
         if self.message is not None:
-            ser = serial.Serial(self.port)
+            ser = serial.Serial(self.port, BAUDS)
             ser.write(bytes("%s\n" % self.message, "utf-8"))
             sleep(1)
             ser.close()
@@ -326,7 +328,7 @@ def launch_currentcost_command(out, context, setting_type):
     error = command_currencost_errors(setting_type, context, cc_params)
     if error is not None:
         context.specific_error = error
-    thread = command_currencost_thread(setting_type, context, cc_params["tty_port"])
+    thread = command_currencost_thread(setting_type, context, TEST_CC_CORRECT_TTY_PORT_WRITER)
     if thread is not None:
         context.thread = thread
         context.thread.start()
