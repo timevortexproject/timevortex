@@ -1,5 +1,6 @@
 TimeVortex (2.0.1) stable; urgency=low
 
+* Add Snap creation command on readme, update travis.yml to read settigns from local
 * Start release v2.0.1
 
 Pierre Leray <pierreleray64@gmail.com>  2016-07-18 00:36:18

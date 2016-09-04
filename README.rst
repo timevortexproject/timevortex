@@ -44,12 +44,24 @@ Create application
     * python manage.py makemigrations weather
     * python manage.py migrate
     * python manage.py collectstatic
-* Create Changelog
-    *
+* Manage project
+    * python manage.py timevortex --commit "Your commit message" --settings=timevortex.settings.local
 
+
+Snap build
+==========
+
+* sudo apt-get install software-properties-common
+* sudo add-apt-repository ppa:snappy-dev/tools
+* sudo apt-get update
+* sudo apt-get install snapcraft
+* snapcraft init (create a yml file)
+* snapcrapft stage (retrieve source and install dependencies)
+* snapcraft snap (build snap)
+* snapcraft (build final snap package)
 
 TimeVortex backlog
-------------------
+==================
 
 * [BLOCKED]
     * [BLOCKED] Install and setup clonedigger (not python 3 compatible. Work in progress)
