@@ -1,6 +1,7 @@
 flake8
-pylint
 django_nose
 behave_django
-pylint-django
 coverage
+prospector
+coveralls
+nose-exclude

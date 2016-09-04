@@ -6,8 +6,8 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install socat
 install:
-  - pip install flake8 django_nose behave_django coverage prospector coveralls nose-exclude
-  - pip install django requests python-dateutil pytz django-admin-tools psutil pyserial==2.5
+  - pip install -r requirements_dev.txt
+  - pip install -r requirements.txt
 script:
   - python --version
   - python manage.py timevortex --validate --settings=timevortex.settings.local

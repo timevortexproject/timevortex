@@ -1,5 +1,6 @@
 TimeVortex (2.0.1) stable; urgency=low
 
+* Fix requirements in travis.yml
 * Fix lint, test and directory on local branch
 * Add Snap creation command on readme, update travis.yml to read settigns from local
 * Start release v2.0.1
