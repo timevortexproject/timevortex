@@ -4,4 +4,4 @@ python-dateutil
 pytz
 django-admin-tools
 psutil
-pyserial-py3k==2.5
+pyserial==2.5
