@@ -8,6 +8,8 @@ before_install:
 install:
   - pip install -r requirements_dev.txt
   - pip install -r requirements.txt
+before_script:
+  - mkdir /tmp/timevortex
 script:
   - python --version
   - python manage.py timevortex --validate --settings=timevortex.settings.local
