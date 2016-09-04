@@ -20,7 +20,7 @@ from energy.utils.globals import ERROR_CC_BAD_PORT, ERROR_CC_DISCONNECTED, ERROR
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE, ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS
 
-TIMEVORTEX_CURRENTCOST_LOG_FILE = "/tmp/timevortex_energy.log"
+TIMEVORTEX_CURRENTCOST_LOG_FILE = "/tmp/timevortex/timevortex_energy.log"
 TEST_CC_SITE_ID = "test_site"
 TEST_CC_LABEL = "My home"
 TEST_CC_VARIABLE_ID = "test_variable"

@@ -21,7 +21,7 @@ TEST_METEAR_LABEL = "Données METEAR de Nice, France"
 TEST_METEAR_LABEL_2 = "Données METEAR de Pau, France"
 SETTINGS_BAD_METEAR_URL = "http://ksgo/dsls/%s/hs/%s.shgdf"
 SETTINGS_BAD_CONTENT_METEAR_URL = "%s%s" % (settings.SITE_URL, "/stubs/history/airport/%s/%s/badcontent.html?format=1")
-TIMEVORTEX_WEATHER_LOG_FILE = "/tmp/timevortex_weather.log"
+TIMEVORTEX_WEATHER_LOG_FILE = "/tmp/timevortex/timevortex_weather.log"
 KEY_WEATHER_LOG_FILE = "weather"
 KEY_METEAR = "metear"
 KEY_METEAR_FAKE_DATA_ELEMENTS = "elements"

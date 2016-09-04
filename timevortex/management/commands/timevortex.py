@@ -67,9 +67,12 @@ def get_next_version(current_version, release_type):
     """Define next version according to current version and release type"""
     if release_type == "micro":
         return "%s.%s.%d" % (current_version[0], current_version[1], int(current_version[2]) + 1)
-    elif release_type == "minor": return "%s.%d.%d" % (current_version[0], int(current_version[1]) + 1, 0)
-    elif release_type == "major": return "%d.%d.%d" % (int(current_version[0]) + 1, 0, 0)
-    else: call_and_exit("exit(-1)")
+    elif release_type == "minor":
+        return "%s.%d.%d" % (current_version[0], int(current_version[1]) + 1, 0)
+    elif release_type == "major":
+        return "%d.%d.%d" % (int(current_version[0]) + 1, 0, 0)
+    else:
+        call_and_exit("exit(-1)")
 
 
 def get_current_version():
@@ -139,7 +142,6 @@ class Command(BaseCommand):
                 help=ARGUMENTS[argument][KEY_HELP_TEXT])
         parser.add_argument("--%s" % KEY_COMMIT, action="store", dest=KEY_COMMIT, help=HELP_MESSAGE_COMMIT)
         parser.add_argument("--%s" % KEY_RELEASE, action="store", dest=KEY_RELEASE, help=HELP_MESSAGE_RELEASE)
-
 
     def handle(self, *args, **options):
         if options[OPTION_VALIDATE]:
