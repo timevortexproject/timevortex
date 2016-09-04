@@ -202,8 +202,6 @@ HISTORY_1 = "<msg><src>CC128-v1.29</src><dsb>00786</dsb><time>00:08:23</time><hi
     "0.000</h662><h660>0.000</h660><h658>0.000</h658><h656>0.000</h656><h654>0.000</h654><h652>0.000</h652><h650>"\
     "0.000</h650><h648>0.000</h648></data></hist></msg>"
 
-import logging
-LOGGER = logging.getLogger("timevortex")
 
 class SocatMessager(Thread):
     """Thread that send message over Socat."""

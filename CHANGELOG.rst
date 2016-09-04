@@ -1,5 +1,6 @@
 TimeVortex (2.0.1) stable; urgency=low
 
+* Fix pylint error
 * Modify travis.yml to create folder
 * Add local.py for testing, modify gitignore
 * Fix Django version in requirements
