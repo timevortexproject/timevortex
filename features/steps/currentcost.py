@@ -15,12 +15,12 @@ from timevortex.models import get_site_by_slug, get_variable_by_slug
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
 from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE
 from features.steps.test_globals import SOCAT, assert_equal, assert_gte, assert_lte
-from energy.management.commands.retrieve_currentcost_data import Command as CurrentCostCommand
+from energy.management.commands.retrieve_currentcost_data import Command as CurrentCostCommand, BAUDS
 from energy.utils.globals import ERROR_CC_BAD_PORT, ERROR_CC_DISCONNECTED, ERROR_CC_NO_MESSAGE
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE, ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS
 
-TIMEVORTEX_CURRENTCOST_LOG_FILE = "/tmp/timevortex_energy.log"
+TIMEVORTEX_CURRENTCOST_LOG_FILE = "/tmp/timevortex/timevortex_energy.log"
 TEST_CC_SITE_ID = "test_site"
 TEST_CC_LABEL = "My home"
 TEST_CC_VARIABLE_ID = "test_variable"
@@ -92,10 +92,10 @@ DICT_CC_INSTANT_CONSO = {
     TEST_CC_VARIABLE_ID_KWH_CH1: {
         CC_INSTANT_CONSO_1_TS_0: {KEY_START_VALUE: None, KEY_END_VALUE: None},
         CC_INSTANT_CONSO_2_TS_7: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0"},
-        CC_INSTANT_CONSO_1_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0004", KEY_END_VALUE_2: "0.0005"},
-        CC_INSTANT_CONSO_2_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0008", KEY_END_VALUE_2: "0.001"},
-        CC_INSTANT_CONSO_2_TS_0: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0008", KEY_END_VALUE_2: "0.001"},
-        CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0017", KEY_END_VALUE_2: "0.0019"},
+        CC_INSTANT_CONSO_1_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0006", KEY_END_VALUE_2: "0.0007"},
+        CC_INSTANT_CONSO_2_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0012", KEY_END_VALUE_2: "0.0014"},
+        CC_INSTANT_CONSO_2_TS_0: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0012", KEY_END_VALUE_2: "0.0014"},
+        CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0026", KEY_END_VALUE_2: "0.0028"},
     },
     TEST_CC_VARIABLE_ID_WATTS_CH2: create_json_cc_value("14405.0", "14405.0", "14405.0"),
     TEST_CC_VARIABLE_ID_KWH_CH2: create_json_cc_value("0.0", "0.0", "0.0"),
@@ -215,9 +215,9 @@ class SocatMessager(Thread):
 
     def run(self):
         """Main method."""
-        sleep(1)
+        sleep(4)
         if self.message is not None:
-            ser = serial.Serial(self.port)
+            ser = serial.Serial(self.port, BAUDS)
             ser.write(bytes("%s\n" % self.message, "utf-8"))
             sleep(1)
             ser.close()
@@ -326,7 +326,7 @@ def launch_currentcost_command(out, context, setting_type):
     error = command_currencost_errors(setting_type, context, cc_params)
     if error is not None:
         context.specific_error = error
-    thread = command_currencost_thread(setting_type, context, cc_params["tty_port"])
+    thread = command_currencost_thread(setting_type, context, TEST_CC_CORRECT_TTY_PORT_WRITER)
     if thread is not None:
         context.thread = thread
         context.thread.start()

@@ -30,7 +30,6 @@ ARGUMENTS = {
         KEY_HELP_TEXT: "Lint code using flake8 and configuration in setup.cfg",
     },
     OPTION_QA: {
-        # KEY_COMMAND: ["pylint *.py */*.py */*/*.py */*/*/*.py -f html --rcfile=.pylintrc > qa.html"],
         KEY_COMMAND: ["prospector -F"],
         KEY_HELP_TEXT: "Validate qualilty of code using pylint and configuration .pylintrc",
     },
@@ -44,8 +43,8 @@ ARGUMENTS = {
     },
     OPTION_BEHAVE: {
         KEY_COMMAND: [
-            "python manage.py migrate && "\
-            "coverage run --source='.' manage.py behave --tags=wip --no-skipped && "\
+            "python manage.py migrate && "
+            "coverage run --source='.' manage.py behave --tags=wip --no-skipped && "
             "coverage report -m"
         ],
         KEY_HELP_TEXT: "Launch behave test and coverage"
@@ -67,9 +66,12 @@ def get_next_version(current_version, release_type):
     """Define next version according to current version and release type"""
     if release_type == "micro":
         return "%s.%s.%d" % (current_version[0], current_version[1], int(current_version[2]) + 1)
-    elif release_type == "minor": return "%s.%d.%d" % (current_version[0], int(current_version[1]) + 1, 0)
-    elif release_type == "major": return "%d.%d.%d" % (int(current_version[0]) + 1, 0, 0)
-    else: call_and_exit("exit(-1)")
+    elif release_type == "minor":
+        return "%s.%d.%d" % (current_version[0], int(current_version[1]) + 1, 0)
+    elif release_type == "major":
+        return "%d.%d.%d" % (int(current_version[0]) + 1, 0, 0)
+    else:
+        call_and_exit("exit(-1)")
 
 
 def get_current_version():
@@ -139,7 +141,6 @@ class Command(BaseCommand):
                 help=ARGUMENTS[argument][KEY_HELP_TEXT])
         parser.add_argument("--%s" % KEY_COMMIT, action="store", dest=KEY_COMMIT, help=HELP_MESSAGE_COMMIT)
         parser.add_argument("--%s" % KEY_RELEASE, action="store", dest=KEY_RELEASE, help=HELP_MESSAGE_RELEASE)
-
 
     def handle(self, *args, **options):
         if options[OPTION_VALIDATE]:

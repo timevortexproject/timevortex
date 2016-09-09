@@ -1,5 +1,7 @@
-django
+django==1.9.1
 requests
 python-dateutil
 pytz
 django-admin-tools
+psutil
+pyserial

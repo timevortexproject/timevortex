@@ -8,7 +8,7 @@ import shutil
 import logging
 from os.path import exists
 from subprocess import call
-from behave import given, when, then
+from behave import given, when, then  # pylint: disable=E0611
 from django.conf import settings
 from timevortex.management.commands.backup import Command
 
@@ -59,6 +59,7 @@ def expected_file_and_data(backup=False, new_data=False):
 @given("I have data to backup")
 def stubs_data_creation(context):
     """Data initialization"""
+    # pylint: disable=unused-argument
     setattr(settings, BACKUP_TARGET_FOLDER, BACKUP_TARGET_FOLDER_DEFAULT)
     try:
         shutil.rmtree(BACKUP_FOLDER)
@@ -80,6 +81,9 @@ def stubs_data_creation(context):
 
 @given("I add more data")
 def stubs_new_data(context):
+    """Write new data and validate that script retrieve it
+    """
+    # pylint: disable=unused-argument
     call("touch %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST1_FILE_4), shell=True)
     call("echo '15' >> %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST1_FILE_1), shell=True)
     call("echo '16' >> %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST1_FILE_2), shell=True)
@@ -90,12 +94,14 @@ def stubs_new_data(context):
 @given("I deactivate backup script")
 def backup_script_deactivation(context):
     """Deactivate backup script"""
+    # pylint: disable=unused-argument
     setattr(settings, BACKUP_TARGET_FOLDER, BACKUP_TARGET_FOLDER_DEACTIVATE)
 
 
 @when("I run the backup command")
 def run_backup_command(context):
     """Run backup command"""
+    # pylint: disable=unused-argument
     command = Command()
     command.handle()
 
@@ -103,16 +109,19 @@ def run_backup_command(context):
 @then("nothing should be backuped")
 def no_data_expected(context):
     """No data expected"""
+    # pylint: disable=unused-argument
     expected_file_and_data(False, False)
 
 
 @then("I should see backuped data")
 def expected_data(context):
     """Expected data"""
+    # pylint: disable=unused-argument
     expected_file_and_data(True, False)
 
 
 @then("I should see new backuped data")
 def expected_new_data(context):
     """Expected new data"""
+    # pylint: disable=unused-argument
     expected_file_and_data(True, True)
