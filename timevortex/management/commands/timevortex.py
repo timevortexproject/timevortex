@@ -30,7 +30,6 @@ ARGUMENTS = {
         KEY_HELP_TEXT: "Lint code using flake8 and configuration in setup.cfg",
     },
     OPTION_QA: {
-        # KEY_COMMAND: ["pylint *.py */*.py */*/*.py */*/*/*.py -f html --rcfile=.pylintrc > qa.html"],
         KEY_COMMAND: ["prospector -F"],
         KEY_HELP_TEXT: "Validate qualilty of code using pylint and configuration .pylintrc",
     },
