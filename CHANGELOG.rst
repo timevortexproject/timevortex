@@ -1,5 +1,12 @@
+TimeVortex (2.1.0) stable; urgency=low
+
+* Start release v2.1.0
+
+Pierre Leray <pierreleray64@gmail.com>  2016-09-09 13:25:03
+
 TimeVortex (2.0.1) stable; urgency=low
 
+* Finish release v2.0.1 on 2016-09-09 13:25:03
 * Fix pep8 error
 * Fix pep8 error
 * Fix behave error
