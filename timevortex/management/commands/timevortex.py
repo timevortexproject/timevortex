@@ -43,8 +43,8 @@ ARGUMENTS = {
     },
     OPTION_BEHAVE: {
         KEY_COMMAND: [
-            "python manage.py migrate && "\
-            "coverage run --source='.' manage.py behave --tags=wip --no-skipped && "\
+            "python manage.py migrate && "
+            "coverage run --source='.' manage.py behave --tags=wip --no-skipped && "
             "coverage report -m"
         ],
         KEY_HELP_TEXT: "Launch behave test and coverage"

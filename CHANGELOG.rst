@@ -1,6 +1,7 @@
 TimeVortex (2.0.1) stable; urgency=low
 
 * Fix pep8 error
+* Fix pep8 error
 * Fix behave error
 * Fix pylint error
 * Modify travis.yml to create folder
