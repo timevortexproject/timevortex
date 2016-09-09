@@ -92,10 +92,10 @@ DICT_CC_INSTANT_CONSO = {
     TEST_CC_VARIABLE_ID_KWH_CH1: {
         CC_INSTANT_CONSO_1_TS_0: {KEY_START_VALUE: None, KEY_END_VALUE: None},
         CC_INSTANT_CONSO_2_TS_7: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0"},
-        CC_INSTANT_CONSO_1_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0004", KEY_END_VALUE_2: "0.0005"},
-        CC_INSTANT_CONSO_2_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0008", KEY_END_VALUE_2: "0.001"},
-        CC_INSTANT_CONSO_2_TS_0: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0008", KEY_END_VALUE_2: "0.001"},
-        CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0017", KEY_END_VALUE_2: "0.0019"},
+        CC_INSTANT_CONSO_1_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0006", KEY_END_VALUE_2: "0.0007"},
+        CC_INSTANT_CONSO_2_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0012", KEY_END_VALUE_2: "0.0014"},
+        CC_INSTANT_CONSO_2_TS_0: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0012", KEY_END_VALUE_2: "0.0014"},
+        CC_INSTANT_CONSO_3_TS_3: {KEY_START_VALUE: "0.0", KEY_END_VALUE: "0.0026", KEY_END_VALUE_2: "0.0028"},
     },
     TEST_CC_VARIABLE_ID_WATTS_CH2: create_json_cc_value("14405.0", "14405.0", "14405.0"),
     TEST_CC_VARIABLE_ID_KWH_CH2: create_json_cc_value("0.0", "0.0", "0.0"),
@@ -215,7 +215,7 @@ class SocatMessager(Thread):
 
     def run(self):
         """Main method."""
-        sleep(1)
+        sleep(4)
         if self.message is not None:
             ser = serial.Serial(self.port, BAUDS)
             ser.write(bytes("%s\n" % self.message, "utf-8"))

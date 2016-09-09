@@ -20,7 +20,7 @@ Feature: Current Cost data collection
    | currentcost_incorrect_message_missing_tmpr  |
    | currentcost_incorrect_message_missing_watts |
 
-    @wipa
+    @wip
     Scenario: 2.Nominal case instant_consumption_1_timeseries_0
         Given I created a testing Site 'test_site'  
         When I run the 'currentcost' script with 'instant_consumption_1_timeseries_0' settings
@@ -28,7 +28,7 @@ Feature: Current Cost data collection
         And I should see 'instant_consumption_1_timeseries_0' data update in DB for 'test_site'
         And I should see 'instant_consumption_1_timeseries_0' data update in TSV file for 'test_site'
 
-    @wipa
+    @wip
     Scenario: 3.Nominal case instant_consumption_2_timeseries_7
         Given I created a testing Site 'test_site'  
         When I run the 'currentcost' script with 'instant_consumption_1_timeseries_0' settings
@@ -37,7 +37,7 @@ Feature: Current Cost data collection
         And I should see 'instant_consumption_2_timeseries_7' data update in DB for 'test_site'
         And I should see 'instant_consumption_2_timeseries_7' data update in TSV file for 'test_site'
 
-    @wipa
+    @wip
     Scenario: 4.Nominal case instant_consumption_1_timeseries_3
         Given I created a testing Site 'test_site'  
         When I run the 'currentcost' script with 'instant_consumption_1_timeseries_0' settings
@@ -47,7 +47,7 @@ Feature: Current Cost data collection
         And I should see 'instant_consumption_1_timeseries_3' data update in DB for 'test_site'
         And I should see 'instant_consumption_1_timeseries_3' data update in TSV file for 'test_site'
 
-    @wipa
+    @wip
     Scenario: 5.Nominal case instant_consumption_2_timeseries_3
         Given I created a testing Site 'test_site'  
         When I run the 'currentcost' script with 'instant_consumption_1_timeseries_0' settings
@@ -59,7 +59,7 @@ Feature: Current Cost data collection
         And I should see 'instant_consumption_2_timeseries_3' data update in TSV file for 'test_site'
 
 
-    @wipa
+    @wip
     Scenario: 6.Nominal case instant_consumption_2_timeseries_0
         Given I created a testing Site 'test_site'  
         When I run the 'currentcost' script with 'instant_consumption_1_timeseries_0' settings
@@ -71,7 +71,7 @@ Feature: Current Cost data collection
         And I should see 'instant_consumption_2_timeseries_0' data update in DB for 'test_site'
         And I should see 'instant_consumption_2_timeseries_0' data update in TSV file for 'test_site'
 
-    @wipa
+    @wip
     Scenario: 7.Nominal case instant_consumption_3_timeseries_3
         Given I created a testing Site 'test_site'  
         When I run the 'currentcost' script with 'instant_consumption_1_timeseries_0' settings
@@ -84,7 +84,7 @@ Feature: Current Cost data collection
         And I should see 'instant_consumption_3_timeseries_3' data update in DB for 'test_site'
         And I should see 'instant_consumption_3_timeseries_3' data update in TSV file for 'test_site'
 
-    @wipa
+    @wip
     Scenario: 8.Historical case consumption
         Given I created a testing Site 'test_site'  
         When I run the 'currentcost' script with 'currentcost_historical_consumption' settings
