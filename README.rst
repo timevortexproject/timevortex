@@ -21,7 +21,8 @@ Install
 Prod
 ----
 
-* pip install django requests python-dateutil pytz django-admin-tools psutil pyserial==2.5
+* sudo apt-get install python3 python3-dev sqlite3
+* pip install django requests python-dateutil pytz django-admin-tools psutil pyserial
 * mkdir /var/log/timevortex
 
 Dev
@@ -56,9 +57,11 @@ Snap build
 * sudo apt-get update
 * sudo apt-get install snapcraft
 * snapcraft init (create a yml file)
-* snapcrapft stage (retrieve source and install dependencies)
+* snapcraft stage (retrieve source and install dependencies)
 * snapcraft snap (build snap)
 * snapcraft (build final snap package)
+* sudo apt-get install snapd
+* sudo snap install timevortex_2.0.1_amd64.snap --devmode --force-dangerous
 
 TimeVortex backlog
 ==================
@@ -91,7 +94,7 @@ Timevortex idea
 * Global
     * Split command into several celery job
     * Refactor metear script to include celery script to crawl the page and collect data. Then create a json element with "siteID", "variableID", "values" = [(value, date, dsttimezone, nondsttimezone)] that send 48 values to TSL with only one message. Store it into a CSV file and into DB. This should improve time to retrieve data and improve performance. Wait to install performance tracking before improving this script.
-    * Use petl to manipulateur data.
+    * Use petl to manipulate data.
     * Create à fonction that take into paramètres à matrix of variable and date and insert easily data in DB and send message over the network. 
         |       |  var1  | var2   |
         | time1 | value1 | value2 |
@@ -100,7 +103,6 @@ Timevortex idea
 * Technology
     * Microservice with python and django, microservice django
     * Docker, host docker image
-    * Host debian package
 
 * Idea:
     * Force user to register with gmail account. Use this gmail account to send email for daily report. Email account should be sender and receiver
