@@ -116,6 +116,8 @@ def release(release_type):
     commit_message = "Finish release v%s on %s" % (str_current_version, now)
     update_changelog(commit_message)
     update_changelog("Start release v%s" % next_version, next_version)
+    call_and_exit("python setup.py sdist")
+    call_and_exit("sed -i 's/VERSION = .*/VERSION = \"%s\"/' setup.py" % next_version)
     call_and_exit("git add . && git ci -a -m '%s' && git push origin develop" % commit_message)
     # Create release branch and close it
     call_and_exit("git flow release start %s" % str_current_version)
