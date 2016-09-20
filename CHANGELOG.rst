@@ -1,5 +1,6 @@
 TimeVortex (2.1.2) stable; urgency=low
 
+* Add energy and weather command
 * Fix lint problemp
 * Try to export energy folder
 * Try to export energy folder
