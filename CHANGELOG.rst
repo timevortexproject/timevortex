@@ -1,5 +1,6 @@
 TimeVortex (2.1.2) stable; urgency=low
 
+* Fix lint problem
 * Fix base.py and local.py settings to add unit test only on local and not in production
 * Add dependency dev in setup.py for test
 * Add djnago_nose for test
