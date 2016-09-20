@@ -21,7 +21,8 @@ INSTALL_REQS = [
     "python-dateutil",
     "pytz",
     "django-admin-tools",
-    "pyserial"
+    "pyserial",
+    "django_nose"
 ]
 
 VERSION = "2.1.2"

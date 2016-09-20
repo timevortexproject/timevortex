@@ -1,5 +1,6 @@
 TimeVortex (2.1.2) stable; urgency=low
 
+* Add djnago_nose for test
 * Exclude stubs package
 * Exclude stubs package
 * Modify production settings to target snap common path
