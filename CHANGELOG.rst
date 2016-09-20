@@ -1,5 +1,6 @@
 TimeVortex (2.1.2) stable; urgency=low
 
+* Add dependency dev in setup.py for test
 * Add djnago_nose for test
 * Exclude stubs package
 * Exclude stubs package

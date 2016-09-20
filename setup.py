@@ -22,7 +22,14 @@ INSTALL_REQS = [
     "pytz",
     "django-admin-tools",
     "pyserial",
-    "django_nose"
+    "django_nose",
+    "flake8",
+    "django_nose",
+    "behave_django",
+    "coverage",
+    "prospector",
+    "coveralls",
+    "nose-exclude",
 ]
 
 VERSION = "2.1.2"
