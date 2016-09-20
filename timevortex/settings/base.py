@@ -49,12 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'djangobower',
-    'django_nose',
-    'behave_django',
-    'stubs',
     'timevortex',
     'weather',
-    'hardware',
     'energy',
 ]
 

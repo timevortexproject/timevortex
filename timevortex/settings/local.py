@@ -7,6 +7,16 @@
 from timevortex.settings.base import *  # noqa
 
 #####
+#
+#
+
+INSTALLED_APPS += [  # noqa
+    'django_nose',
+    'behave_django',
+    'stubs',
+]
+
+#####
 # Logging configuration
 #
 LOG_BASE_FOLDER = "/tmp/timevortex"
