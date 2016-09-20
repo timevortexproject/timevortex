@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf8 -*-
 # -*- Mode: Python; py-indent-offset: 4 -*-
 
@@ -124,8 +124,8 @@ def release(release_type):
     call_and_exit("git co master && git push origin master")
     call_and_exit("git co develop")
     call_and_exit("sed -i 's/VERSION = .*/VERSION = \"%s\"/' setup.py" % next_version)
-    new_commit_message = "Start release v%s" % next_version, next_version
-    update_changelog(new_commit_message)
+    new_commit_message = "Start release v%s" % next_version
+    update_changelog(new_commit_message, next_version)
     commit(new_commit_message)
 
 
