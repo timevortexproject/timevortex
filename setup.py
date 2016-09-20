@@ -24,7 +24,7 @@ INSTALL_REQS = [
     "pyserial"
 ]
 
-VERSION = "2.1.2"
+VERSION = "2.1.1"
 
 setup(
     name="%s" % (PROJECT),

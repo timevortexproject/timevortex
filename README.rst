@@ -62,6 +62,7 @@ Snap build
 * snapcraft (build final snap package)
 * sudo apt-get install snapd
 * sudo snap install timevortex_2.0.1_amd64.snap --devmode --force-dangerous
+* sudo snap try prime --devmode
 
 TimeVortex backlog
 ==================
