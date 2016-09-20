@@ -59,7 +59,7 @@ setup(
     zip_safe=False,
     include_package_data=True,
     data_files=[
-        ('', ['manage.py']),
+        ('', ['manage.py', 'timevortex/']),
     ],
     # data_files=[
     #     ('/opt/timevortex', [

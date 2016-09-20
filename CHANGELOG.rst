@@ -1,6 +1,7 @@
 TimeVortex (2.1.2) stable; urgency=low
 
 * Remove stubs app form production, only launch stubs url in testing mode
+* Remove stubs app form production, only launch stubs url in testing mode
 * Reimport stubs in base.py
 * Change DB settings to try to migrate
 * Fix lint problem
