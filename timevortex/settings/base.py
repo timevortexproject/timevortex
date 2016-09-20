@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'timevortex',
     'weather',
     'energy',
+    'stubs',
 ]
 
 MIDDLEWARE_CLASSES = [

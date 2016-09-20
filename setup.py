@@ -53,7 +53,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
-    packages=["timevortex", "energy", "weather"],
+    packages=["timevortex", "energy", "weather", "stubs"],
     # scripts=["bin/%s" % (PROJECT)],
     install_requires=INSTALL_REQS,
     zip_safe=False,

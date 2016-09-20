@@ -13,7 +13,6 @@ from timevortex.settings.base import *  # noqa
 INSTALLED_APPS += [  # noqa
     'django_nose',
     'behave_django',
-    'stubs',
 ]
 
 #####
