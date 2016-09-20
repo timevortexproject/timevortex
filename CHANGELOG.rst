@@ -1,5 +1,13 @@
+TimeVortex (2.1.2) stable; urgency=low
+
+* Start release v2.1.2
+
+Pierre Leray <pierreleray64@gmail.com>  2016-09-20 10:20:28
+
 TimeVortex (2.1.1) stable; urgency=low
 
+* Finish release v2.1.1 on 2016-09-20 10:20:28
+* Modify setup.py to export manage.py
 * Start release v2.1.1
 
 Pierre Leray <pierreleray64@gmail.com>  2016-09-15 11:38:49

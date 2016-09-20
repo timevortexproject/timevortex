@@ -24,7 +24,7 @@ INSTALL_REQS = [
     "pyserial"
 ]
 
-VERSION = "2.1.1"
+VERSION = "2.1.2"
 
 setup(
     name="%s" % (PROJECT),
@@ -57,6 +57,9 @@ setup(
     install_requires=INSTALL_REQS,
     zip_safe=False,
     include_package_data=True,
+    data_files=[
+        ('', ['manage.py']),
+    ],
     # data_files=[
     #     ('/opt/timevortex', [
     #         'logs/%s.conf' % (PROJECT),
