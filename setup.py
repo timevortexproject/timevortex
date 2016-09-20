@@ -60,7 +60,6 @@ setup(
     include_package_data=True,
     data_files=[
         ('', ['manage.py']),
-        ('energy', ['energy/*']),
     ],
     # data_files=[
     #     ('/opt/timevortex', [
