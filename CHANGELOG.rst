@@ -1,3 +1,10 @@
+TimeVortex (2.1.2) stable; urgency=low
+
+* Start release v2.1.2
+* Start release v2.1.2
+
+Pierre Leray <pierreleray64@gmail.com>  2016-09-20 12:52:29
+
 TimeVortex (2.1.1) stable; urgency=low
 
 * Finish release v2.1.1 on 2016-09-20 12:52:10
