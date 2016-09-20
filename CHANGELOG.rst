@@ -1,5 +1,6 @@
 TimeVortex (2.1.1) stable; urgency=low
 
+* Finish release v2.1.1 on 2016-09-20 12:52:10
 * Finish release v2.1.1 on 2016-09-20 12:51:40
 * Modify setup.py to export manage.py
 * Start release v2.1.1
