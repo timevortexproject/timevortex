@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'timevortex',
     'weather',
     'energy',
-    'stubs',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -246,6 +245,7 @@ LOGGING = {
 
 SETTINGS_FILE_STORAGE_FOLDER = "/opt/timevortex/data"
 SITE_URL = "http://127.0.0.1:8000"
+ACTIVATE_STUBS = False
 
 #####
 # WEATHER CONFIGURATION

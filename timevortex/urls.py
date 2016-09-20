@@ -14,11 +14,18 @@ Including another URLconf
     2. Import the include() function: from django.conf.urls import url, include
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import url, include
+from django.conf import settings
 from django.contrib import admin
+from django.conf.urls import url, include
+
+ACTIVATE_STUBS = "ACTIVATE_STUBS"
 
 urlpatterns = [
     # url(r'^admin_tools/', include('admin_tools.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^stubs/', include('stubs.urls')),
 ]
+
+if getattr(settings, ACTIVATE_STUBS, False) is True:
+    urlpatterns += [
+        url(r'^stubs/', include('stubs.urls')),
+    ]

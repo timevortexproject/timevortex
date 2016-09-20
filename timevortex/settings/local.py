@@ -7,13 +7,17 @@
 from timevortex.settings.base import *  # noqa
 
 #####
-#
+# Timevortex configuration
 #
 
 INSTALLED_APPS += [  # noqa
     'django_nose',
     'behave_django',
+    'stubs',
 ]
+
+ACTIVATE_STUBS = True
+
 
 #####
 # Logging configuration
@@ -44,7 +48,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 #####
-# BACKUP CONFIGURATION
+# Backup configuration
 #
 
 BACKUP_TARGET_FOLDER = "/tmp/backup"
