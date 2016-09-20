@@ -1,5 +1,6 @@
 TimeVortex (2.1.2) stable; urgency=low
 
+* Modify manage.py to use python3
 * Start release v2.1.2
 
 Pierre Leray <pierreleray64@gmail.com>  2016-09-20 10:20:28
