@@ -59,7 +59,7 @@ setup(
     zip_safe=False,
     include_package_data=True,
     data_files=[
-        ('', ['manage.py', 'timevortex/']),
+        ('', ['manage.py']),
         ('energy', ['energy/*']),
     ],
     # data_files=[

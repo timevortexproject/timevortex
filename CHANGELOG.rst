@@ -1,6 +1,7 @@
 TimeVortex (2.1.2) stable; urgency=low
 
 * Try to export energy folder
+* Try to export energy folder
 * Remove stubs app form production, only launch stubs url in testing mode
 * Remove stubs app form production, only launch stubs url in testing mode
 * Reimport stubs in base.py

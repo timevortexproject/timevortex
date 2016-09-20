@@ -63,6 +63,7 @@ Snap build
 * sudo apt-get install snapd
 * sudo snap install timevortex_2.0.1_amd64.snap --devmode --force-dangerous
 * sudo snap try prime --devmode
+* cp /vagrant/snapcraft.yaml . && cp /vagrant/timevortex-prepare . && snapcraft clean && snapcraft && sudo snap try prime --devmode
 
 TimeVortex backlog
 ==================
