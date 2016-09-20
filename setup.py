@@ -57,6 +57,9 @@ setup(
     install_requires=INSTALL_REQS,
     zip_safe=False,
     include_package_data=True,
+    data_files=[
+        ('', ['manage.py']),
+    ],
     # data_files=[
     #     ('/opt/timevortex', [
     #         'logs/%s.conf' % (PROJECT),

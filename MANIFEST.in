@@ -1,2 +1,2 @@
-include LICENSE
-include README.rst
+include LICENSE CHANGELOG.rst README.rst
+recursive-include timevortex *.py *.html *.js

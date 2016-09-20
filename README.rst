@@ -78,6 +78,7 @@ TimeVortex backlog
 * CSV crawler
     * Finance     (CSV)
     * Garmin data (CSV)
+* API
     * Fitbit      (API) => http://python-fitbit.readthedocs.org/en/latest
     * Withing     (API) => https://github.com/maximebf/python-withings
     * Jawbone     (API) => http://kiefer.readthedocs.org/en/latest
