@@ -9,7 +9,7 @@ from timevortex.settings.base import *  # noqa
 #####
 # Logging configuration
 #
-LOG_BASE_FOLDER = "/tmp/timevortex"
+LOG_BASE_FOLDER = "common"
 LOGGING['handlers']['file']['filename'] = '%s/timevortex.log' % LOG_BASE_FOLDER  # noqa
 LOGGING['handlers']['file_weather']['filename'] = '%s/timevortex_weather.log' % LOG_BASE_FOLDER  # noqa
 LOGGING['handlers']['file_energy']['filename'] = '%s/timevortex_energy.log' % LOG_BASE_FOLDER  # noqa

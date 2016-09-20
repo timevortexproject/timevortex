@@ -1,5 +1,6 @@
 TimeVortex (2.1.2) stable; urgency=low
 
+* Modify production settings to target snap common path
 * Modify python file to use python3
 * Start release v2.1.2
 
