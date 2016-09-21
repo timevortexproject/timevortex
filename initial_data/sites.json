@@ -1,0 +1,10 @@
+[
+    {
+        "model" : "sites.site",
+        "pk" : 1,
+        "fields": {
+            "name"  : "timevortex.local",
+            "domain" : "127.0.0.1:8000"
+        }
+    }
+]

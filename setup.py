@@ -59,7 +59,7 @@ setup(
     zip_safe=False,
     include_package_data=True,
     data_files=[
-        ('', ['manage.py']),
+        ('', ['manage.py', 'initial_data/sites.json', 'initial_data/users.json']),
     ],
     # data_files=[
     #     ('/opt/timevortex', [

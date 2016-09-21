@@ -45,6 +45,8 @@ Create application
     * python manage.py makemigrations weather
     * python manage.py migrate
     * python manage.py collectstatic
+    * python manage.py createsuperuser --settings=timevortex.settings.local
+        * timevortex / timevortex_Admin
 * Manage project
     * python manage.py timevortex --commit "Your commit message" --settings=timevortex.settings.local
 
