@@ -1,4 +1,5 @@
 include LICENSE CHANGELOG.rst README.rst
-recursive-include timevortex *.py *.html *.js *.txt
-recursive-include energy *.py *.html *.js *.txt
-recursive-include weather *.py *.html *.js *.txt
+recursive-include timevortex *
+recursive-include energy *
+recursive-include weather *
+recursive-include static *

@@ -9,6 +9,7 @@ from timevortex.settings.base import *  # noqa
 #####
 # Timevortex configuration
 #
+DEBUG = True
 
 INSTALLED_APPS += [  # noqa
     'django_nose',
