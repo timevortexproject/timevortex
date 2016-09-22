@@ -58,11 +58,9 @@ setup(
     install_requires=INSTALL_REQS,
     zip_safe=False,
     include_package_data=True,
-    package_data={
-        '': ['static/']
-    },
     data_files=[
         ('', ['manage.py', 'initial_data/sites.json', 'initial_data/users.json']),
+        ('static/', ['initial_data/sites.json']),
     ],
     # data_files=[
     #     ('/opt/timevortex', [
