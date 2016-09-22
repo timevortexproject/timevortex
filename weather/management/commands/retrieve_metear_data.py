@@ -5,10 +5,11 @@
 """METEAR command"""
 
 import sys
-import logging
-from datetime import timedelta
-import dateutil.parser
 import pytz
+import logging
+from time import sleep
+import dateutil.parser
+from datetime import timedelta
 from django.conf import settings
 from django.utils import timezone
 from timevortex.utils.commands import HTMLCrawlerCommand, AbstractCommand
@@ -122,6 +123,12 @@ class Command(AbstractCommand):
     name = "METEAR crawler"
     logger = LOGGER
 
+    def add_arguments(self, parser):
+        """ Add arguments
+        """
+        parser.add_argument(
+            '--break_loop', action='store_true', dest="break_loop", default=False, help='Break the infinite loop')
+
     def launch_crawler(self, metear_sites):
         """Launch METEAR crawler
         """
@@ -150,8 +157,14 @@ class Command(AbstractCommand):
                 variable_start_date += timedelta(days=-1)
 
     def run(self, *args, **options):
-        metear_sites = get_sites_by_type(site_type=Site.METEAR_TYPE)
-        if len(metear_sites) > 0:
-            self.launch_crawler(metear_sites)
-        else:
-            self.send_error(ERROR_METEAR[KEY_METEAR_NO_SITE_ID])
+        infinite_loop = True
+        while infinite_loop:
+            if "break_loop" in options and options["break_loop"]:
+                infinite_loop = False
+            metear_sites = get_sites_by_type(site_type=Site.METEAR_TYPE)
+            if len(metear_sites) > 0:
+                self.launch_crawler(metear_sites)
+            else:
+                self.send_error(ERROR_METEAR[KEY_METEAR_NO_SITE_ID])
+            if "break_loop" in options and options["break_loop"] is False:
+                sleep(60)

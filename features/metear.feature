@@ -3,13 +3,13 @@ Feature: Retrieve METEAR data
     I want to collect my weather information,
     in order to compare it with my other data
 
-    @wipa
+    @wip
     Scenario: 1.No site_id
         When I run the 'metear' script with 'correct' settings
         Then I should see an error message 'metear_no_site_id' in the 'weather' log
         And I should see an error message 'metear_no_site_id' on the screen
 
-    @wipa
+    @wip
     Scenario: 2.Bad url
         Given I created a testing Site 'LFMN'
         And I add a bad metear url in settings
@@ -18,7 +18,7 @@ Feature: Retrieve METEAR data
         And I should see an error message 'metear_bad_url' on the screen
         And I should see an error message 'metear_bad_url' on 'error' TSV file
 
-    @wipa
+    @wip
     Scenario: 3.Web service down
         Given I created a testing Site 'LFMN'
         And I shutdown the metear web service
@@ -27,7 +27,7 @@ Feature: Retrieve METEAR data
         And I should see an error message 'metear_problem_ws' on the screen
         And I should see an error message 'metear_problem_ws' on 'error' TSV file
 
-    @wipa
+    @wip
     Scenario: 4.Bad content
         Given I created a testing Site 'LFMN'
         And I configure metear web service to generate bad content
@@ -36,14 +36,14 @@ Feature: Retrieve METEAR data
         And I should see an error message 'metear_bad_content' on the screen
         And I should see an error message 'metear_bad_content' on 'error' TSV file
 
-    @wipa
+    @wip
     Scenario: 5.Retrieve historical data
         Given I created a testing Site 'LFMN'
         When I run the 'metear' script with 'correct' settings
         Then I should see 'historical' data update in DB for 'LFMN'
         And I should see 'historical' data update in TSV file for 'LFMN'
 
-    @wipa
+    @wip
     Scenario: 6.Retrieve new data
         Given I created a testing Site 'LFMN'
         And I run for the first time the metear script
@@ -52,7 +52,7 @@ Feature: Retrieve METEAR data
         Then I should see 'new' data update in DB for 'LFMN'
         And I should see 'new' data update in TSV file for 'LFMN'
 
-    @wipa
+    @wip
     Scenario: 7.Retrieve other airport data
         Given I created a testing Site 'LFBP'
         When I run the 'metear' script with 'correct' settings

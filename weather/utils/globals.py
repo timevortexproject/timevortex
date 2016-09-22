@@ -12,10 +12,10 @@ KEY_METEAR_BAD_URL = "metear_bad_url"
 KEY_METEAR_PROBLEM_WS = "metear_problem_ws"
 KEY_METEAR_BAD_CONTENT = "metear_bad_content"
 ERROR_METEAR = {
-    KEY_METEAR_NO_SITE_ID: "No METEAR Site in database. Process terminated.",
-    KEY_METEAR_BAD_URL: "Bad URL to target METEAR service. Process terminated.",
-    KEY_METEAR_PROBLEM_WS: "METEAR Web service does not respond. Process terminated.",
-    KEY_METEAR_BAD_CONTENT: "Bad content from METEAR Web service. Process terminated."
+    KEY_METEAR_NO_SITE_ID: "No METEAR Site in database. Process stopped. Wait a minute before retrying.",
+    KEY_METEAR_BAD_URL: "Bad URL to target METEAR service. Process stopped. Wait a minute before retrying.",
+    KEY_METEAR_PROBLEM_WS: "METEAR Web service does not respond. Process stopped. Wait a minute before retrying.",
+    KEY_METEAR_BAD_CONTENT: "Bad content from METEAR Web service. Process stopped. Wait a minute before retrying."
 }
 SETTINGS_METEAR_URL = "METEAR_URL"
 SETTINGS_DEFAULT_METEAR_URL = "http://www.wunderground.com/history/airport/%s/%s/DailyHistory.html?format=1"

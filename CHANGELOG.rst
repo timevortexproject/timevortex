@@ -1,5 +1,6 @@
 TimeVortex (2.1.2) stable; urgency=low
 
+* Move METEAR command to infinite loop
 * Try to export static files
 * Try to export static files
 * Try to export static files

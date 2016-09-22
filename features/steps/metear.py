@@ -104,7 +104,7 @@ def run_metear_script_populate(context):  # pylint: disable=I0011,W0613
     out = StringIO()
     command = MetearCommand()
     command.out = out
-    command.handle()
+    command.handle(break_loop=True)
 
 
 def transform_metear_array2dict(array):  # pylint: disable=I0011,W0613
@@ -131,7 +131,7 @@ def launch_metear_command(out):
     """
     command = MetearCommand()
     command.out = out
-    command.handle()
+    command.handle(break_loop=True)
 
 
 def verify_metear_data_update(site_id, data_type):

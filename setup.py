@@ -28,8 +28,8 @@ INSTALL_REQS = [
 VERSION = "2.1.2"
 
 files_list = [('', ['manage.py'])]
-files_list += [ (d, [os.path.join(d, f) for f in files]) for d,folders,files in os.walk("initial_data/")]
-files_list += [ (d, [os.path.join(d, f) for f in files]) for d,folders,files in os.walk("static/")]
+files_list += [(d, [os.path.join(d, f) for f in files]) for d, folders, files in os.walk("initial_data/")]
+files_list += [(d, [os.path.join(d, f) for f in files]) for d, folders, files in os.walk("static/")]
 
 
 setup(
