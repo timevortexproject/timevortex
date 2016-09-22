@@ -2,6 +2,7 @@ TimeVortex (2.1.2) stable; urgency=low
 
 * Try to export static files
 * Try to export static files
+* Try to export static files
 * Add initial_data and test to start server on deployment
 * Add initial_data and test to start server on deployment
 * Add energy and weather command

@@ -27,6 +27,11 @@ INSTALL_REQS = [
 
 VERSION = "2.1.2"
 
+files_list = [('', ['manage.py'])]
+files_list += [ (d, [os.path.join(d, f) for f in files]) for d,folders,files in os.walk("initial_data/")]
+files_list += [ (d, [os.path.join(d, f) for f in files]) for d,folders,files in os.walk("static/")]
+
+
 setup(
     name="%s" % (PROJECT),
     version=VERSION,
@@ -58,16 +63,6 @@ setup(
     install_requires=INSTALL_REQS,
     zip_safe=False,
     include_package_data=True,
-    data_files=[
-        ('', ['manage.py', 'initial_data/sites.json', 'initial_data/users.json']),
-        ('static/', ['initial_data/sites.json']),
-    ],
-    # data_files=[
-    #     ('/opt/timevortex', [
-    #         'logs/%s.conf' % (PROJECT),
-    #         'config/config.ini']),
-    #     ('/etc/supervisor/conf.d', [
-    #         'supervisor/timevortex.currentcost.conf',
-    #         'supervisor/timevortex.timeserieslogger.conf']),
-    # ],
+    # package_dir=[ (d, [os.path.join(d, f) for f in files]) for d,folders,files in os.walk("static/")],
+    data_files=files_list,
 )
