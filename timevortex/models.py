@@ -54,13 +54,13 @@ class Variable(models.Model):
     def update_value(self, date, value):
         """Update value
         """
-        LOGGER.info(self.slug)
-        LOGGER.info(self.start_date)
-        LOGGER.info(self.start_value)
-        LOGGER.info(self.end_date)
-        LOGGER.info(self.end_value)
-        LOGGER.info(date)
-        LOGGER.info(value)
+        # LOGGER.info(self.slug)
+        # LOGGER.info(self.start_date)
+        # LOGGER.info(self.start_value)
+        # LOGGER.info(self.end_date)
+        # LOGGER.info(self.end_value)
+        # LOGGER.info(date)
+        # LOGGER.info(value)
         if date > self.end_date:
             self.end_date = date
             self.end_value = value

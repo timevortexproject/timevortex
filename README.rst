@@ -67,6 +67,18 @@ Snap build
 * sudo snap try prime --devmode
 * cp /vagrant/snapcraft.yaml . && cp /vagrant/timevortex-prepare . && snapcraft clean && snapcraft && sudo snap try prime --devmode
 
+TimeVortex todo
+===============
+
+* Metear:
+    * Put SETTINGS_METEAR_START_DATE in DB (weather_settings) + add initial_data
+    * Fix functionnal test to add initial_data before starting it
+* Backup:
+    * Put BACKUP_TARGET_FOLDER in DB (timevortex_settings) + modify script to read backup folder target from DB
+    * Fix functionnal test to add initial_data before starting it
+* Daily_report:
+* CurrentCost:
+
 TimeVortex backlog
 ==================
 
