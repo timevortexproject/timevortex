@@ -10,6 +10,7 @@ from timevortex.utils.globals import LOGGER
 
 EXCEPTION_VARIABLES_PAST_DATE = "Date are in the past"
 APP_NAME = "timevortex"
+BACKUP_TARGET_FOLDER = "backup_target_folder"
 
 
 class Site(models.Model):
@@ -78,6 +79,39 @@ class Variable(models.Model):
 
     def __str__(self):
         return self.label
+
+
+class Settings(models.Model):
+    """Site model.
+    """
+    label = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True)
+    value = models.CharField(max_length=200, null=True, blank=True)
+
+    class Meta:
+        app_label = APP_NAME
+
+    def __str__(self):
+        return self.label
+
+
+def get_backup_target_folder():
+    try:
+        return Settings.objects.get(slug=BACKUP_TARGET_FOLDER).value
+    except Settings.DoesNotExist:
+        return None
+
+
+def set_backup_target_folder(new_folder):
+    try:
+        settings = Settings.objects.get(slug=BACKUP_TARGET_FOLDER)
+        settings.value = new_folder
+        settings.save()
+    except Settings.DoesNotExist:
+        Settings.objects.create(
+            label=BACKUP_TARGET_FOLDER,
+            slug=BACKUP_TARGET_FOLDER,
+            value=new_folder)
 
 
 def get_sites_by_type(site_type=Site.NO_TYPE):

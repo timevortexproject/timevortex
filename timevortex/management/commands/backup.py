@@ -6,6 +6,7 @@
 
 import logging
 from django.conf import settings
+from timevortex.models import get_backup_target_folder
 from timevortex.utils.commands import AbstractCommand
 from timevortex.utils.globals import call_and_exit, ERROR_TIMEVORTEX, ERROR_BACKUP_DEACTIVATED
 
@@ -16,8 +17,6 @@ MAIN_HELP_TEXT = "Invoke rsync method to copy data on a specific folder"
 #     liogen@192.168.0.44:/home/liogen/workspace/timevortex/timevortex.data/backup
 # cd /var/log && rsync -az timevortex liogen@192.168.0.44:/home/liogen/workspace/timevortex/timevortex.data/backup
 
-BACKUP_TARGET_FOLDER = "BACKUP_TARGET_FOLDER"
-BACKUP_TARGET_FOLDER_DEFAULT = "/tmp/backup"
 LOG_BASE_FOLDER = "LOG_BASE_FOLDER"
 LOG_BASE_FOLDER_DEFAULT = "/tmp/timevortex"
 SETTINGS_FILE_STORAGE_FOLDER = "SETTINGS_FILE_STORAGE_FOLDER"
@@ -33,7 +32,7 @@ class Command(AbstractCommand):
     logger = LOGGER
 
     def run(self, *args, **options):
-        backup_target_path = getattr(settings, BACKUP_TARGET_FOLDER, BACKUP_TARGET_FOLDER_DEFAULT)
+        backup_target_path = get_backup_target_folder()
         if backup_target_path is None:
             self.logger.info(ERROR_TIMEVORTEX[ERROR_BACKUP_DEACTIVATED])
             return

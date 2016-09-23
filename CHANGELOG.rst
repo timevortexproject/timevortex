@@ -1,5 +1,6 @@
 TimeVortex (2.1.2) stable; urgency=low
 
+* Move BACKUP_TARGET_FOLDER in DB + add initial_data + fix funtional test for backup command
 * Move SETTINGS_METEAR_START_DATE in DB + add initial_data + fix funtional test + fix bad url problem in metear command
 * Remove useless log from timevortex model, Add todo for backup and metear command
 * Move METEAR command to infinite loop

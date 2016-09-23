@@ -252,8 +252,3 @@ ACTIVATE_STUBS = False
 
 METEAR_URL = "http://www.wunderground.com/history/airport/%s/%s/DailyHistory.html?format=1"
 
-#####
-# BACKUP CONFIGURATION
-#
-
-BACKUP_TARGET_FOLDER = None

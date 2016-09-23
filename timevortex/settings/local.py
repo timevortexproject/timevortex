@@ -47,9 +47,3 @@ EMAIL_HOST_USER = 'phase.test.email'
 EMAIL_HOST_PASSWORD = 'phaseTEST2014'  # noqa
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
-#####
-# Backup configuration
-#
-
-BACKUP_TARGET_FOLDER = "/tmp/backup"

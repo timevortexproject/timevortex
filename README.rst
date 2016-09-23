@@ -70,9 +70,6 @@ Snap build
 TimeVortex todo
 ===============
 
-* Metear:
-    * Put SETTINGS_METEAR_START_DATE in DB (weather_settings) + add initial_data
-    * Fix functionnal test to add initial_data before starting it
 * Backup:
     * Put BACKUP_TARGET_FOLDER in DB (timevortex_settings) + modify script to read backup folder target from DB
     * Fix functionnal test to add initial_data before starting it

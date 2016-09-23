@@ -10,6 +10,7 @@ from os.path import exists
 from subprocess import call
 from behave import given, when, then  # pylint: disable=E0611
 from django.conf import settings
+from timevortex.models import set_backup_target_folder
 from timevortex.management.commands.backup import Command
 
 BACKUP_TARGET_FOLDER = "BACKUP_TARGET_FOLDER"
@@ -60,15 +61,15 @@ def expected_file_and_data(backup=False, new_data=False):
 def stubs_data_creation(context):
     """Data initialization"""
     # pylint: disable=unused-argument
-    setattr(settings, BACKUP_TARGET_FOLDER, BACKUP_TARGET_FOLDER_DEFAULT)
+    set_backup_target_folder(BACKUP_TARGET_FOLDER_DEFAULT)
     try:
         shutil.rmtree(BACKUP_FOLDER)
         shutil.rmtree("/tmp/data")
     except FileNotFoundError:
         pass
-    call("mkdir /tmp/data", shell=True)
-    call("mkdir %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST1), shell=True)
-    call("mkdir %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST2), shell=True)
+    call("mkdir -p /tmp/data", shell=True)
+    call("mkdir -p %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST1), shell=True)
+    call("mkdir -p %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST2), shell=True)
     call("touch %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST1_FILE_1), shell=True)
     call("touch %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST1_FILE_2), shell=True)
     call("touch %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST2_FILE_3), shell=True)
@@ -84,18 +85,19 @@ def stubs_new_data(context):
     """Write new data and validate that script retrieve it
     """
     # pylint: disable=unused-argument
+    set_backup_target_folder(BACKUP_TARGET_FOLDER_DEFAULT)
     call("touch %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST1_FILE_4), shell=True)
     call("echo '15' >> %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST1_FILE_1), shell=True)
     call("echo '16' >> %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST1_FILE_2), shell=True)
     call("echo '17' >> %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST2_FILE_3), shell=True)
-    call("echo '18' > %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST1_FILE_4), shell=True)
+    call("echo '18' >> %s/%s" % (BASE_FOLDER, DATA_FOLDER_TEST1_FILE_4), shell=True)
 
 
 @given("I deactivate backup script")
 def backup_script_deactivation(context):
     """Deactivate backup script"""
     # pylint: disable=unused-argument
-    setattr(settings, BACKUP_TARGET_FOLDER, BACKUP_TARGET_FOLDER_DEACTIVATE)
+    set_backup_target_folder(BACKUP_TARGET_FOLDER_DEACTIVATE)
 
 
 @when("I run the backup command")

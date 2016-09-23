@@ -24,5 +24,14 @@ class VariableAdmin(admin.ModelAdmin):
     search_fields = ('label', 'slug')
 
 
+class SettingsAdmin(admin.ModelAdmin):
+    """SiteAdmin class
+    """
+    list_display = ('label', 'slug', 'value')
+    list_filter = ('label', 'slug', 'value')
+    search_fields = ('label', 'slug')
+
+
 admin.site.register(models.Site, SiteAdmin)
 admin.site.register(models.Variable, VariableAdmin)
+admin.site.register(models.Settings, SettingsAdmin)
