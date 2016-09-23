@@ -9,7 +9,8 @@ from os.path import exists
 from django.conf import settings
 from timevortex.utils.filestorage import SETTINGS_FILE_STORAGE_FOLDER, SETTINGS_DEFAULT_FILE_STORAGE_FOLDER
 from weather.utils.globals import SETTINGS_STUBS_METEAR_URL, SETTINGS_METEAR_URL
-from weather.utils.globals import SETTINGS_METEAR_START_DATE, SETTINGS_STUBS_METEAR_START_DATE
+from weather.utils.globals import SETTINGS_STUBS_METEAR_START_DATE
+from weather.models import set_metear_start_date
 
 SOCAT = "socat"
 TIMEVORTEX_LOG_FILE = "/tmp/timevortex/timevortex.log"
@@ -25,7 +26,7 @@ def reset_testing_environment():
     if exists(data_folder):
         shutil.rmtree(data_folder)
     setattr(settings, SETTINGS_METEAR_URL, SETTINGS_STUBS_METEAR_URL)
-    setattr(settings, SETTINGS_METEAR_START_DATE, SETTINGS_STUBS_METEAR_START_DATE)
+    set_metear_start_date(SETTINGS_STUBS_METEAR_START_DATE)
 
 
 def assert_equal(element1, element2):

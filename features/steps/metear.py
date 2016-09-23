@@ -7,6 +7,7 @@
 from io import StringIO
 from datetime import datetime, timedelta
 from django.conf import settings
+from django.core import management
 from behave import given  # pylint: disable=I0011,E0611
 from timevortex.models import get_site_by_slug, get_site_variables
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
@@ -105,6 +106,13 @@ def run_metear_script_populate(context):  # pylint: disable=I0011,W0613
     command = MetearCommand()
     command.out = out
     command.handle(break_loop=True)
+
+
+@given("I load initial_data")
+def load_initial_data(context):  # pylint: disable=I0011,W0613
+    """Load initial data
+    """
+    management.call_command('loaddata', "initial_data/weather.json", database="default", verbosity=1)
 
 
 def transform_metear_array2dict(array):  # pylint: disable=I0011,W0613

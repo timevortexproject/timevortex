@@ -13,9 +13,9 @@ LOG_BASE_FOLDER = '../common/log'
 LOGGING['handlers']['file']['filename'] = '%s/timevortex.log' % LOG_BASE_FOLDER  # noqa
 LOGGING['handlers']['file_weather']['filename'] = '%s/timevortex_weather.log' % LOG_BASE_FOLDER  # noqa
 LOGGING['handlers']['file_energy']['filename'] = '%s/timevortex_energy.log' % LOG_BASE_FOLDER  # noqa
-LOGGING['loggers']['timevortex']['level'] = 'DEBUG'  # noqa
-LOGGING['loggers']['weather']['level'] = 'DEBUG'  # noqa
-LOGGING['loggers']['energy']['level'] = 'DEBUG'  # noqa
+LOGGING['loggers']['timevortex']['level'] = 'INFO'  # noqa
+LOGGING['loggers']['weather']['level'] = 'INFO'  # noqa
+LOGGING['loggers']['energy']['level'] = 'INFO'  # noqa
 
 #####
 # Timevortex configuration

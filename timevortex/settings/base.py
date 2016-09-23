@@ -251,7 +251,6 @@ ACTIVATE_STUBS = False
 #
 
 METEAR_URL = "http://www.wunderground.com/history/airport/%s/%s/DailyHistory.html?format=1"
-SETTINGS_METEAR_START_DATE = "2010-01-01"
 
 #####
 # BACKUP CONFIGURATION

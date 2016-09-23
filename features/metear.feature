@@ -5,6 +5,7 @@ Feature: Retrieve METEAR data
 
     @wip
     Scenario: 1.No site_id
+        Given I load initial_data
         When I run the 'metear' script with 'correct' settings
         Then I should see an error message 'metear_no_site_id' in the 'weather' log
         And I should see an error message 'metear_no_site_id' on the screen

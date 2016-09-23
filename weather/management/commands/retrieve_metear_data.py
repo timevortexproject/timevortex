@@ -18,7 +18,8 @@ from timevortex.models import Site, get_site_by_slug_and_type, get_sites_by_type
 from timevortex.models import get_variable_by_slug
 from weather.utils.globals import ERROR_METEAR, KEY_METEAR_NO_SITE_ID, SETTINGS_METEAR_URL, SETTINGS_DEFAULT_METEAR_URL
 from weather.utils.globals import KEY_METEAR_BAD_URL, KEY_METEAR_PROBLEM_WS, KEY_METEAR_BAD_CONTENT
-from weather.utils.globals import SETTINGS_METEAR_START_DATE, SETTINGS_DEFAULT_METEAR_START_DATE
+from weather.utils.globals import KEY_METEAR_NO_START_DATE
+from weather.models import get_metear_start_date
 
 LOGGER = logging.getLogger("weather")
 SLUG_METEAR_TEMPERATURE_CELSIUS = "metear_temperature_celsius"
@@ -37,6 +38,9 @@ ARRAY_VARIABLE_ID = [
     "metear_wind_direction_degrees",
 ]
 TODAY = timezone.now()
+KEY_BREAK_LOOP = "break_loop"
+KEY_SLEEP_TIME = "sleep_time"
+BREAK_LOOP_HELP = 'Break the infinite loop'
 
 
 class MyMETEARCrawler(HTMLCrawlerCommand):  # pylint: disable=I0011,R0902
@@ -127,17 +131,22 @@ class Command(AbstractCommand):
         """ Add arguments
         """
         parser.add_argument(
-            '--break_loop', action='store_true', dest="break_loop", default=False, help='Break the infinite loop')
+            '--%s' % KEY_BREAK_LOOP, action='store_true', dest=KEY_BREAK_LOOP, default=False, help=BREAK_LOOP_HELP)
+        parser.add_argument(
+            '--%s' % KEY_SLEEP_TIME, action='store', dest=KEY_SLEEP_TIME, help='Define sleep time before reloading')
 
     def launch_crawler(self, metear_sites):
         """Launch METEAR crawler
         """
+        settings_start_date = get_metear_start_date()
+        if settings_start_date is None:
+            self.send_error(ERROR_METEAR[KEY_METEAR_NO_START_DATE])
+            return
         crawler = MyMETEARCrawler()
         crawler.set_logger(LOGGER)
         crawler.out = self.out
         crawler.reverse = False
-        settings_start_date = getattr(settings, SETTINGS_METEAR_START_DATE, SETTINGS_DEFAULT_METEAR_START_DATE)
-        bound_start_date = dateutil.parser.parse(settings_start_date).replace(tzinfo=pytz.UTC)
+        bound_start_date = settings_start_date
         bound_end_date = TODAY
         for site in metear_sites:
             variable_start_date = bound_end_date
@@ -148,23 +157,33 @@ class Command(AbstractCommand):
                 variable_end_date = variable.end_date
             ending_date = bound_end_date.date()
             while variable_end_date.date() <= ending_date:
-                crawler.handle(site_id=site.slug, from_date=variable_end_date)
-                variable_end_date += timedelta(days=1)
+                result = crawler.handle(site_id=site.slug, from_date=variable_end_date)
+                if result:
+                    variable_end_date += timedelta(days=1)
+                else:
+                    return
             crawler.reverse = True
             ending_date = bound_start_date.date()
             while variable_start_date.date() >= ending_date:
-                crawler.handle(site_id=site.slug, from_date=variable_start_date)
-                variable_start_date += timedelta(days=-1)
+                result = crawler.handle(site_id=site.slug, from_date=variable_start_date)
+                if result:
+                    variable_start_date += timedelta(days=-1)
+                else:
+                    return
 
     def run(self, *args, **options):
         infinite_loop = True
+        sleep_time = 600
+        if KEY_SLEEP_TIME in options and options[KEY_SLEEP_TIME] is not None:
+            sleep_time = float(options[KEY_SLEEP_TIME])
         while infinite_loop:
-            if "break_loop" in options and options["break_loop"]:
-                infinite_loop = False
             metear_sites = get_sites_by_type(site_type=Site.METEAR_TYPE)
             if len(metear_sites) > 0:
                 self.launch_crawler(metear_sites)
             else:
                 self.send_error(ERROR_METEAR[KEY_METEAR_NO_SITE_ID])
-            if "break_loop" in options and options["break_loop"] is False:
-                sleep(60)
+            if KEY_BREAK_LOOP in options:
+                if options[KEY_BREAK_LOOP] is False:
+                    sleep(sleep_time)
+                else:
+                    infinite_loop = False

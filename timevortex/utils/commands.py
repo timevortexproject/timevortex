@@ -142,11 +142,11 @@ class HTMLCrawlerCommand(AbstractCommand):
         self.url_generator(self, *args, **options)
         self.open_html_file()
         if self.html is None:
-            return
+            return False
         self.clean_data()
         if len(self.html) == 0:
             self.send_error(self.error_bad_content)
-            return
+            return False
         if self.multi_rows:
             for row in self.html:
                 self.row = row
@@ -158,3 +158,4 @@ class HTMLCrawlerCommand(AbstractCommand):
                             self.prepare_timeseries()
                             if self.timeseries is not None and self.timeseries != "":
                                 self.send_timeseries()
+        return True
