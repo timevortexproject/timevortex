@@ -9,7 +9,6 @@ import logging
 from os.path import exists
 from subprocess import call
 from behave import given, when, then  # pylint: disable=E0611
-from django.conf import settings
 from timevortex.models import set_backup_target_folder
 from timevortex.management.commands.backup import Command
 
