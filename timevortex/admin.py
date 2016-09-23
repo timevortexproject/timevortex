@@ -34,4 +34,4 @@ class SettingsAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Site, SiteAdmin)
 admin.site.register(models.Variable, VariableAdmin)
-admin.site.register(models.Settings, SettingsAdmin)
+admin.site.register(models.Setting, SettingsAdmin)

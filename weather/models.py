@@ -10,12 +10,12 @@ APP_NAME = "weather"
 METEAR_START_DATE = "metear_start_date"
 
 
-class Settings(models.Model):
+class Setting(models.Model):
     """Site model.
     """
     label = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
-    value = models.DateTimeField(null=True, blank=True)
+    value = models.CharField(max_length=200, null=True, blank=True)
 
     class Meta:
         app_label = APP_NAME
@@ -26,18 +26,18 @@ class Settings(models.Model):
 
 def get_metear_start_date():
     try:
-        return Settings.objects.get(slug=METEAR_START_DATE).value
-    except Settings.DoesNotExist:
+        return Setting.objects.get(slug=METEAR_START_DATE).value
+    except Setting.DoesNotExist:
         return None
 
 
 def set_metear_start_date(new_date):
     try:
-        settings = Settings.objects.get(slug=METEAR_START_DATE)
+        settings = Setting.objects.get(slug=METEAR_START_DATE)
         settings.value = new_date
         settings.save()
-    except Settings.DoesNotExist:
-        Settings.objects.create(
+    except Setting.DoesNotExist:
+        Setting.objects.create(
             label=METEAR_START_DATE,
             slug=METEAR_START_DATE,
             value=new_date)

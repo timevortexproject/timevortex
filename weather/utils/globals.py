@@ -25,4 +25,4 @@ SETTINGS_DEFAULT_METEAR_URL = "http://www.wunderground.com/history/airport/%s/%s
 SETTINGS_STUBS_METEAR_URL = "%s%s" % (settings.SITE_URL, "/stubs/history/airport/%s/%s/DailyHistory.html?format=1")
 SETTINGS_STUBS_NEW_METEAR_URL = "%s%s" % (
     settings.SITE_URL, "/stubs/history/airport/%s/%s/NewDailyHistory.html?format=1")
-SETTINGS_STUBS_METEAR_START_DATE = datetime.today() - timedelta(days=3)
+SETTINGS_STUBS_METEAR_START_DATE = (datetime.today() - timedelta(days=3)).strftime("%Y/%m/%d")

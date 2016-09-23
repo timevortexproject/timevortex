@@ -16,4 +16,4 @@ class SettingsAdmin(admin.ModelAdmin):
     search_fields = ('label', 'slug')
 
 
-admin.site.register(models.Settings, SettingsAdmin)
+admin.site.register(models.Setting, SettingsAdmin)

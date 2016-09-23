@@ -146,7 +146,7 @@ class Command(AbstractCommand):
         crawler.set_logger(LOGGER)
         crawler.out = self.out
         crawler.reverse = False
-        bound_start_date = settings_start_date
+        bound_start_date = dateutil.parser.parse(settings_start_date).replace(tzinfo=pytz.UTC)
         bound_end_date = TODAY
         for site in metear_sites:
             variable_start_date = bound_end_date

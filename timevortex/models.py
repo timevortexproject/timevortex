@@ -81,7 +81,7 @@ class Variable(models.Model):
         return self.label
 
 
-class Settings(models.Model):
+class Setting(models.Model):
     """Site model.
     """
     label = models.CharField(max_length=200)
@@ -97,18 +97,18 @@ class Settings(models.Model):
 
 def get_backup_target_folder():
     try:
-        return Settings.objects.get(slug=BACKUP_TARGET_FOLDER).value
-    except Settings.DoesNotExist:
+        return Setting.objects.get(slug=BACKUP_TARGET_FOLDER).value
+    except Setting.DoesNotExist:
         return None
 
 
 def set_backup_target_folder(new_folder):
     try:
-        settings = Settings.objects.get(slug=BACKUP_TARGET_FOLDER)
+        settings = Setting.objects.get(slug=BACKUP_TARGET_FOLDER)
         settings.value = new_folder
         settings.save()
-    except Settings.DoesNotExist:
-        Settings.objects.create(
+    except Setting.DoesNotExist:
+        Setting.objects.create(
             label=BACKUP_TARGET_FOLDER,
             slug=BACKUP_TARGET_FOLDER,
             value=new_folder)

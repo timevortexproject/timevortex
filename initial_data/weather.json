@@ -1,1 +1,1 @@
-[{"model": "weather.settings", "pk": 1, "fields": {"label": "METEAR start date", "slug": "metear_start_date", "value": "2009-12-31T23:00:00Z"}}]
+[{"model": "weather.setting", "pk": 1, "fields": {"label": "METEAR start date", "slug": "metear_start_date", "value": "2010-01-01"}}]
