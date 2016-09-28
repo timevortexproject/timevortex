@@ -1,5 +1,6 @@
 TimeVortex (2.1.2) stable; urgency=low
 
+* Fix lint problem
 * Fix migration problem
 * Improve daily_report to read settings from DB, send report every day at 4:00 AM
 * Migrate abstract command to infinite loop and update job to run new abstract command architecture
