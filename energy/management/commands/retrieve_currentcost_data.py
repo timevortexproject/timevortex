@@ -155,6 +155,7 @@ class Command(AbstractCommand):
     logger = LOGGER
     site_id = None
     ser_connection = None
+    sleep_time = 0
 
     def add_arguments(self, parser):
         # Positional arguments
@@ -316,8 +317,4 @@ class Command(AbstractCommand):
         variable_id = options["variable_id"]
         tty_port = options["tty_port"]
         usb_retry = options["usb_retry"]
-        infinite_loop = True
-        while infinite_loop:
-            if options["break_loop"]:
-                infinite_loop = False
-            self.currentcost_error_management(options, variable_id, tty_port, usb_retry)
+        self.currentcost_error_management(options, variable_id, tty_port, usb_retry)

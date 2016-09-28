@@ -7,7 +7,6 @@
 import sys
 import pytz
 import logging
-from time import sleep
 import dateutil.parser
 from datetime import timedelta
 from django.conf import settings
@@ -126,14 +125,7 @@ class Command(AbstractCommand):
     out = sys.stdout
     name = "METEAR crawler"
     logger = LOGGER
-
-    def add_arguments(self, parser):
-        """ Add arguments
-        """
-        parser.add_argument(
-            '--%s' % KEY_BREAK_LOOP, action='store_true', dest=KEY_BREAK_LOOP, default=False, help=BREAK_LOOP_HELP)
-        parser.add_argument(
-            '--%s' % KEY_SLEEP_TIME, action='store', dest=KEY_SLEEP_TIME, help='Define sleep time before reloading')
+    sleep_time = 600
 
     def launch_crawler(self, metear_sites):
         """Launch METEAR crawler
@@ -172,18 +164,8 @@ class Command(AbstractCommand):
                     return
 
     def run(self, *args, **options):
-        infinite_loop = True
-        sleep_time = 600
-        if KEY_SLEEP_TIME in options and options[KEY_SLEEP_TIME] is not None:
-            sleep_time = float(options[KEY_SLEEP_TIME])
-        while infinite_loop:
-            metear_sites = get_sites_by_type(site_type=Site.METEAR_TYPE)
-            if len(metear_sites) > 0:
-                self.launch_crawler(metear_sites)
-            else:
-                self.send_error(ERROR_METEAR[KEY_METEAR_NO_SITE_ID])
-            if KEY_BREAK_LOOP in options:
-                if options[KEY_BREAK_LOOP] is False:
-                    sleep(sleep_time)
-                else:
-                    infinite_loop = False
+        metear_sites = get_sites_by_type(site_type=Site.METEAR_TYPE)
+        if len(metear_sites) > 0:
+            self.launch_crawler(metear_sites)
+        else:
+            self.send_error(ERROR_METEAR[KEY_METEAR_NO_SITE_ID])

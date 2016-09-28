@@ -30,6 +30,7 @@ class Command(AbstractCommand):
     help = MAIN_HELP_TEXT
     name = "backup command"
     logger = LOGGER
+    sleep_time = 600
 
     def run(self, *args, **options):
         backup_target_path = get_backup_target_folder()

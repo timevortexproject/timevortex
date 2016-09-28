@@ -1,5 +1,6 @@
 TimeVortex (2.1.2) stable; urgency=low
 
+* Migrate abstract command to infinite loop and update job to run new abstract command architecture
 * Fix lint problem
 * Move Settings weather value DateField to Charfield
 * Move BACKUP_TARGET_FOLDER in DB + add initial_data + fix funtional test for backup command

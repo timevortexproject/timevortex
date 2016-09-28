@@ -69,9 +69,16 @@ Snap build
 
 TimeVortex todo
 ===============
-
+* Backup :
+    * Install rsync in snapcraft
 * Daily_report:
+    * Migrate daily_report command to infinite loop abstract command
 * CurrentCost:
+    * Load this data from DB :
+        - site_id
+        - variable_id
+        - tty_port
+        - usb_retry
 
 TimeVortex backlog
 ==================

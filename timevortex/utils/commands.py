@@ -6,7 +6,7 @@
 
 import sys
 import json
-from time import tzname
+from time import tzname, sleep
 import requests
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -23,6 +23,13 @@ class AbstractCommand(BaseCommand):
     logger = None
     out = None
     name = None
+    infinite_loop = True
+    sleep_time = 1
+
+    def add_arguments(self, parser):
+        # Named (optional) arguments
+        parser.add_argument(
+            '--break_loop', action='store_true', dest="break_loop", default=False, help='Break the infinite loop')
 
     def set_logger(self, logger):
         """Set logger for abstract command class
@@ -74,7 +81,12 @@ class AbstractCommand(BaseCommand):
         """Main django command method
         """
         self.logger.info("Command %s started", self.name)
-        self.run(*args, **options)
+        while self.infinite_loop:
+            self.run(*args, **options)
+            if options["break_loop"]:
+                self.infinite_loop = False
+            else:
+                sleep(self.sleep_time)
         self.logger.info("Command %s stopped", self.name)
 
 

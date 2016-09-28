@@ -104,7 +104,7 @@ def run_backup_command(context):
     """Run backup command"""
     # pylint: disable=unused-argument
     command = Command()
-    command.handle()
+    command.handle(break_loop=True)
 
 
 @then("nothing should be backuped")
