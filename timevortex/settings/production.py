@@ -27,8 +27,8 @@ SETTINGS_FILE_STORAGE_FOLDER = '../common/data'
 # Email configuration
 #
 
-DEFAULT_FROM_EMAIL = 'Timevortex <XXX@XXX.com>'
-EMAIL_HOST = 'XXX.XXX.XXX'
+DEFAULT_FROM_EMAIL = 'Timevortex <XXX@XXX.XXX>'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'XXX'
 EMAIL_HOST_PASSWORD = 'XXX'  # noqa
 EMAIL_PORT = 587

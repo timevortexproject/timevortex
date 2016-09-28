@@ -69,8 +69,6 @@ Snap build
 
 TimeVortex todo
 ===============
-* Backup :
-    * Install rsync in snapcraft
 * Daily_report:
     * Migrate daily_report command to infinite loop abstract command
 * CurrentCost:
