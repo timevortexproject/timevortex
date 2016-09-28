@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='settings',
+            model_name='setting',
             name='value',
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
