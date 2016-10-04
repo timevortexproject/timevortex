@@ -69,14 +69,16 @@ Snap build
 
 TimeVortex todo
 ===============
-* Daily_report:
-    * Migrate daily_report command to infinite loop abstract command
+
 * CurrentCost:
-    * Load this data from DB :
-        - site_id
-        - variable_id
-        - tty_port
-        - usb_retry
+    * Run script with snap
+* Prod :
+    * Avoid update initial_data if useless (rewrite user properties)
+    * Test daily-report
+    * Test backup in USB key
+    * Test currentcost live
+    * Migrate data to new currentcost
+    * Setup raspberry pi installation at home
 
 TimeVortex backlog
 ==================

@@ -6,7 +6,8 @@
 
 from django.db import models
 from django.core.exceptions import ValidationError
-from timevortex.utils.globals import LOGGER
+from timevortex.utils.globals import KEY_SENDER_EMAIL, KEY_SENDER_PASSWORD, KEY_TARGET_INFORMATION_EMAIL, LOGGER
+from timevortex.utils.globals import KEY_NEXT_SEND_DAILY_REPORT, KEY_LAST_TIME_DAILY_REPORT
 
 EXCEPTION_VARIABLES_PAST_DATE = "Date are in the past"
 APP_NAME = "timevortex"
@@ -62,10 +63,10 @@ class Variable(models.Model):
         # LOGGER.info(self.end_value)
         # LOGGER.info(date)
         # LOGGER.info(value)
-        if date > self.end_date:
+        if self.end_date is None or date > self.end_date:
             self.end_date = date
             self.end_value = value
-        elif date < self.start_date:
+        elif self.start_date is None or date < self.start_date:
             self.start_date = date
             self.start_value = value
         else:
@@ -147,6 +148,12 @@ def create_site(slug, site_type, label=None):
     return Site.objects.create(slug=slug, site_type=site_type, label=label)
 
 
+def create_variable(site, label, slug):
+    """Create variable
+    """
+    return Variable.objects.create(site=site, label=label, slug=slug)
+
+
 def update_or_create_variable(site, slug, date, value):
     """Update or create variable
     """
@@ -183,3 +190,54 @@ def get_site_variables(site):
     """Get variables of a site
     """
     return Variable.objects.filter(site=site)
+
+
+def get_sender_email():
+    """Get sender email
+    """
+    try:
+        return Setting.objects.get(slug=KEY_SENDER_EMAIL)
+    except Setting.DoesNotExist:
+        return None
+
+
+def get_sender_password():
+    """Get sender password
+    """
+    try:
+        return Setting.objects.get(slug=KEY_SENDER_PASSWORD)
+    except Setting.DoesNotExist:
+        return None
+
+
+def get_target_email():
+    """Get target email
+    """
+    try:
+        return Setting.objects.get(slug=KEY_TARGET_INFORMATION_EMAIL)
+    except Setting.DoesNotExist:
+        return None
+
+
+def get_next_send_daily_report():
+    """Get target email
+    """
+    try:
+        return Setting.objects.get(slug=KEY_NEXT_SEND_DAILY_REPORT)
+    except Setting.DoesNotExist:
+        return None
+
+
+def get_last_time_daily_report():
+    """Get target email
+    """
+    try:
+        return Setting.objects.get(slug=KEY_LAST_TIME_DAILY_REPORT)
+    except Setting.DoesNotExist:
+        return None
+
+
+def create_last_time_daily_report(label, slug, value):
+    """Create variable
+    """
+    return Setting.objects.create(label=label, slug=slug, value=value)

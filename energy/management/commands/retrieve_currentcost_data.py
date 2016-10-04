@@ -7,13 +7,15 @@
 import sys
 import logging
 from time import sleep
+from datetime import timedelta
 from xml.etree import ElementTree
 import serial
 from django.utils import timezone
+from energy.models import get_all_cc_settings
 from energy.utils.globals import KEY_ENERGY, ERROR_CURRENTCOST, ERROR_CC_NO_MESSAGE, ERROR_CC_BAD_PORT
 from energy.utils.globals import TTY_CONNECTION_SUCCESS, ERROR_CC_DISCONNECTED, ERROR_CC_INCORRECT_MESSAGE
 from energy.utils.globals import CURRENTCOST_UNICODE_ERROR, ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR
-from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS
+from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS, ERROR_NO_CC_SETTINGS
 from timevortex.utils.commands import AbstractCommand
 from timevortex.utils.globals import timeseries_json
 from timevortex.models import get_site_by_slug, create_site, Site, update_or_create_variable, get_variable_by_slug
@@ -65,11 +67,16 @@ class CCIncorrectData(ExceptionWithValue):
 def get_kwh_value(variable_kwh, variable_watts, actual_date):
     """Get kWh value
     """
-    if (variable_kwh is not None and
-            variable_watts is not None):
-        last_energy_value = float(variable_kwh.end_value)
-        last_energy_date = variable_kwh.end_date
-        last_power_value = float(variable_watts.end_value)
+    if (variable_kwh is not None and variable_watts is not None):
+        last_energy_value = 0.0
+        last_energy_date = timezone.now() - timedelta(days=7)
+        last_power_value = 0.0
+        if variable_kwh.end_value is not None:
+            last_energy_value = float(variable_kwh.end_value)
+        if variable_kwh.end_date is not None:
+            last_energy_date = variable_kwh.end_date
+        if variable_watts.end_value is not None:
+            last_power_value = float(variable_watts.end_value)
         date_delta = actual_date - last_energy_date
         watts_seconds = last_power_value * date_delta.total_seconds()
         watts_hours = watts_seconds / 3600.
@@ -157,29 +164,6 @@ class Command(AbstractCommand):
     ser_connection = None
     sleep_time = 0
 
-    def add_arguments(self, parser):
-        # Positional arguments
-        parser.add_argument('site_id', type=str, help='Define site_id for this command')
-        parser.add_argument('variable_id', type=str, help='Define variable_id for this command')
-        parser.add_argument('tty_port', type=str, help='Define tty_port for this command')
-        # Named (optional) arguments
-        parser.add_argument(
-            '--timeout', action='store', dest="timeout", default=10, type=int, help='Define timeout for this command')
-        parser.add_argument(
-            '--usb_retry', action='store', dest="usb_retry", default=5, type=int, help='Define usb_retry for this cmd')
-        parser.add_argument(
-            '--break_loop', action='store_true', dest="break_loop", default=False, help='Break the infinite loop')
-        parser.add_argument('--ch1', action='store', dest="ch1", default=None, type=str, help='Affect name to ch1')
-        parser.add_argument(
-            '--ch1_kwh', action='store', dest="ch1_kwh", default=None, type=str, help='Affect name to ch1_kwh')
-        parser.add_argument('--ch2', action='store', dest=KEY_CH2, default=None, type=str, help='Affect name to ch2')
-        parser.add_argument(
-            '--ch2_kwh', action='store', dest="ch2_kwh", default=None, type=str, help='Affect name to ch2_kwh')
-        parser.add_argument('--ch3', action='store', dest=KEY_CH3, default=None, type=str, help='Affect name to ch3')
-        parser.add_argument(
-            '--ch3_kwh', action='store', dest="ch3_kwh", default=None, type=str, help='Affect name to ch3_kwh')
-        parser.add_argument('--tmpr', action='store', dest=KEY_TMPR, default=None, type=str, help='Affect name to tmpr')
-
     def update_and_publish(self, site, slug, date, value):
         """Update variable value and publish on network
         """
@@ -218,25 +202,31 @@ class Command(AbstractCommand):
         if tmpr is not None and temperature is not None:
             self.update_and_publish(site, tmpr, date_readline, temperature)
 
-    def currentcost_timeseries_creation(self, options, values, date_readline):
+    def currentcost_timeseries_creation(self, cc_settings, values, date_readline):
         """Update variable and publish timeseries from XML message
         """
-        tmpr = options[KEY_TMPR]
+        tmpr_variable_id = cc_settings.tmpr_variable.slug if cc_settings.tmpr_variable is not None else None
         ch1_w = values[KEY_CH1]
         ch2_w = values[KEY_CH2]
         ch3_w = values[KEY_CH3]
-        temperature = values[KEY_TMPR]
+        tmpr_value = values[KEY_TMPR]
         # For each channel, we update value in DB and send timeseries signal
         site = self.get_site()
+        ch1_variable_id = cc_settings.ch1_variable.slug if cc_settings.ch1_variable is not None else None
+        ch2_variable_id = cc_settings.ch2_variable.slug if cc_settings.ch2_variable is not None else None
+        ch3_variable_id = cc_settings.ch3_variable.slug if cc_settings.ch2_variable is not None else None
+        ch1_kwh_variable_id = cc_settings.ch1_kwh_variable.slug if cc_settings.ch1_kwh_variable is not None else None
+        ch2_kwh_variable_id = cc_settings.ch2_kwh_variable.slug if cc_settings.ch2_kwh_variable is not None else None
+        ch3_kwh_variable_id = cc_settings.ch3_kwh_variable.slug if cc_settings.ch3_kwh_variable is not None else None
 
         channels = [
-            [options[KEY_CH1], ch1_w, options["ch1_kwh"]],
-            [options[KEY_CH2], ch2_w, options["ch2_kwh"]],
-            [options[KEY_CH3], ch3_w, options["ch3_kwh"]],
+            [ch1_variable_id, ch1_w, ch1_kwh_variable_id],
+            [ch2_variable_id, ch2_w, ch2_kwh_variable_id],
+            [ch3_variable_id, ch3_w, ch3_kwh_variable_id],
         ]
 
         self.send_watts_timeseries(site, channels, date_readline)
-        self.send_temperature_timeseries(site, tmpr, temperature, date_readline)
+        self.send_temperature_timeseries(site, tmpr_variable_id, tmpr_value, date_readline)
 
     def ser_connection_none(self, tty_port, timeout, variable_id):
         """Behavior when ser_connection is None
@@ -244,7 +234,7 @@ class Command(AbstractCommand):
         self.ser_connection = serial.Serial(tty_port, BAUDS, timeout=timeout)
         self.send_error(TTY_CONNECTION_SUCCESS % (variable_id, self.site_id, tty_port))
 
-    def ser_connection_not_none(self, options):
+    def ser_connection_not_none(self, cc_settings):
         """Behavior when ser_connection is not None
         """
         # We wait for a new message on this socket
@@ -255,7 +245,7 @@ class Command(AbstractCommand):
         # We log current xml message for hard recovery
         self.log_error(timeseries_json(self.site_id, "cc_xml", cc_xml, date_readline.isoformat()))
         if hist is False:
-            self.currentcost_timeseries_creation(options, values, date_readline)
+            self.currentcost_timeseries_creation(cc_settings, values, date_readline)
 
     def send_currentcost_error(self, error_type, variable_id, error_params=None, error_params_2=None):
         """Send currentcost error
@@ -284,21 +274,24 @@ class Command(AbstractCommand):
             self.send_currentcost_error(ERROR_CC_BAD_PORT, variable_id, tty_port, usb_retry)
             sleep(usb_retry)
 
-    def retrieve_data(self, options, tty_port, variable_id):
+    def retrieve_data(self, cc_settings, tty_port, variable_id):
         """Connect to currentcost and retrieve data
         """
         # If we are not connected to TTY port
         if self.ser_connection is None:
-            self.ser_connection_none(tty_port, options["timeout"], variable_id)
+            self.ser_connection_none(tty_port, cc_settings.timeout, variable_id)
         # If we are connected to TTY port
         if self.ser_connection is not None:
-            self.ser_connection_not_none(options)
+            self.ser_connection_not_none(cc_settings)
 
-    def currentcost_error_management(self, options, variable_id, tty_port, usb_retry):
+    def currentcost_error_management(self, cc_settings):
         """Catch currentcost potential error
         """
+        variable_id = cc_settings.currentcost_variable.slug
+        tty_port = cc_settings.tty_port
+        usb_retry = cc_settings.usb_retry
         try:
-            self.retrieve_data(options, tty_port, variable_id)
+            self.retrieve_data(cc_settings, tty_port, variable_id)
         except CCNoMessage:
             self.send_currentcost_error(ERROR_CC_NO_MESSAGE, variable_id)
         except CCIncorrectData as err:
@@ -313,8 +306,10 @@ class Command(AbstractCommand):
     def run(self, *args, **options):
         """Run method
         """
-        self.site_id = options["site_id"]
-        variable_id = options["variable_id"]
-        tty_port = options["tty_port"]
-        usb_retry = options["usb_retry"]
-        self.currentcost_error_management(options, variable_id, tty_port, usb_retry)
+        currentcost_db_settings = get_all_cc_settings()
+        if len(currentcost_db_settings) == 0:
+            self.send_error(ERROR_CURRENTCOST[ERROR_NO_CC_SETTINGS])
+            sleep(5)
+        for cc_settings in currentcost_db_settings:
+            self.site_id = cc_settings.currentcost_variable.site.slug
+            self.currentcost_error_management(cc_settings)

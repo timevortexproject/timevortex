@@ -11,7 +11,7 @@ import subprocess
 from time import sleep
 from threading import Thread
 import serial
-from timevortex.models import get_site_by_slug, get_variable_by_slug
+from timevortex.models import get_site_by_slug, get_variable_by_slug, create_variable
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
 from timevortex.utils.globals import KEY_SITE_ID, KEY_VARIABLE_ID, KEY_VALUE
 from features.steps.test_globals import SOCAT, assert_equal, assert_gte, assert_lte
@@ -19,6 +19,9 @@ from energy.management.commands.retrieve_currentcost_data import Command as Curr
 from energy.utils.globals import ERROR_CC_BAD_PORT, ERROR_CC_DISCONNECTED, ERROR_CC_NO_MESSAGE
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE, ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS
+from energy.models import create_cc_settings, KEY_CURRENTCOST_VARIABLE, KEY_CH1_VARIABLE, KEY_CH1_KWH_VARIABLE
+from energy.models import KEY_CH2_VARIABLE, KEY_CH2_KWH_VARIABLE, KEY_CH3_VARIABLE, KEY_CH3_KWH_VARIABLE
+from energy.models import KEY_TMPR_VARIABLE, KEY_TTY_PORT, KEY_TIMEOUT, KEY_USB_RETRY, delete_all_settings
 
 TIMEVORTEX_CURRENTCOST_LOG_FILE = "/tmp/timevortex/timevortex_energy.log"
 TEST_CC_SITE_ID = "test_site"
@@ -275,6 +278,51 @@ def command_currentcost_parameters(setting_type):
     }
 
 
+def create_settings_in_db(site_id, variable_id, cc_params):
+    """Create settings in DB
+    """
+    #  Create site, variable and settings
+    site = get_site_by_slug(site_id)
+    cc_variable = get_variable_by_slug(site, variable_id)
+
+    if cc_variable is None:
+        cc_variable = create_variable(site, variable_id, variable_id)
+
+    keys_map = {
+        "ch1": None,
+        "ch2": None,
+        "ch3": None,
+        "ch1_kwh": None,
+        "ch2_kwh": None,
+        "ch3_kwh": None,
+        "tmpr": None,
+    }
+
+    for var_key in keys_map.keys():
+        if cc_params[var_key] is not None:
+            keys_map[var_key] = get_variable_by_slug(site, cc_params[var_key])
+            if keys_map[var_key] is None:
+                keys_map[var_key] = create_variable(site, cc_params[var_key], cc_params[var_key])
+
+    settings = {
+        KEY_CURRENTCOST_VARIABLE: cc_variable,
+        KEY_CH1_VARIABLE: keys_map["ch1"],
+        KEY_CH1_KWH_VARIABLE: keys_map["ch1_kwh"],
+        KEY_CH2_VARIABLE: keys_map["ch2"],
+        KEY_CH2_KWH_VARIABLE: keys_map["ch2_kwh"],
+        KEY_CH3_VARIABLE: keys_map["ch3"],
+        KEY_CH3_KWH_VARIABLE: keys_map["ch3_kwh"],
+        KEY_TMPR_VARIABLE: keys_map["tmpr"],
+        KEY_TTY_PORT: cc_params["tty_port"],
+        KEY_TIMEOUT: cc_params["timeout"],
+        KEY_USB_RETRY: cc_params["usb_retry"],
+    }
+
+    delete_all_settings()
+
+    create_cc_settings(settings)
+
+
 def command_currencost_errors(setting_type, context, cc_params):
     """Return according errors
     """
@@ -333,20 +381,8 @@ def launch_currentcost_command(out, context, setting_type):
     command = CurrentCostCommand()
     command.out = out
     sleep(3)
-    command.handle(
-        site_id=context.site_id,
-        variable_id=TEST_CC_VARIABLE_ID,
-        tty_port=cc_params["tty_port"],
-        timeout=cc_params["timeout"],
-        usb_retry=cc_params["usb_retry"],
-        break_loop=True,
-        ch1=cc_params["ch1"],
-        ch1_kwh=cc_params["ch1_kwh"],
-        ch2=cc_params["ch2"],
-        ch2_kwh=cc_params["ch2_kwh"],
-        ch3=cc_params["ch3"],
-        ch3_kwh=cc_params["ch3_kwh"],
-        tmpr=cc_params["tmpr"])
+    create_settings_in_db(context.site_id, TEST_CC_VARIABLE_ID, cc_params)
+    command.handle(break_loop=True)
 
 
 def verify_currentcost_data(variable, variable_id, data_type):

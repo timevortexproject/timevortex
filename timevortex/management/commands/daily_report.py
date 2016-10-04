@@ -14,14 +14,13 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from timevortex.models import Setting
+from timevortex.models import get_sender_email, get_sender_password, get_target_email, get_next_send_daily_report
+from timevortex.models import get_last_time_daily_report, create_last_time_daily_report
 from timevortex.utils.commands import AbstractCommand
 from timevortex.utils.filestorage import FILE_STORAGE_SPACE
-from timevortex.utils.globals import KEY_SENDER_EMAIL, KEY_SENDER_PASSWORD, KEY_TARGET_INFORMATION_EMAIL
-from timevortex.utils.globals import KEY_NEXT_SEND_DAILY_REPORT, KEY_LAST_TIME_DAILY_REPORT, ERROR_TIMEVORTEX
-from timevortex.utils.globals import ERROR_MISSING_SENDER_EMAIL, KEY_EMAIL_HOST_USER, ERROR_SMTP_AUTH
+from timevortex.utils.globals import ERROR_MISSING_SENDER_EMAIL, KEY_EMAIL_HOST_USER, ERROR_SMTP_AUTH, ERROR_TIMEVORTEX
 from timevortex.utils.globals import ERROR_MISSING_SENDER_PASSWORD, KEY_EMAIL_HOST_PASSWORD, ERROR_MISSING_TARGET_EMAIL
-from timevortex.utils.globals import ERROR_MISSING_NEXT_SEND, LABEL_LAST_TIME_DAILY_REPORT
+from timevortex.utils.globals import ERROR_MISSING_NEXT_SEND, LABEL_LAST_TIME_DAILY_REPORT, KEY_LAST_TIME_DAILY_REPORT
 
 # Data storage
 LOGGER = logging.getLogger("timevortex")
@@ -106,34 +105,34 @@ class Command(AbstractCommand):
             self.logger.error(error_msg)
 
     def run(self, *args, **options):
-        target_email = None
-        next_send_daily_report = None
-        last_time_daily_report = None
-        last_time_daily_report_datetime = None
+        """ Run
+        """
         now = timezone.now()
-        try:
-            self.sender_email = Setting.objects.get(slug=KEY_SENDER_EMAIL)
-            self.sender_password = Setting.objects.get(slug=KEY_SENDER_PASSWORD)
-            target_email = Setting.objects.get(slug=KEY_TARGET_INFORMATION_EMAIL)
-            next_send_daily_report = Setting.objects.get(slug=KEY_NEXT_SEND_DAILY_REPORT)
-            last_time_daily_report = Setting.objects.get(slug=KEY_LAST_TIME_DAILY_REPORT)
-            last_time_daily_report_datetime = dateutil.parser.parse(last_time_daily_report.value).replace(
-                tzinfo=pytz.UTC)
-        except Setting.DoesNotExist:
-            if self.sender_email is None:
-                self.logger.error(ERROR_TIMEVORTEX[ERROR_MISSING_SENDER_EMAIL])
-            elif self.sender_password is None:
-                self.logger.error(ERROR_TIMEVORTEX[ERROR_MISSING_SENDER_PASSWORD])
-            elif target_email is None:
-                self.logger.error(ERROR_TIMEVORTEX[ERROR_MISSING_TARGET_EMAIL])
-            elif next_send_daily_report is None:
-                self.logger.error(ERROR_TIMEVORTEX[ERROR_MISSING_NEXT_SEND])
-            elif last_time_daily_report_datetime is None:
-                last_time_daily_report_datetime = (datetime.now() - timedelta(days=1)).replace(hour=4, minute=0,
-                                                                                               second=0, microsecond=0)
-                Setting.objects.create(label=LABEL_LAST_TIME_DAILY_REPORT, slug=KEY_LAST_TIME_DAILY_REPORT,
-                                       value=last_time_daily_report_datetime)
+        self.sender_email = get_sender_email()
+        self.sender_password = get_sender_password()
+        target_email = get_target_email()
+        next_send_daily_report = get_next_send_daily_report()
+        last_time_daily_report = get_last_time_daily_report()
+        last_time_daily_report_datetime = dateutil.parser.parse(last_time_daily_report.value).replace(
+            tzinfo=pytz.UTC)
+
+        if self.sender_email is None:
+            self.logger.error(ERROR_TIMEVORTEX[ERROR_MISSING_SENDER_EMAIL])
             return
+        elif self.sender_password is None:
+            self.logger.error(ERROR_TIMEVORTEX[ERROR_MISSING_SENDER_PASSWORD])
+            return
+        elif target_email is None:
+            self.logger.error(ERROR_TIMEVORTEX[ERROR_MISSING_TARGET_EMAIL])
+            return
+        elif next_send_daily_report is None:
+            self.logger.error(ERROR_TIMEVORTEX[ERROR_MISSING_NEXT_SEND])
+            return
+        elif last_time_daily_report_datetime is None:
+            last_time_daily_report_datetime = (datetime.now() - timedelta(days=1)).replace(hour=4, minute=0,
+                                                                                           second=0, microsecond=0)
+            create_last_time_daily_report(LABEL_LAST_TIME_DAILY_REPORT, KEY_LAST_TIME_DAILY_REPORT,
+                                          last_time_daily_report_datetime)
 
         setattr(settings, KEY_EMAIL_HOST_USER, self.sender_email.value)
         setattr(settings, KEY_EMAIL_HOST_PASSWORD, self.sender_password.value)

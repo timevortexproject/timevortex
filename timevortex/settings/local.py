@@ -43,7 +43,7 @@ SETTINGS_FILE_STORAGE_FOLDER = "/tmp/data"
 
 DEFAULT_FROM_EMAIL = 'Timevortex <XXX@XXX.XXX>'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'XXX'
-EMAIL_HOST_PASSWORD = 'XXX'  # noqa
+EMAIL_HOST_USER = 'phase.test.email'
+EMAIL_HOST_PASSWORD = 'phaseTEST2014'  # noqa
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
