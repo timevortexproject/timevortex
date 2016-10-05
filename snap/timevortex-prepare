@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+LOG_FOLDER=log
+DATA_FOLDER=data
+BACKUP_FOLDER=backup
+
+cd "$SNAP_COMMON"
+
+# Create log folder if not exist
+mkdir -p "$LOG_FOLDER"
+# Create data folder if not exist
+mkdir -p "$DATA_FOLDER"
+# Create backup folder if not exist
+mkdir -p "$BACKUP_FOLDER"
+
+python3 $SNAP/opt/timevortex/manage.py migrate --noinput --settings=timevortex.settings.production >> log/timevortex.log
+python3 $SNAP/opt/timevortex/manage.py load_initial_data --settings=timevortex.settings.production >> log/timevortex.log
+

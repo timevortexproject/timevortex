@@ -71,7 +71,6 @@ TimeVortex todo
 ===============
 
 * Prod :
-    * Load intial data from django command
     * Put snap folder in timevortex folder
     * Install ubuntu 16.04 on raspberry
     * Test daily-report

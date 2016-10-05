@@ -1,0 +1,49 @@
+name: timevortex  # the name of the snap
+version: 2.1.2  # the version of the snap
+summary: Timevortex application  # 79 char long summary
+description: Open source data logger for IoT  # a longer description for the snap
+confinement: strict  # use "strict" to enforce system access only via declared interfaces
+grade: stable # use "stable" to assert the snap quality
+
+apps:
+  timevortex-prepare:
+    command: opt/timevortex/timevortex-prepare
+    daemon: simple
+    restart-condition: never
+  timevortex-runserver:
+    command: opt/timevortex/manage.py runserver --settings=timevortex.settings.production
+    daemon: simple
+  timevortex-metear:
+    command: opt/timevortex/manage.py retrieve_metear_data --settings=timevortex.settings.production
+    daemon: simple
+  timevortex-backup:
+    command: opt/timevortex/manage.py backup --settings=timevortex.settings.production
+    daemon: simple
+    plugs:
+      - removable-media
+  timevortex-daily-report:
+    command: opt/timevortex/manage.py daily_report --settings=timevortex.settings.production
+    daemon: simple
+  timevortex-currentcost:
+    command: opt/timevortex/manage.py retrieve_currentcost_data --settings=timevortex.settings.production
+    daemon: simple
+    plugs:
+      - serial-port
+
+parts:
+  timevortex:
+    plugin: python3
+    source: git://github.com/timevortexproject/timevortex
+    source-branch: develop
+    stage-packages:
+      - sqlite3
+      - rsync
+    organize:
+      usr/manage.py: opt/timevortex/manage.py
+      usr/initial_data: opt/timevortex/initial_data
+      usr/static: opt/timevortex/static
+  prime:
+    plugin: dump
+    source: .
+    organize:
+      timevortex-prepare: opt/timevortex/timevortex-prepare
