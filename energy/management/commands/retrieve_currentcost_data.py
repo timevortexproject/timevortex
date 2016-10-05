@@ -17,7 +17,7 @@ from energy.utils.globals import TTY_CONNECTION_SUCCESS, ERROR_CC_DISCONNECTED, 
 from energy.utils.globals import CURRENTCOST_UNICODE_ERROR, ERROR_CC_INCORRECT_MESSAGE_MISSING_TMPR
 from energy.utils.globals import ERROR_CC_INCORRECT_MESSAGE_MISSING_WATTS, ERROR_NO_CC_SETTINGS
 from timevortex.utils.commands import AbstractCommand
-from timevortex.utils.globals import timeseries_json
+from timevortex.utils.globals import timeseries_json, SYSTEM_SITE_ID
 from timevortex.models import get_site_by_slug, create_site, Site, update_or_create_variable, get_variable_by_slug
 
 LOGGER = logging.getLogger(KEY_ENERGY)
@@ -308,8 +308,9 @@ class Command(AbstractCommand):
         """
         currentcost_db_settings = get_all_cc_settings()
         if len(currentcost_db_settings) == 0:
+            self.site_id = SYSTEM_SITE_ID
             self.send_error(ERROR_CURRENTCOST[ERROR_NO_CC_SETTINGS])
-            sleep(5)
+            sleep(60)
         for cc_settings in currentcost_db_settings:
             self.site_id = cc_settings.currentcost_variable.site.slug
             self.currentcost_error_management(cc_settings)

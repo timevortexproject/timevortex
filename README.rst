@@ -72,6 +72,7 @@ TimeVortex todo
 
 * CurrentCost:
     * Run script with snap
+    * Test scritp with socat (bad port, good port bad message, correct message, correct message kwh increase)
 * Prod :
     * Avoid update initial_data if useless (rewrite user properties)
     * Test daily-report
@@ -79,6 +80,8 @@ TimeVortex todo
     * Test currentcost live
     * Migrate data to new currentcost
     * Setup raspberry pi installation at home
+    * Remove develop branch in snapcraft.yml
+    * Put snap folder in timevortex folder
 
 TimeVortex backlog
 ==================
