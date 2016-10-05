@@ -43,7 +43,7 @@ class CurrentCostSetting(models.Model):
         app_label = APP_NAME
 
     def __str__(self):
-        return self.currentcost_variable
+        return self.currentcost_variable.label
 
 
 def get_all_cc_settings():
