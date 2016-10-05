@@ -1,5 +1,6 @@
 TimeVortex (2.1.2) stable; urgency=low
 
+* Load initial data without erasing user modification
 * Fix energy model problem
 * Pass log error if no currentcost settings to 60 seconds, Log into system site_id
 * Migrate command parameter of currentcost to DB settings

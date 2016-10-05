@@ -1,1 +1,17 @@
-[{"model": "timevortex.setting", "pk": 1, "fields": {"label": "Backup target folder", "slug": "backup_target_folder", "value": "../common/backup"}}, {"model": "timevortex.setting", "pk": 7, "fields": {"label": "Next send daily report", "slug": "next_send_daily_report", "value": "86359"}}]
+[{
+	"model": "timevortex.setting",
+	"pk": 1,
+	"fields": {
+		"label": "Backup target folder",
+		"slug": "backup_target_folder",
+		"value": "../common/backup"
+	}
+}, {
+	"model": "timevortex.setting",
+	"pk": 7,
+	"fields": {
+		"label": "Next send daily report",
+		"slug": "next_send_daily_report",
+		"value": "86359"
+	}
+}]

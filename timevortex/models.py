@@ -220,7 +220,7 @@ def get_target_email():
 
 
 def get_next_send_daily_report():
-    """Get target email
+    """Get next send daily report
     """
     try:
         return Setting.objects.get(slug=KEY_NEXT_SEND_DAILY_REPORT)
@@ -228,8 +228,23 @@ def get_next_send_daily_report():
         return None
 
 
+def set_next_send_daily_report(value):
+    """Set next send daily report
+    """
+    try:
+        settings = Setting.objects.get(slug=KEY_NEXT_SEND_DAILY_REPORT)
+        settings.value = value
+        settings.save()
+    except Setting.DoesNotExist:
+        Setting.objects.create(
+            label=KEY_NEXT_SEND_DAILY_REPORT,
+            slug=KEY_NEXT_SEND_DAILY_REPORT,
+            value=value
+        )
+
+
 def get_last_time_daily_report():
-    """Get target email
+    """Get last time daily report
     """
     try:
         return Setting.objects.get(slug=KEY_LAST_TIME_DAILY_REPORT)
@@ -238,6 +253,6 @@ def get_last_time_daily_report():
 
 
 def create_last_time_daily_report(label, slug, value):
-    """Create variable
+    """Create last time daily report
     """
     return Setting.objects.create(label=label, slug=slug, value=value)

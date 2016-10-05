@@ -70,24 +70,21 @@ Snap build
 TimeVortex todo
 ===============
 
-* CurrentCost:
-    * Run script with snap
-    * Test scritp with socat (bad port, good port bad message, correct message, correct message kwh increase)
 * Prod :
-    * Avoid update initial_data if useless (rewrite user properties)
+    * Load intial data from django command
+    * Put snap folder in timevortex folder
+    * Install ubuntu 16.04 on raspberry
     * Test daily-report
     * Test backup in USB key
     * Test currentcost live
+    * Remove develop branch in snapcraft.yml
     * Migrate data to new currentcost
     * Setup raspberry pi installation at home
-    * Remove develop branch in snapcraft.yml
-    * Put snap folder in timevortex folder
 
 TimeVortex backlog
 ==================
 
 * [BLOCKED]
-    * [BLOCKED] Install and setup clonedigger (not python 3 compatible. Work in progress)
     * [BLOCKED] django-admin-tools-stats is not python 3 compatible
 
 * Documentation
