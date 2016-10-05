@@ -1,6 +1,7 @@
 TimeVortex (2.1.2) stable; urgency=low
 
 * Add snap folder into TV v2 project
+* Add snap folder into TV v2 project
 * Load initial data without erasing user modification
 * Fix energy model problem
 * Pass log error if no currentcost settings to 60 seconds, Log into system site_id
